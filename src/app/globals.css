@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-   
+    /* Standardizes the VibeStream background across all devices */
     @apply bg-surface text-white antialiased selection:bg-accent/30 min-h-screen;
     margin: 0;
     overflow-x: hidden;
@@ -12,15 +12,17 @@
 }
 
 @layer components {
-  
   .glass-card {
-    @apply bg-surface-100/50 backdrop-blur-xl border border-white/10 
+    /* FIXED: Changed bg-surface-100 to bg-surface/50 to match your config */
+    @apply bg-surface/50 backdrop-blur-xl border border-white/10 
            hover:border-accent/30 transition-all duration-300;
+    
+    /* Pulls the glow color directly from your VibeStream brand palette */
     box-shadow: 0 0 50px -12px theme('colors.accent.glow');
   }
 
-  
   .vibe-hero-bg {
+    /* This creates the premier 'Vibe' look for elite founders */
     @apply bg-hero-glow absolute inset-0 pointer-events-none;
   }
 }
