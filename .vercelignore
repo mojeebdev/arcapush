@@ -1,0 +1,15 @@
+# Step 1: Ignore everything in the project
+/*
+
+# Step 2: Un-ignore (allow) ONLY the files we need for the launch
+/*
+!src/app/layout.tsx
+!src/app/page.tsx
+!src/app/globals.css
+!src/components/WaitlistForm.tsx
+!src/components/Countdown.tsx
+!public/  
+!next.config.js
+!package.json
+!tailwind.config.ts
+!tsconfig.json

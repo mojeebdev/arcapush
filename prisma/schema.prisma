@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum StartupTier {
+  FREE
+  PINNED
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id            String          @id @default(cuid())
+  walletAddress String?         @unique
+  email         String?         @unique
+  name          String?
+  role          String          @default("viewer") // viewer | founder | admin
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  startups       Startup[]
+  accessRequests AccessRequest[]
+}
+
+model Startup {
+  id               String      @id @default(cuid())
+  
+  // Public fields (always visible)
+  name             String
+  tagline          String
+  problemStatement String      @db.Text
+  bannerUrl        String
+  logoUrl          String?
+  category         String      @default("DeFi")
+  website          String?
+  twitter          String?
+  
+  // Private fields (behind access gate)
+  founderName      String
+  founderEmail     String
+  founderLinkedIn  String?
+  founderTwitter   String?
+  pitchDeckUrl     String?
+  
+  // Tier & Pinning
+  tier             StartupTier @default(FREE)
+  pinnedAt         DateTime?
+  pinnedUntil      DateTime?
+  pinTxHash        String?
+  pinChain         String?     // "base" | "solana"
+  
+  // Relations
+  founderId        String
+  founder          User        @relation(fields: [founderId], references: [id])
+  accessRequests   AccessRequest[]
+  
+  // Metadata
+  viewCount        Int         @default(0)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@index([tier, pinnedUntil])
+  @@index([createdAt])
+}
+
+model AccessRequest {
+  id          String        @id @default(cuid())
+  
+  // Requester info
+  requesterName    String
+  requesterEmail   String
+  requesterFirm    String
+  requesterRole    String
+  requesterLinkedIn String
+  
+  // Status
+  status      RequestStatus @default(PENDING)
+  
+  // Relations
+  startupId   String
+  startup     Startup       @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  requesterId String?
+  requester   User?         @relation(fields: [requesterId], references: [id])
+  
+  // Timestamps
+  createdAt   DateTime      @default(now())
+  reviewedAt  DateTime?
+
+  @@unique([requesterEmail, startupId])
+  @@index([startupId, status])
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  startupId   String
+  chain       String   // "base" | "solana"
+  txHash      String   @unique
+  amount      String
+  currency    String   // "USDC" | "SOL"
+  walletFrom  String
+  walletTo    String
+  confirmedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([startupId])
+}
