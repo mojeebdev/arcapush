@@ -8,8 +8,8 @@ export default function Countdown() {
   });
 
   useEffect(() => {
-    // Target Date: Tomorrow for the Tech Entrepreneur's launch
-    const targetDate = new Date("2026-02-17T00:00:00").getTime();
+    
+    const targetDate = new Date("2026-02-17T15:00:00").getTime();
 
     const interval = setInterval(() => {
       const now = new Date().getTime();
