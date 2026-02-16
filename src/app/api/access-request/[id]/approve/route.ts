@@ -1,27 +1,29 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; // Ensure this path matches your prisma client location
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma"; 
 
 export async function POST(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> } 
 ) {
   try {
-    const id = params.id;
+    const { id } = await context.params; 
 
-    // The "Guardian" logic to update the request status
+    
     const updatedRequest = await prisma.accessRequest.update({
       where: { id },
-      data: { status: 'APPROVED' },
+      data: {
+        status: "APPROVED",
+        reviewedAt: new Date(),
+      },
     });
 
     return NextResponse.json({ 
-      message: 'Access approved successfully',
+      message: "Request approved successfully", 
       data: updatedRequest 
     });
   } catch (error) {
-    console.error('Approval Error:', error);
     return NextResponse.json(
-      { error: 'Failed to approve access' },
+      { message: "Failed to approve request" }, 
       { status: 500 }
     );
   }
