@@ -8,7 +8,7 @@ export default function Countdown() {
   });
 
   useEffect(() => {
-    // Set your launch date here
+    // Target Date: Tomorrow for the Tech Entrepreneur's launch
     const targetDate = new Date("2026-02-17T00:00:00").getTime();
 
     const interval = setInterval(() => {
@@ -31,11 +31,19 @@ export default function Countdown() {
   }, []);
 
   return (
-    <div className="flex space-x-4 text-center justify-center py-10">
+    /* flex-wrap ensures it doesn't break on mobile screens */
+    <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 py-8">
       {Object.entries(timeLeft).map(([label, value]) => (
-        <div key={label} className="flex flex-col bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 min-w-[80px]">
-          <span className="text-3xl font-bold text-white">{value}</span>
-          <span className="text-xs uppercase text-gray-400">{label}</span>
+        <div 
+          key={label} 
+          className="flex flex-col items-center justify-center bg-white/5 backdrop-blur-xl p-3 md:p-5 rounded-2xl border border-white/10 min-w-[70px] md:min-w-[90px] shadow-2xl transition-transform hover:scale-105"
+        >
+          <span className="text-2xl md:text-4xl font-black text-white tracking-tighter">
+            {value.toString().padStart(2, '0')}
+          </span>
+          <span className="text-[10px] md:text-xs uppercase font-bold text-blue-500/80 tracking-widest mt-1">
+            {label}
+          </span>
         </div>
       ))}
     </div>
