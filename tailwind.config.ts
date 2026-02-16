@@ -1,10 +1,22 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+ 
   content: [
-  "./src/**/*.{js,ts,jsx,tsx,mdx}", 
-],
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  
+  
   darkMode: "class",
+  
+  
+  safelist: [
+    'bg-black',
+    'text-white',
+    'dark',
+    'antialiased',
+  ],
+
   theme: {
     extend: {
       colors: {
@@ -68,3 +80,4 @@ const config: Config = {
 };
 
 export default config;
+
