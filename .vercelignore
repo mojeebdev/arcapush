@@ -1,17 +1,11 @@
-# Step 1: Ignore everything in the project
+\# Step 1: Ignore everything by default
 /*
 
-# Step 2: Un-ignore (allow) ONLY the files we need for the launch
-/*
-!src/app/layout.tsx
-!src/app/page.tsx
-!src/app/globals.css
-!src/components/WaitlistForm.tsx
-!src/components/Countdown.tsx
-!public/  
+# Step 2: Allow ONLY the essential VibeStream files
+!src/
+!public/
 !next.config.js
 !package.json
 !tailwind.config.ts
 !tsconfig.json
 !prisma/
-!prisma/schema.prisma
