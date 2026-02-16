@@ -2,9 +2,12 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    "./src/**/*.{js,ts,jsx,tsx,mdx}", 
-    "./app/**/*.{js,ts,jsx,tsx,mdx}", 
-    "./components/**/*.{js,ts,jsx,tsx,mdx}", 
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
   darkMode: "class",
   theme: {
     extend: {
@@ -40,10 +43,8 @@ const config: Config = {
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "hero-glow":
-          "radial-gradient(ellipse 80% 50% at 50% -20%, rgba(167,139,250,0.15), transparent)",
-        "card-shine":
-          "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%, rgba(255,255,255,0.02) 100%)",
+        "hero-glow": "radial-gradient(ellipse 80% 50% at 50% -20%, rgba(167,139,250,0.15), transparent)",
+        "card-shine": "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%, rgba(255,255,255,0.02) 100%)",
       },
       animation: {
         "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
