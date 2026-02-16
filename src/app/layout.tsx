@@ -34,7 +34,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${inter.className} bg-black text-white antialiased`}>
-        {children}
+        {/* Added flex container to center VibeStream content */}
+        <main className="min-h-screen flex flex-col items-center justify-center">
+          {children}
+        </main>
       </body>
     </html>
   );
