@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-
+export const dynamic = 'force-dynamic';
 export default function AdminStartup() {
   const [pin, setPin] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(false);

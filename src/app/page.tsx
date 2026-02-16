@@ -2,7 +2,7 @@
 
 import Countdown from '@/components/Countdown';
 import WaitlistForm from '@/components/WaitlistForm';
-
+export const dynamic = 'force-dynamic';
 export default function Home() {
   return (
     <div className="relative w-full flex flex-col items-center justify-center px-4 overflow-hidden">
