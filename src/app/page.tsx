@@ -16,14 +16,14 @@ export default function Home() {
 
       {/* 2. Brand Section */}
       <div className="z-10 flex flex-col items-center mb-12">
-        <img 
-          src="https://raw.githubusercontent.com/base-org/brand-kit/main/logo/symbol/white/base-symbol-white.png" 
-          alt="VibeStream.cc" 
-          className="h-16 md:h-20 w-auto drop-shadow-[0_0_25px_rgba(59,130,246,0.5)] transition-transform hover:scale-105 duration-700"
-        />
-        <p className="mt-4 text-zinc-500 text-sm md:text-base font-medium tracking-[0.2em] uppercase">
-          Venture Capital <span className="text-zinc-700 mx-2">|</span> Vibe Code
-        </p>
+      <img 
+       src="/wordmark.png" 
+        alt="VibeStream.cc" 
+        className="h-10 md:h-12 w-auto drop-shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-transform hover:scale-105 duration-700"
+      />
+      <p className="mt-4 text-zinc-500 text-[10px] md:text-xs font-medium tracking-[0.4em] uppercase">
+       Venture Capital <span className="text-zinc-800 mx-2">|</span> Vibe Code
+      </p>
       </div>
 
       {/* 3. Countdown Section */}
