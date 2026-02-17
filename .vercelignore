@@ -1,11 +1,18 @@
-\# Step 1: Ignore everything by default
-/*
+# Step 1: Ignore junk
+node_modules
+.env
+.next
 
-# Step 2: Allow ONLY the essential VibeStream files
+# Step 2: Allow ONLY the essential VibeStream files at the ROOT
 !src/
+!app/
 !public/
+!components/
 !next.config.js
 !package.json
+!package-lock.json
 !tailwind.config.ts
+!postcss.config.js
 !tsconfig.json
 !prisma/
+!lib/
