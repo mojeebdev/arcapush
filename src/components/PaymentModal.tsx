@@ -9,8 +9,15 @@ import {
   HiOutlineBolt,
   HiOutlineClipboardDocument,
   HiOutlineCheckCircle,
-  HiOutlineClock,
 } from "react-icons/hi2";
+
+
+type PaymentPackage = {
+  readonly label: string;
+  readonly value: string;
+  readonly price: string;
+  readonly minutes: number;
+};
 
 type Chain = "base" | "solana";
 
@@ -21,11 +28,16 @@ interface PaymentModalProps {
 }
 
 export function PaymentModal({ startupId, onClose, onSuccess }: PaymentModalProps) {
+  
   const [chain, setChain] = useState<Chain>("base");
-  const [selectedPackage, setSelectedPackage] = useState(AdminConfig.PIN_PACKAGES[0]);
   const [txHash, setTxHash] = useState("");
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<"package" | "chain" | "pay" | "verify">("package");
+
+  
+  const [selectedPackage, setSelectedPackage] = useState<PaymentPackage>(
+    AdminConfig.PIN_PACKAGES[0]
+  );
 
   
   const price = chain === "base" ? selectedPackage.price : AdminConfig.PIN_PRICE_SOL;

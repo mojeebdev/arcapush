@@ -10,7 +10,7 @@
 
 @layer base {
   body {
-    @apply bg-black text-white selection:bg-purple-500/30 selection:text-white;
+    @apply bg-black text-white selection:bg-emerald-500/30 selection:text-white;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
@@ -19,13 +19,23 @@
   /* The "Vibe Code" Input Standard */
   .vibe-input {
     @apply w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white 
-           placeholder:text-zinc-600 focus:outline-none focus:border-purple-500/50 
+           placeholder:text-zinc-600 focus:outline-none focus:border-emerald-500/50 
            transition-all duration-300;
   }
 
   /* Glassmorphism for Guardian Panels */
   .guardian-glass {
     @apply bg-zinc-900/20 backdrop-blur-2xl border border-white/10 rounded-[2.5rem];
+  }
+
+  /* Global Footer Styling */
+  .vibe-footer {
+    @apply relative border-t border-white/5 bg-black py-16 overflow-hidden;
+  }
+
+  /* Multichain Logo Utility */
+  .chain-logo {
+    @apply h-4 w-4 opacity-70 group-hover:opacity-100 transition-all duration-500;
   }
 }
 
@@ -50,10 +60,24 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-zinc-800 rounded-full hover:bg-zinc-700 transition-colors;
+  @apply bg-zinc-800 rounded-full hover:bg-emerald-500/50 transition-colors;
 }
 
-/* 3. Text Gradient for the 'Venture Capital' highlights */
+/* 3. Text Gradient for 'Next Wave' highlights */
 .text-vibe-gradient {
   @apply bg-clip-text text-transparent bg-gradient-to-b from-white to-zinc-500;
+}
+
+/* 4. Innovation Attribution Link Hover */
+.labs-link {
+  @apply text-white transition-all duration-300 relative;
+}
+
+.labs-link::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-0 h-px bg-emerald-500 transition-all duration-300;
+}
+
+.labs-link:hover::after {
+  @apply w-full;
 }
