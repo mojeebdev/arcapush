@@ -6,6 +6,7 @@ import { AdminConfig } from "@/lib/adminConfig";
 
 export const revalidate = 30;
 
+
 async function getPinnedStartups() {
   const now = new Date();
   return prisma.startup.findMany({
@@ -63,10 +64,16 @@ async function getFreeStartups() {
   });
 }
 
+async function getStartupCount() {
+  const count = await prisma.startup.count();
+  return new Intl.NumberFormat().format(count);
+}
+
 export default async function HomePage() {
-  const [pinnedStartups, freeStartups] = await Promise.all([
+  const [pinnedStartups, freeStartups, totalCount] = await Promise.all([
     getPinnedStartups(),
     getFreeStartups(),
+    getStartupCount(),
   ]);
 
   return (
@@ -76,14 +83,15 @@ export default async function HomePage() {
       <section className="relative pt-32 pb-16 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
           
-          <div className="flex justify-center mb-8">
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-white/5 bg-zinc-900/40 backdrop-blur-md">
+          {/* 🟢 Live Pulse & Milestone Signal */}
+          <div className="flex flex-col items-center mb-12">
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-white/5 bg-zinc-900/40 backdrop-blur-md mb-6">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               <span className="text-[10px] font-black tracking-[0.3em] text-white/70 uppercase">
-                Live Discovery Feed
+                VibeStream Live — {totalCount} Initialized
               </span>
             </div>
           </div>
@@ -98,12 +106,14 @@ export default async function HomePage() {
             </p>
           </div>
 
+          {/* 💎 Featured Tier (Pinned) */}
           {pinnedStartups.length > 0 && (
             <div className="mb-24">
               <HeroPin startups={pinnedStartups} />
             </div>
           )}
 
+          {/* 🌊 Recent Signals (Discovery) */}
           <div className="mt-20">
             <div className="flex items-center justify-between mb-10 border-b border-white/5 pb-6">
               <h2 className="text-sm font-black uppercase tracking-[0.4em] text-zinc-500">Recent Signals</h2>

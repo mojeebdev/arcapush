@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { AdminConfig } from "@/lib/adminConfig";
 import { Providers } from "./providers"; 
 import { Footer } from "@/components/Footer";
+import { Analytics } from "@vercel/analytics/react"; 
+import { SpeedInsights } from "@vercel/speed-insights/next"; 
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: `${AdminConfig.SITE_NAME} — ${AdminConfig.SITE_TAGLINE}`,
   description: AdminConfig.SITE_DESCRIPTION,
   metadataBase: new URL('https://vibestream.cc'),
-  
   
   icons: {
     icon: '/logo.png',
@@ -34,7 +35,6 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: AdminConfig.SITE_NAME,
     description: AdminConfig.SITE_TAGLINE,
-    
     images: ['/wordmark.png'],
   },
 };
@@ -63,6 +63,10 @@ export default function RootLayout({
             {/* VibeStream Global Footer */}
             <Footer />
           </div>
+
+          {/* 3. Global Monitoring */}
+          <Analytics />
+          <SpeedInsights />
         </Providers>
       </body>
     </html>

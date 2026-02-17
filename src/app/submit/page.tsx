@@ -2,15 +2,40 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
+import confetti from 'canvas-confetti'; // 🎊 The Celebration Logic
+import { track } from '@vercel/analytics';
 
 export default function SubmitStartup() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    firm: ""
-  });
+  const [formData, setFormData] = useState({ name: "", email: "", firm: "" });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const handleSuccess = () => {
+    // 🛡️ Guardian Celebration: Emerald and Gold sparks
+    const duration = 3 * 1000;
+    const end = Date.now() + duration;
+
+    (function frame() {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ['#10b981', '#fbbf24']
+      });
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ['#10b981', '#fbbf24']
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    }());
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,13 +48,16 @@ export default function SubmitStartup() {
         body: JSON.stringify({ 
           requesterName: formData.name, 
           requesterEmail: formData.email,
-          requesterFirm: formData.firm 
+          requesterFirm: formData.firm,
+          startupId: "general-waitlist" 
         }),
       });
 
       if (res.ok) {
+        track('Startup Submitted'); 
+        handleSuccess(); 
         toast.success("Signal Received. Welcome to the VibeStream.");
-        setTimeout(() => router.push('/'), 2000);
+        setTimeout(() => router.push('/'), 3000);
       } else {
         const errorData = await res.json();
         throw new Error(errorData.message || "Signal Lost");
@@ -43,20 +71,16 @@ export default function SubmitStartup() {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-6 overflow-hidden">
-      <Toaster 
-        toastOptions={{
-          style: { background: '#18181b', color: '#fff', border: '1px solid #27272a' },
-        }} 
-      />
+      <Toaster toastOptions={{ style: { background: '#18181b', color: '#fff' } }} />
       
       {/* Background Ambience */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-600/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-600/10 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="z-10 w-full max-w-lg p-10 border border-white/10 rounded-[2.5rem] bg-zinc-900/20 backdrop-blur-2xl">
         <div className="flex flex-col items-center mb-10 text-center">
           <img src="/wordmark.png" alt="VibeStream" className="h-8 mb-6 opacity-80" />
           <h1 className="text-sm font-black tracking-[0.4em] uppercase text-zinc-500">
-            Request Access
+            Initial Application
           </h1>
         </div>
         
@@ -64,10 +88,8 @@ export default function SubmitStartup() {
           <div className="space-y-2">
             <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 ml-4 font-bold">Full Name</label>
             <input 
-              type="text" 
-              required
-              placeholder="e.g. Satoshi Nakamoto" 
-              className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white focus:outline-none focus:border-purple-500/50 transition-all font-medium"
+              type="text" required placeholder="e.g. Satoshi Nakamoto" 
+              className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50 transition-all font-medium"
               value={formData.name}
               onChange={(e) => setFormData({...formData, name: e.target.value})}
             />
@@ -76,39 +98,30 @@ export default function SubmitStartup() {
           <div className="space-y-2">
             <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 ml-4 font-bold">Professional Email</label>
             <input 
-              type="email" 
-              required
-              placeholder="name@firm.cc" 
-              className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white focus:outline-none focus:border-purple-500/50 transition-all font-medium"
+              type="email" required placeholder="name@firm.cc" 
+              className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50 transition-all font-medium"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 ml-4 font-bold">Startup / Firm Name</label>
+            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 ml-4 font-bold">Startup Name</label>
             <input 
-              type="text" 
-              required
-              placeholder="The name of your venture" 
-              className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white focus:outline-none focus:border-purple-500/50 transition-all font-medium"
+              type="text" required placeholder="The name of your venture" 
+              className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50 transition-all font-medium"
               value={formData.firm}
               onChange={(e) => setFormData({...formData, firm: e.target.value})}
             />
           </div>
 
           <button 
-            type="submit"
-            disabled={loading}
-            className="w-full bg-white text-black py-5 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-zinc-200 active:scale-95 transition-all disabled:opacity-50 mt-4"
+            type="submit" disabled={loading}
+            className="w-full bg-white text-black py-5 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-emerald-400 hover:text-black active:scale-95 transition-all disabled:opacity-50 mt-4"
           >
             {loading ? "Transmitting..." : "Initialize Application"}
           </button>
         </form>
-        
-        <p className="mt-8 text-center text-[9px] uppercase tracking-[0.3em] text-zinc-600 font-bold">
-          Vibe Code Verified Security
-        </p>
       </div>
     </div>
   );
