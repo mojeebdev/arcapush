@@ -14,7 +14,7 @@ export default function AdminStartup() {
     setError(false);
 
     try {
-      const response = await fetch("/api/pin", {
+      const response = await fetch("/api/admin/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pin }),
