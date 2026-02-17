@@ -2,10 +2,11 @@
 
 import Countdown from '@/components/Countdown';
 import WaitlistForm from '@/components/WaitlistForm';
-export const dynamic = 'force-dynamic';
+
+
 export default function Home() {
   return (
-    <div className="relative w-full flex flex-col items-center justify-center px-4 overflow-hidden">
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center px-4 overflow-hidden bg-black">
       
       {/* 1. Ambient Background Effects (The Vibe) */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-6xl pointer-events-none">
@@ -16,7 +17,7 @@ export default function Home() {
       {/* 2. Brand Section */}
       <div className="z-10 flex flex-col items-center mb-12">
         <img 
-          src="/wordmark.png" 
+          src="https://raw.githubusercontent.com/base-org/brand-kit/main/logo/symbol/white/base-symbol-white.png" 
           alt="VibeStream.cc" 
           className="h-16 md:h-20 w-auto drop-shadow-[0_0_25px_rgba(59,130,246,0.5)] transition-transform hover:scale-105 duration-700"
         />
@@ -55,16 +56,18 @@ export default function Home() {
           {/* Solana Logo */}
           <div className="flex items-center gap-2">
             <img 
-              src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" 
+              src="https://cryptologos.cc/logos/solana-sol-logo.svg" 
               alt="Solana" 
               className="h-4 w-4 brightness-0 invert transition-transform group-hover:-rotate-12" 
             />
             <span className="text-[10px] font-black tracking-[0.2em] text-white">SOLANA</span>
           </div>
         </div>
-        <p className="text-[8px] text-zinc-600 tracking-[0.5em] uppercase font-bold">Vibe Code Verified</p>
-      </div>
+        
+        <p className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-bold">
+          Vibe Code Verified
+        </p>
+      </div>   
     </div>
-    
   );
 }
