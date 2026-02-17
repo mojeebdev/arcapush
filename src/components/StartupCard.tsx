@@ -23,6 +23,7 @@ interface StartupCardProps {
 }
 
 export function StartupCard({ startup, variant }: StartupCardProps) {
+ 
   if (variant === "ticker") {
     return (
       <div className="bg-zinc-950 border border-white/5 rounded-[2rem] overflow-hidden group shadow-2xl">
@@ -35,6 +36,7 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
+            {/* Ambient Overlays */}
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent hidden lg:block" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent lg:hidden" />
           </div>
@@ -56,7 +58,7 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
                 <div className="w-12 h-12 rounded-2xl overflow-hidden border border-white/10 bg-black p-1">
                   <Image
                     src={startup.logoUrl}
-                    alt=""
+                    alt={`${startup.name} logo`}
                     width={48}
                     height={48}
                     className="object-contain w-full h-full"
@@ -87,6 +89,7 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
     );
   }
 
+  
   return (
     <Link href={`/startup/${startup.id}`}>
       <motion.div

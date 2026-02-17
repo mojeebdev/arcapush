@@ -12,9 +12,12 @@ export function useRotation<T>({ items, intervalMs, enabled = true }: RotationOp
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  
   const next = useCallback(() => {
     if (items.length <= 1) return;
     setIsTransitioning(true);
+    
+    
     setTimeout(() => {
       setCurrentIndex((prev) => (prev + 1) % items.length);
       setIsTransitioning(false);
@@ -24,20 +27,24 @@ export function useRotation<T>({ items, intervalMs, enabled = true }: RotationOp
   const prev = useCallback(() => {
     if (items.length <= 1) return;
     setIsTransitioning(true);
+    
     setTimeout(() => {
       setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
       setIsTransitioning(false);
     }, 300);
   }, [items.length]);
 
+  
   useEffect(() => {
     if (!enabled || items.length <= 1) return;
+    
     const interval = setInterval(next, intervalMs);
     return () => clearInterval(interval);
   }, [enabled, items.length, intervalMs, next]);
 
+  
   useEffect(() => {
-    if (currentIndex >= items.length) {
+    if (currentIndex >= items.length && items.length > 0) {
       setCurrentIndex(0);
     }
   }, [items.length, currentIndex]);

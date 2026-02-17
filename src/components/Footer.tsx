@@ -1,8 +1,9 @@
 "use client";
 
-/** * VibeStream.cc | VibeStream Engine v6.96.0
+/** * VibeStream.cc | Whate Engine v7.3.5
  * [Milestone: Multichain Global Footer]
  * Logic: Permanent brand visibility with network-specific iconography.
+ * Update: Fixed broken Solana asset path and optimized rendering.
  */
 
 export function Footer() {
@@ -27,11 +28,15 @@ export function Footer() {
 
             <div className="h-3 w-px bg-white/20" />
 
-            {/* Solana Logo */}
+            {/* Solana Logo  */}
             <div className="flex items-center gap-2">
               <img 
                 src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" 
                 alt="Solana" 
+                
+                onError={(e) => {
+                  e.currentTarget.src = "https://cryptologos.cc/logos/solana-sol-logo.png?v=024";
+                }}
                 className="h-4 w-4 brightness-0 invert transition-transform group-hover:-rotate-12" 
               />
               <span className="text-[10px] font-black tracking-[0.2em] text-white">SOLANA</span>
