@@ -15,7 +15,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <DynamicContextProvider
       settings={{
         // ── Auth Identity (Official) ─────────────────────
-        environmentId: dynamicId || "1e00f190-32cf-4429-9d93-efa45b1e9c82", 
+        environmentId: dynamicId || "f157a943-8c02-444e-8e07-fba55842b4c0", 
         
         // ── Multichain Connectors (Official) ─────────────
         walletConnectors: [
