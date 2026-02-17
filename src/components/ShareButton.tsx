@@ -32,7 +32,7 @@ export function ShareButton({ startup }: ShareButtonProps) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="btn-secondary text-sm flex items-center gap-1.5"
+        className="px-6 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all flex items-center gap-2"
       >
         <HiOutlineShare className="w-4 h-4" />
         Share
@@ -41,20 +41,20 @@ export function ShareButton({ startup }: ShareButtonProps) {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute bottom-full mb-2 right-0 z-50 w-48 glass-strong rounded-xl p-2 space-y-1">
+          <div className="absolute bottom-full mb-3 right-0 z-50 w-56 bg-zinc-950 border border-white/10 rounded-2xl p-2 shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-200">
             <button
               onClick={shareTwitter}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-surface-300 transition-all"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white hover:bg-white/5 transition-all"
             >
-              <FaXTwitter className="w-4 h-4" />
+              <FaXTwitter className="w-4 h-4 text-white" />
               Post on X
             </button>
             <button
               onClick={copyLink}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-surface-300 transition-all"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white hover:bg-white/5 transition-all"
             >
-              <HiOutlineClipboardDocument className="w-4 h-4" />
-              Copy Link
+              <HiOutlineClipboardDocument className="w-4 h-4 text-white" />
+              Copy Signal
             </button>
           </div>
         </>

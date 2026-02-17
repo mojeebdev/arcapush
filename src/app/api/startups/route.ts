@@ -1,19 +1,55 @@
 import { NextResponse } from 'next/server';
+
 import { prisma } from '@/lib/prisma';
 
 
+
 export async function GET() {
+
   try {
-    const startups = await prisma.accessRequest.findMany({
-      orderBy: { createdAt: 'desc' },
+
+    const startups = await prisma.startup.findMany({
+
+      
+
+      orderBy: [
+
+        { pinnedAt: 'desc' }, 
+
+        { createdAt: 'desc' }
+
+      ],
+
+      
+
+      include: {
+
+        _count: {
+
+          select: { accessRequests: true }
+
+        }
+
+      }
+
     });
 
+
+
     return NextResponse.json(startups);
+
   } catch (error) {
-    console.error('Admin Fetch Error:', error);
+
+    console.error('VibeStream Feed Error:', error);
+
     return NextResponse.json(
-      { error: 'Failed to fetch startup data' },
+
+      { error: 'Failed to synchronize the Startup stream.' }, 
+
       { status: 500 }
+
     );
+
   }
+
 }

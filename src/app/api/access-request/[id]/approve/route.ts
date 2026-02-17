@@ -1,30 +1,39 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; 
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> } 
+  request: Request,
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await context.params; 
+    const { id } = params;
+    const body = await request.json();
+    const { status, adminSecret } = body;
+
+    
+    if (adminSecret !== process.env.ADMIN_SECRET) {
+      return NextResponse.json({ error: 'Invalid Guardian Secret' }, { status: 401 });
+    }
+
+    
+    if (!['APPROVED', 'REJECTED'].includes(status)) {
+      return NextResponse.json({ error: 'Invalid Status Signal' }, { status: 400 });
+    }
 
     
     const updatedRequest = await prisma.accessRequest.update({
       where: { id },
-      data: {
-        status: "APPROVED",
-        reviewedAt: new Date(),
-      },
+      data: { status },
     });
 
     return NextResponse.json({ 
-      message: "Request approved successfully", 
+      success: true, 
+      message: `Request ${status.toLowerCase()} successfully.`,
       data: updatedRequest 
     });
+
   } catch (error) {
-    return NextResponse.json(
-      { message: "Failed to approve request" }, 
-      { status: 500 }
-    );
+    console.error('Moderation Error:', error);
+    return NextResponse.json({ error: 'Failed to process moderation signal' }, { status: 500 });
   }
 }

@@ -36,7 +36,6 @@ export function useRotation<T>({ items, intervalMs, enabled = true }: RotationOp
     return () => clearInterval(interval);
   }, [enabled, items.length, intervalMs, next]);
 
-  // Reset index if items change
   useEffect(() => {
     if (currentIndex >= items.length) {
       setCurrentIndex(0);

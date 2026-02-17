@@ -72,152 +72,118 @@ export function RequestAccessModal({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+        className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md"
         onClick={onClose}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full max-w-lg glass-strong rounded-2xl overflow-hidden"
+          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          className="w-full max-w-lg bg-zinc-950 border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-                <HiOutlineLockClosed className="w-5 h-5 text-accent" />
+          <div className="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                <HiOutlineLockClosed className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">Request Access</h3>
-                <p className="text-xs text-white/40">
-                  to {startupName}&apos;s founder details
+                <h3 className="text-xl font-black text-white uppercase tracking-tighter">Request Access</h3>
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                  To {startupName} Signal
                 </p>
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg hover:bg-surface-300 transition-colors"
-            >
-              <HiOutlineXMark className="w-5 h-5 text-white/50" />
+            <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+              <HiOutlineXMark className="w-6 h-6 text-zinc-600" />
             </button>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-white/60 mb-2">
-                <HiOutlineUser className="w-4 h-4" />
-                Full Name *
-              </label>
-              <input
-                type="text"
-                required
-                value={form.requesterName}
-                onChange={(e) => updateField("requesterName", e.target.value)}
-                placeholder="Jane Smith"
-                className="input-field"
-              />
+          <form onSubmit={handleSubmit} className="p-8 space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-2 flex items-center gap-2">
+                  <HiOutlineUser className="w-3 h-3" /> Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={form.requesterName}
+                  onChange={(e) => updateField("requesterName", e.target.value)}
+                  placeholder="Jane Smith"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-white transition-all"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-2 flex items-center gap-2">
+                  <HiOutlineEnvelope className="w-3 h-3" /> Email
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={form.requesterEmail}
+                  onChange={(e) => updateField("requesterEmail", e.target.value)}
+                  placeholder="jane@firm.com"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-white transition-all"
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-white/60 mb-2">
-                <HiOutlineEnvelope className="w-4 h-4" />
-                Email *
-              </label>
-              <input
-                type="email"
-                required
-                value={form.requesterEmail}
-                onChange={(e) => updateField("requesterEmail", e.target.value)}
-                placeholder="jane@sequoia.com"
-                className="input-field"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-2 flex items-center gap-2">
+                  <HiOutlineBuildingOffice2 className="w-3 h-3" /> Firm
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={form.requesterFirm}
+                  onChange={(e) => updateField("requesterFirm", e.target.value)}
+                  placeholder="Sequoia"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-white transition-all"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-2 flex items-center gap-2">
+                  <HiOutlineBriefcase className="w-3 h-3" /> Role
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={form.requesterRole}
+                  onChange={(e) => updateField("requesterRole", e.target.value)}
+                  placeholder="Partner"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-white transition-all"
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-white/60 mb-2">
-                <HiOutlineBuildingOffice2 className="w-4 h-4" />
-                Firm / Company *
-              </label>
-              <input
-                type="text"
-                required
-                value={form.requesterFirm}
-                onChange={(e) => updateField("requesterFirm", e.target.value)}
-                placeholder="Sequoia Capital"
-                className="input-field"
-              />
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-white/60 mb-2">
-                <HiOutlineBriefcase className="w-4 h-4" />
-                Role *
-              </label>
-              <input
-                type="text"
-                required
-                value={form.requesterRole}
-                onChange={(e) => updateField("requesterRole", e.target.value)}
-                placeholder="Partner, Analyst, Scout..."
-                className="input-field"
-              />
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-white/60 mb-2">
-                <HiOutlineLink className="w-4 h-4" />
-                LinkedIn Profile *
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest ml-2 flex items-center gap-2">
+                <HiOutlineLink className="w-3 h-3" /> LinkedIn
               </label>
               <input
                 type="url"
                 required
                 value={form.requesterLinkedIn}
                 onChange={(e) => updateField("requesterLinkedIn", e.target.value)}
-                placeholder="https://linkedin.com/in/janesmith"
-                className="input-field"
+                placeholder="https://linkedin.com/in/..."
+                className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white text-sm focus:outline-none focus:border-white transition-all"
               />
             </div>
 
-            <div className="pt-2 flex items-center gap-3">
-              <button
-                type="submit"
-                disabled={loading}
-                className="btn-primary flex-1"
-              >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24">
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                        fill="none"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                      />
-                    </svg>
-                    Submitting...
-                  </span>
-                ) : (
-                  "Submit Request"
-                )}
-              </button>
-              <button type="button" onClick={onClose} className="btn-secondary">
-                Cancel
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 mt-4 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all active:scale-95 disabled:opacity-50"
+            >
+              {loading ? "Transmitting..." : "Submit Access Request"}
+            </button>
 
-            <p className="text-[11px] text-white/20 text-center pt-1">
-              Your info is shared only with the founder for verification purposes.
+            <p className="text-[10px] text-zinc-600 text-center font-bold uppercase tracking-tighter">
+              Shared only with the founder for verification.
             </p>
           </form>
         </motion.div>

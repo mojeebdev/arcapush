@@ -1,97 +1,120 @@
-"use client";
+import { prisma } from "@/lib/prisma";
+import { Navbar } from "@/components/Navbar";
+import { HeroPin } from "@/components/HeroPin";
+import { DiscoveryTicker } from "@/components/DiscoveryTicker";
+import { AdminConfig } from "@/lib/adminConfig";
 
-import Countdown from '@/components/Countdown';
-import WaitlistForm from '@/components/WaitlistForm';
+export const revalidate = 30; 
 
-export default function Home() {
-  const handleShare = async () => {
-    const shareData = {
-      title: 'VibeStream.cc',
-      text: 'Matchmaking for Elite Founders & Investors. Vibe Code Verified.',
-      url: 'https://vibestream.cc',
-    };
+async function getPinnedStartups() {
+  const now = new Date();
+  return prisma.startup.findMany({
+    where: {
+      tier: "PINNED",
+      pinnedUntil: { gt: now },
+    },
+    orderBy: { pinnedAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      tagline: true,
+      problemStatement: true,
+      bannerUrl: true,
+      logoUrl: true,
+      category: true,
+      website: true,
+      twitter: true,
+      tier: true,
+      pinnedAt: true,
+      pinnedUntil: true,
+      viewCount: true,
+      createdAt: true,
+    },
+  });
+}
 
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareData.text)}&url=${encodeURIComponent(shareData.url)}`);
-      }
-    } catch (err) {
-      console.log('Error sharing:', err);
-    }
-  };
+async function getFreeStartups() {
+  return prisma.startup.findMany({
+    where: {
+      OR: [
+        { tier: "FREE" },
+        {
+          tier: "PINNED",
+          pinnedUntil: { lte: new Date() },
+        },
+      ],
+    },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+    select: {
+      id: true,
+      name: true,
+      tagline: true,
+      bannerUrl: true,
+      logoUrl: true,
+      category: true,
+      viewCount: true,
+      createdAt: true,
+    },
+  });
+}
+
+export default async function HomePage() {
+  const [pinnedStartups, freeStartups] = await Promise.all([
+    getPinnedStartups(),
+    getFreeStartups(),
+  ]);
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center px-4 overflow-hidden bg-black">
-      
-      {/* 1. Ambient Background Effects (The Vibe) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-6xl pointer-events-none">
-        <div className="absolute top-[-10%] left-[-20%] w-[70%] h-[70%] bg-blue-600/10 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-20%] w-[60%] h-[60%] bg-purple-600/10 blur-[120px] rounded-full" />
-      </div>
+    <main className="min-h-screen bg-black">
+      <Navbar />
 
-      {/* 2. Brand Section */}
-      <div className="z-10 flex flex-col items-center mb-12">
-        <img 
-          src="/wordmark.png" 
-          alt="VibeStream.cc" 
-          className="h-10 md:h-12 w-auto drop-shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-transform hover:scale-105 duration-700"
-        />
-        <p className="mt-4 text-zinc-500 text-[10px] md:text-xs font-medium tracking-[0.4em] uppercase">
-          Venture Capital <span className="text-zinc-800 mx-2">|</span> Vibe Code
-        </p>
-      </div>
-
-      {/* 3. Countdown Section */}
-      <div className="z-10 scale-90 md:scale-100">
-        <Countdown />
-      </div>
-
-      {/* 4. Lead Capture Section (Waitlist) */}
-      <div className="z-10 mt-12 w-full flex flex-col items-center">
-        <h2 className="text-zinc-400 text-sm mb-4 font-mono tracking-widest">REQUEST EARLY ACCESS</h2>
-        <WaitlistForm />
-      </div>
-
-      {/* 5. Institutional Footer (Base & Solana Integration) */}
-      <div className="z-10 mt-24 mb-10 flex flex-col items-center gap-6">
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 flex items-center gap-6 px-6 py-3 rounded-full opacity-60 hover:opacity-100 transition-all duration-500 group">
+      {/* Hero Section: The "Vibe Code" Spotlight */}
+      <section className="relative pt-32 pb-16 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
           
-          {/* Base Logo */}
-          <div className="flex items-center gap-2">
-            <img 
-              src="/base-logo.png" 
-              alt="Base" 
-              className="h-4 w-4 transition-transform group-hover:rotate-12 object-contain" 
-            />
-            <span className="text-[10px] font-black tracking-[0.2em] text-white uppercase">BASE</span>
+          {/* Status Indicator */}
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-white/5 bg-zinc-900/40 backdrop-blur-md">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-[10px] font-black tracking-[0.3em] text-white/70 uppercase">
+                Live Discovery Feed
+              </span>
+            </div>
           </div>
 
-          <div className="h-3 w-px bg-white/20" />
-
-          {/* Solana Logo */}
-          <div className="flex items-center gap-2">
-            <img 
-              src="https://cryptologos.cc/logos/solana-sol-logo.svg" 
-              alt="Solana" 
-              className="h-4 w-4 brightness-0 invert transition-transform group-hover:-rotate-12" 
-            />
-            <span className="text-[10px] font-black tracking-[0.2em] text-white">SOLANA</span>
+          {/* Headline */}
+          <div className="text-center mb-20">
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 italic uppercase leading-none">
+              Discover the <br />
+              <span className="text-vibe-gradient">Next Wave</span>
+            </h1>
+            <p className="text-zinc-500 text-lg md:text-xl max-w-2xl mx-auto font-medium italic">
+              {AdminConfig.SITE_DESCRIPTION}
+            </p>
           </div>
+
+          {/* Featured/Pinned Component */}
+          {pinnedStartups.length > 0 && (
+            <div className="mb-24">
+              <HeroPin startups={pinnedStartups} />
+            </div>
+          )}
+
+          {/* General Discovery Feed */}
+          <div className="mt-20">
+            <div className="flex items-center justify-between mb-10 border-b border-white/5 pb-6">
+              <h2 className="text-sm font-black uppercase tracking-[0.4em] text-zinc-500">Recent Signals</h2>
+              <span className="text-[10px] font-mono text-zinc-700">{freeStartups.length} Registered</span>
+            </div>
+            <DiscoveryTicker startups={freeStartups} />
+          </div>
+
         </div>
-
-        {/* Automated Social Share Button */}
-        <button 
-          onClick={handleShare}
-          className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-bold hover:text-white transition-colors duration-300 flex items-center gap-2"
-        >
-          <span>Share VibeStream</span>
-          <div className="h-px w-8 bg-white/20" />
-          <span>Vibe Code Verified</span>
-        </button>
-      </div>   
-    </div>
+      </section>
+    </main>
   );
 }

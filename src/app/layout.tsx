@@ -1,21 +1,47 @@
+import type { Metadata } from "next";
+import { AdminConfig } from "@/lib/adminConfig";
+import { Providers } from "./providers"; 
 import "./globals.css";
-import { Inter } from 'next/font/google';
-import { Metadata } from 'next';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'VibeStream.cc | Connecting Vibe Code to Venture Capital',
-  description: 'The premier matchmaking engine for elite founders and investors on Base & Solana.',
+  title: `${AdminConfig.SITE_NAME} — ${AdminConfig.SITE_TAGLINE}`,
+  description: AdminConfig.SITE_DESCRIPTION,
+  metadataBase: new URL('https://vibestream.cc'),
+  openGraph: {
+    title: `${AdminConfig.SITE_NAME} — ${AdminConfig.SITE_TAGLINE}`,
+    description: AdminConfig.SITE_DESCRIPTION,
+    siteName: AdminConfig.SITE_NAME,
+    type: "website",
+    images: [{ url: '/wordmark.png' }], 
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: AdminConfig.SITE_NAME,
+    description: AdminConfig.SITE_TAGLINE,
+    images: ['/wordmark.png'],
+  },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.className} bg-black text-white antialiased`}>
-        <main className="relative min-h-screen flex flex-col">
-          {children}
-        </main>
+      <body className="min-h-screen bg-black text-white selection:bg-purple-500/30 overflow-x-hidden antialiased">
+        <Providers>
+          {/* 1. Ambient Background (Stays on Server) */}
+          <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-purple-600/5 rounded-full blur-[120px] animate-pulse" />
+            <div className="absolute bottom-[-5%] right-[-5%] w-[600px] h-[500px] bg-blue-600/5 rounded-full blur-[100px]" />
+          </div>
+
+          {/* 2. Main Content Stream */}
+          <div className="relative z-10">
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   );

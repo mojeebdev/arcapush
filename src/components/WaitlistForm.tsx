@@ -10,7 +10,7 @@ export default function WaitlistForm() {
     e.preventDefault();
     setStatus('loading');
     
-    // Simulate API call for the 9-5 Professional UX
+    
     setTimeout(() => {
       setStatus('success');
       setEmail('');
@@ -18,32 +18,41 @@ export default function WaitlistForm() {
   };
 
   return (
-    /* Added mx-auto to guarantee horizontal centering within parent containers */
-    <div className="w-full max-w-sm mx-auto mt-8">
+    <div className="w-full max-w-md mx-auto mt-12">
       {status === 'success' ? (
-        <div className="text-blue-400 font-medium text-center animate-pulse py-3">
-          You're on the list. See you at launch. 🚀
+        <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-3xl p-6 text-center animate-in fade-in zoom-in duration-500">
+          <p className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em]">
+            Access Granted. See you at launch. 🚀
+          </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="relative group">
+        <form onSubmit={handleSubmit} className="relative group p-1 bg-white/[0.02] rounded-[2rem] border border-white/5 transition-all hover:border-white/10">
           <input
             type="email"
             required
             placeholder="Enter your email (Founder or VC)"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            
-            className="w-full bg-white/5 border border-white/10 text-white px-4 py-4 rounded-2xl focus:outline-none focus:border-blue-500/50 transition-all placeholder:text-zinc-600 pr-24"
+            className="w-full bg-transparent text-white px-6 py-5 rounded-[1.8rem] focus:outline-none transition-all placeholder:text-zinc-600 pr-32 font-bold text-sm tracking-tight"
           />
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="absolute right-2 top-2 bottom-2 bg-blue-600 hover:bg-blue-500 text-white px-6 rounded-xl text-xs font-black tracking-widest transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
+            className="absolute right-2 top-2 bottom-2 bg-white text-black px-8 rounded-[1.5rem] text-[10px] font-black tracking-widest transition-all hover:bg-emerald-400 hover:scale-[1.02] active:scale-95 disabled:opacity-50 uppercase shadow-2xl"
           >
-            {status === 'loading' ? '...' : 'JOIN'}
+            {status === 'loading' ? (
+              <div className="flex gap-1">
+                <span className="w-1 h-1 bg-black rounded-full animate-bounce" />
+                <span className="w-1 h-1 bg-black rounded-full animate-bounce [animation-delay:0.2s]" />
+                <span className="w-1 h-1 bg-black rounded-full animate-bounce [animation-delay:0.4s]" />
+              </div>
+            ) : 'Join List'}
           </button>
         </form>
       )}
+      <p className="text-[9px] text-zinc-600 text-center mt-4 font-black uppercase tracking-widest">
+        No Spam. Only High-Signal Updates.
+      </p>
     </div>
   );
 }
