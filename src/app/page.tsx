@@ -41,17 +41,19 @@ export default function Home() {
       <div className="z-10 mt-24 mb-10 flex flex-col items-center gap-4">
         <div className="bg-white/5 backdrop-blur-md border border-white/10 flex items-center gap-6 px-6 py-3 rounded-full opacity-60 hover:opacity-100 transition-all duration-500 group">
           
-          {/* Base Logo */}
+          {/* Base Logo*/}
           <div className="flex items-center gap-2">
-            <img 
-              src="https://raw.githubusercontent.com/base-org/brand-kit/main/logo/symbol/white/base-symbol-white.png" 
-              alt="Base" 
-              className="h-4 w-4 transition-transform group-hover:rotate-12" 
+          <img 
+            src="https://raw.githubusercontent.com/base-org/brand-kit/main/logo/symbol/white/base-symbol-white.png" 
+            alt="Base" 
+            crossOrigin="anonymous"
+            onError={(e) => {
+            e.currentTarget.src = "https://cryptologos.cc/logos/base-base-logo.svg";
+            }}
+            className="h-4 w-4 transition-transform group-hover:rotate-12 object-contain" 
             />
             <span className="text-[10px] font-black tracking-[0.2em] text-white">BASE</span>
           </div>
-
-          <div className="h-3 w-px bg-white/20" />
 
           {/* Solana Logo */}
           <div className="flex items-center gap-2">
