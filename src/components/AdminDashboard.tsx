@@ -51,7 +51,6 @@ export function AdminDashboard({ guardianPin, adminSecret }: { guardianPin: stri
   
   const handleAction = async (requestId: string, action: "APPROVED" | "REJECTED") => {
     try {
-      /
       const res = await fetch(`/api/access-request/${requestId}/approve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
