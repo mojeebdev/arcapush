@@ -2,9 +2,15 @@
 
 import {
   DynamicContextProvider,
+  FilterChain,
 } from "@dynamic-labs/sdk-react-core";
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { SolanaWalletConnectors } from "@dynamic-labs/solana";
+import { 
+  BitcoinIcon, 
+  EthereumIcon, 
+  SolanaIcon,
+} from "@dynamic-labs/iconic"; 
 import { Toaster } from "react-hot-toast";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -14,19 +20,54 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <DynamicContextProvider
       settings={{
-        // ── Auth Identity (Official) ─────────────────────
+        
         environmentId: dynamicId || "f157a943-8c02-444e-8e07-fba55842b4c0", 
         
-        // ── Multichain Connectors (Official) ─────────────
+        
         walletConnectors: [
           EthereumWalletConnectors,
           SolanaWalletConnectors,
         ],
+
+        
+        overrides: {
+          views: [
+            {
+              type: 'wallet-list',
+              tabs: {
+                items: [
+                  {
+                    label: { text: 'All chains' },
+                  },
+                  {
+                    label: { icon: <EthereumIcon /> },
+                    walletsFilter: FilterChain('EVM'),
+                    recommendedWallets: [
+                      { walletKey: 'metamask' },
+                      { walletKey: 'walletconnect' }, 
+                    ],
+                  },
+                  {
+                    label: { icon: <SolanaIcon /> },
+                    walletsFilter: FilterChain('SOL'),
+                    recommendedWallets: [
+                      { walletKey: 'phantom' },
+                    ],
+                  },
+                  {
+                    label: { icon: <BitcoinIcon /> },
+                    walletsFilter: FilterChain('BTC'),
+                  },
+                ]
+              }
+            }
+          ]
+        }
       }}
     >
       {children}
       
-      {/* ── Guardian Toast Notifications ─────────────── */}
+      {/* ── Guardian Toast Notifications ──────────────── */}
       <Toaster
         position="bottom-right"
         toastOptions={{
