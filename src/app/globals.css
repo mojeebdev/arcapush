@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,9 +15,7 @@
 
 @layer base {
   body {
-    
     @apply bg-black text-white selection:bg-[#D4AF37]/30 selection:text-[#D4AF37];
-    
     letter-spacing: -0.03em;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
@@ -23,30 +23,32 @@
 }
 
 @layer components {
-  
+  .font-playfair {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+  }
+
   .vibe-input {
     @apply w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white 
            placeholder:text-zinc-600 focus:outline-none focus:border-[#4E24CF]/50 
            transition-all duration-500 hover:border-white/20;
   }
 
-  
   .guardian-glass {
     @apply bg-zinc-900/40 backdrop-blur-3xl border border-white/5 rounded-[2.5rem];
   }
 
-  
   .vibe-footer {
     @apply relative border-t border-[#4E24CF]/10 bg-black py-16 overflow-hidden;
   }
 
-  
   .royal-button {
     @apply bg-white text-black px-8 py-4 rounded-2xl font-black uppercase tracking-widest 
            hover:bg-[#4E24CF] hover:text-white transition-all active:scale-95 border border-transparent
            hover:border-[#D4AF37]/50;
   }
 }
+
 
 ::-webkit-scrollbar {
   width: 5px;
@@ -60,12 +62,11 @@
   @apply bg-[#4E24CF]/20 rounded-full hover:bg-[#D4AF37]/40 transition-colors;
 }
 
-/* 2. Text Gradient */
+
 .text-vibe-gradient {
   @apply bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-[#4E24CF]/50;
 }
 
-/* 3. Innovation Attribution - */
 .labs-link {
   @apply text-white transition-all duration-300 relative;
 }
@@ -78,7 +79,6 @@
 .labs-link:hover::after {
   @apply w-full;
 }
-
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }

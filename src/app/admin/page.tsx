@@ -90,11 +90,9 @@ export default function AdminPage() {
           </button>
         </header>
         <main className="mt-20">
-          {/* Passing the pin to our imported component */}
           <AdminDashboardView guardianPin={pin} />
         </main>
       </div>
-      <p className="text-center text-[8px] text-zinc-800 uppercase font-black mt-32 tracking-[1em]">Whate Engine v9.5.3</p>
     </div>
   );
 }
