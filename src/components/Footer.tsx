@@ -1,11 +1,5 @@
 "use client";
 
-/** * VibeStream.cc | Whate Engine v7.3.5
- * [Milestone: Multichain Global Footer]
- * Logic: Permanent brand visibility with network-specific iconography.
- * Update: Fixed broken Solana asset path and optimized rendering.
- */
-
 export function Footer() {
   return (
     <footer className="w-full py-12 border-t border-white/5 bg-black">
