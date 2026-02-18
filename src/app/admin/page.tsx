@@ -75,7 +75,7 @@ export default function AdminPage() {
               <span className="text-[10px] font-black tracking-[0.4em] text-emerald-500 uppercase">Guardian Stream: Synchronized</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase italic leading-[0.8]">
-              Whate <span className="text-zinc-500">Guardian</span>
+              VibeStream <span className="text-zinc-500">Guardian</span>
             </h1>
           </div>
           <button 
