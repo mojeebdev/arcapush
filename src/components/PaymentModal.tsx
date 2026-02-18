@@ -19,7 +19,10 @@ export function PaymentModal({ startupId, onClose, onSuccess }: PaymentModalProp
   const [txHash, setTxHash] = useState("");
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<"package" | "chain" | "pay" | "verify">("package");
-  const [selectedPackage, setSelectedPackage] = useState(AdminConfig.PIN_PACKAGES[0]);
+
+  const [selectedPackage, setSelectedPackage] = useState<(typeof AdminConfig.PIN_PACKAGES)[number]>(
+    AdminConfig.PIN_PACKAGES[0]
+  );
 
   const wallet = chain === "base" ? AdminConfig.PAYMENT_WALLET_BASE : AdminConfig.PAYMENT_WALLET_SOL;
   const price = chain === "base" ? selectedPackage.price : AdminConfig.PIN_PRICE_SOL;
@@ -45,7 +48,6 @@ export function PaymentModal({ startupId, onClose, onSuccess }: PaymentModalProp
 
       toast.success(`🔥 Signal Boosted: ${selectedPackage.label}!`);
       
-      // Trigger the celebration!
       onSuccess?.({
         startupName: data.startup.name,
         expiresAt: new Date(data.expiresAt),
@@ -63,8 +65,19 @@ export function PaymentModal({ startupId, onClose, onSuccess }: PaymentModalProp
 
   return (
     <AnimatePresence>
-      <motion.div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
-        <motion.div className="w-full max-w-md bg-zinc-950 border border-white/10 rounded-[2.5rem] overflow-hidden" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} onClick={(e) => e.stopPropagation()}>
+      <motion.div 
+        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        exit={{ opacity: 0 }} 
+        onClick={onClose}
+      >
+        <motion.div 
+          className="w-full max-w-md bg-zinc-950 border border-white/10 rounded-[2.5rem] overflow-hidden" 
+          initial={{ opacity: 0, scale: 0.9 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          onClick={(e) => e.stopPropagation()}
+        >
           
           {/* Header */}
           <div className="p-8 border-b border-white/5 flex items-center justify-between">
@@ -74,7 +87,9 @@ export function PaymentModal({ startupId, onClose, onSuccess }: PaymentModalProp
               </div>
               <h3 className="text-lg font-black text-white uppercase tracking-tighter italic">Signal Boost</h3>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full"><HiOutlineXMark className="w-5 h-5 text-zinc-600" /></button>
+            <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full">
+              <HiOutlineXMark className="w-5 h-5 text-zinc-600" />
+            </button>
           </div>
 
           <div className="p-8">
@@ -84,8 +99,12 @@ export function PaymentModal({ startupId, onClose, onSuccess }: PaymentModalProp
                 <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-4">Select Duration</p>
                 <div className="grid grid-cols-2 gap-3">
                     {AdminConfig.PIN_PACKAGES.map((pkg) => (
-                    <button key={pkg.value} onClick={() => { setSelectedPackage(pkg); setStep("chain"); }} className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-emerald-500/50 text-left transition-all">
-                        <p className="text-white font-black text-[10px] uppercase italic">{pkg.label}</p>
+                    <button 
+                      key={pkg.value} 
+                      onClick={() => { setSelectedPackage(pkg); setStep("chain"); }} 
+                      className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-emerald-500/50 text-left transition-all group"
+                    >
+                        <p className="text-white font-black text-[10px] uppercase italic group-hover:text-emerald-500 transition-colors">{pkg.label}</p>
                         <p className="text-[10px] text-zinc-500 font-bold tracking-widest">${pkg.price} USDC</p>
                     </button>
                     ))}
@@ -111,6 +130,7 @@ export function PaymentModal({ startupId, onClose, onSuccess }: PaymentModalProp
                   </div>
                   <span className="text-[10px] text-zinc-500 font-bold uppercase">SOL / USDC</span>
                 </button>
+                <button onClick={() => setStep("package")} className="w-full text-[10px] font-black text-zinc-700 uppercase tracking-widest pt-2">Back to Packages</button>
               </div>
             )}
 
@@ -120,12 +140,16 @@ export function PaymentModal({ startupId, onClose, onSuccess }: PaymentModalProp
                 <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/5">
                   <h4 className="text-3xl font-black text-white tracking-tighter mb-1">{price} {currency}</h4>
                   <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-6">Target Vault ({chain})</p>
-                  <code className="text-[9px] font-mono text-emerald-500/80 break-all block mb-6 p-4 bg-black rounded-xl">{wallet}</code>
-                  <button onClick={() => { navigator.clipboard.writeText(wallet || ""); toast.success("Linked!"); }} className="mx-auto flex items-center gap-2 px-6 py-3 bg-white text-black rounded-xl font-black text-[9px] uppercase tracking-widest active:scale-95 transition-all">
+                  <code className="text-[9px] font-mono text-emerald-500/80 break-all block mb-6 p-4 bg-black rounded-xl border border-white/5">{wallet}</code>
+                  <button 
+                    onClick={() => { navigator.clipboard.writeText(wallet || ""); toast.success("Linked!"); }} 
+                    className="mx-auto flex items-center gap-2 px-6 py-3 bg-white text-black rounded-xl font-black text-[9px] uppercase tracking-widest active:scale-95 transition-all shadow-xl shadow-white/5"
+                  >
                     <HiOutlineClipboardDocument className="w-4 h-4" /> Copy Address
                   </button>
                 </div>
-                <button onClick={() => setStep("verify")} className="w-full py-5 bg-emerald-500 text-black rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-emerald-500/20">Transmission Sent</button>
+                <button onClick={() => setStep("verify")} className="w-full py-5 bg-emerald-500 text-black rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all">Transmission Sent</button>
+                <button onClick={() => setStep("chain")} className="w-full text-[10px] font-black text-zinc-700 uppercase tracking-widest">Back</button>
               </div>
             )}
 
@@ -133,11 +157,21 @@ export function PaymentModal({ startupId, onClose, onSuccess }: PaymentModalProp
             {step === "verify" && (
               <div className="space-y-4">
                 <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-2 text-center">Confirm Hash</p>
-                <input type="text" value={txHash} onChange={(e) => setTxHash(e.target.value)} placeholder="Paste Transaction Hash" className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white font-mono text-xs focus:border-emerald-500 outline-none" />
-                <button onClick={handleVerify} disabled={loading} className="w-full py-5 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-widest disabled:opacity-50">
+                <input 
+                  type="text" 
+                  value={txHash} 
+                  onChange={(e) => setTxHash(e.target.value)} 
+                  placeholder="Paste Transaction Hash" 
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white font-mono text-xs focus:border-emerald-500 outline-none transition-all" 
+                />
+                <button 
+                  onClick={handleVerify} 
+                  disabled={loading} 
+                  className="w-full py-5 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-widest disabled:opacity-50 active:scale-[0.98] transition-all"
+                >
                   {loading ? "Authenticating..." : "Finalize Ascension 🔥"}
                 </button>
-                <button onClick={() => setStep("pay")} className="w-full text-[10px] font-black text-zinc-700 uppercase tracking-widest">Back</button>
+                <button onClick={() => setStep("pay")} className="w-full text-[10px] font-black text-zinc-700 uppercase tracking-widest">Back to Payment</button>
               </div>
             )}
           </div>
