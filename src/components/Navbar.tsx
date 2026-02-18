@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image"; 
 import { motion, AnimatePresence } from "framer-motion";
-import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import {
   HiOutlineBars3,
   HiOutlineXMark,
@@ -21,16 +20,16 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-8">
           
-          {/* 🏛️ Wordmark Logo */}
+          {/* 🏛️ Wordmark Logo - High-Signal Visibility */}
           <Link href="/" className="flex items-center gap-4 shrink-0 group">
             <div className="relative transition-transform duration-500 group-hover:scale-[1.02] active:scale-95">
               <Image 
                 src="/wordmark.png" 
                 alt="VibeStream Logo" 
-                width={180} 
-                height={45} 
+                width={220} 
+                height={55} 
                 priority 
-                className="h-8 w-auto object-contain brightness-200"
+                className="h-10 w-auto object-contain brightness-200"
               />
             </div>
           </Link>
@@ -46,7 +45,7 @@ export function Navbar() {
             <Link href="/pricing" className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 hover:text-white transition-colors">
               Pricing
             </Link>
-            {/* Hidden Admin Entry for the Guardian */}
+            {/* Subtle Guardian Entry */}
             <Link href="/admin" className="opacity-0 hover:opacity-100 transition-opacity">
                <HiOutlineShieldCheck className="w-4 h-4 text-zinc-800 hover:text-[#4E24CF]" />
             </Link>
@@ -63,20 +62,22 @@ export function Navbar() {
                 onBlur={() => setSearchFocused(false)}
                 className="w-full bg-zinc-900/40 border border-white/5 rounded-xl py-2.5 pl-11 pr-4 text-[11px] text-white placeholder:text-zinc-700 focus:outline-none focus:border-[#4E24CF]/50 focus:ring-1 focus:ring-[#4E24CF]/10 transition-all font-medium"
               />
-              <div className="absolute right-3 px-1.5 py-0.5 rounded border border-white/10 bg-black text-[9px] text-zinc-700 font-mono">
-                ⌘K
-              </div>
             </div>
           </div>
 
-          {/* 🎖️ Authentication & Investor Deck */}
+          {/* 🎖️ Action Center - The Conversion Engine */}
           <div className="hidden md:flex items-center gap-4 shrink-0">
              <Link href="/request" className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-500 hover:text-[#D4AF37] transition-colors pr-4 border-r border-white/10">
               Investor Access
             </Link>
-            <div className="[&>button]:bg-white [&>button]:text-black [&>button]:!rounded-xl [&>button]:!text-[10px] [&>button]:!font-black [&>button]:!px-6 [&>button]:!py-2.5 [&>button]:!uppercase [&>button]:!tracking-widest hover:scale-[1.02] transition-transform shadow-xl shadow-white/5">
-              <DynamicWidget variant="dropdown" />
-            </div>
+            
+            {/* 🚀 Primary Conversion Button */}
+            <Link 
+              href="/submit" 
+              className="bg-white text-black rounded-xl text-[10px] font-black px-6 py-2.5 uppercase tracking-widest hover:bg-[#D4AF37] hover:scale-[1.05] transition-all shadow-xl shadow-white/5 active:scale-95"
+            >
+              Get Started
+            </Link>
           </div>
 
           {/* Mobile Toggle */}
@@ -99,23 +100,17 @@ export function Navbar() {
             className="lg:hidden border-t border-white/5 bg-black overflow-hidden"
           >
             <div className="p-8 flex flex-col gap-6">
-              <div className="relative flex items-center">
-                <HiOutlineMagnifyingGlass className="absolute left-4 w-4 h-4 text-zinc-500" />
-                <input 
-                  type="text"
-                  placeholder="Search Encyclopedia..."
-                  className="w-full bg-zinc-900/50 border border-white/5 rounded-xl py-4 pl-12 pr-4 text-sm text-white focus:outline-none"
-                />
-              </div>
-              <div className="grid grid-cols-1 gap-4">
-                <Link href="/about" onClick={() => setMobileOpen(false)} className="text-zinc-400 text-sm font-black uppercase tracking-widest py-2">About</Link>
-                <Link href="/submit" onClick={() => setMobileOpen(false)} className="text-zinc-400 text-sm font-black uppercase tracking-widest py-2">Submit Startup</Link>
-                <Link href="/pricing" onClick={() => setMobileOpen(false)} className="text-zinc-400 text-sm font-black uppercase tracking-widest py-2">Pricing</Link>
-                <Link href="/request" onClick={() => setMobileOpen(false)} className="text-[#D4AF37] text-sm font-black uppercase tracking-widest py-2 border-t border-white/5 pt-4">Investor Access</Link>
-              </div>
-              <div className="pt-4">
-                 <DynamicWidget variant="modal" />
-              </div>
+              <Link href="/about" onClick={() => setMobileOpen(false)} className="text-zinc-400 text-sm font-black uppercase tracking-widest">About</Link>
+              <Link href="/submit" onClick={() => setMobileOpen(false)} className="text-zinc-400 text-sm font-black uppercase tracking-widest">Submit Startup</Link>
+              <Link href="/pricing" onClick={() => setMobileOpen(false)} className="text-zinc-400 text-sm font-black uppercase tracking-widest">Pricing</Link>
+              <Link href="/request" onClick={() => setMobileOpen(false)} className="text-[#D4AF37] text-sm font-black uppercase tracking-widest border-t border-white/5 pt-4">Investor Access</Link>
+              <Link 
+                href="/submit" 
+                onClick={() => setMobileOpen(false)}
+                className="bg-white text-black text-center py-4 rounded-xl text-xs font-black uppercase tracking-widest"
+              >
+                Get Started
+              </Link>
             </div>
           </motion.div>
         )}

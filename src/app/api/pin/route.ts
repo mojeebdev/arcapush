@@ -14,6 +14,15 @@ export async function POST(request: Request) {
     }
 
     
+    const existingPayment = await prisma.startup.findFirst({
+      where: { pinTxHash: txHash }
+    });
+
+    if (existingPayment) {
+      return NextResponse.json({ error: "Hash already indexed: Potential Replay Attack detected" }, { status: 409 });
+    }
+
+    
     const selectedPackage = AdminConfig.PIN_PACKAGES.find(p => p.value === packageValue) 
       || AdminConfig.PIN_PACKAGES[0];
 
@@ -22,9 +31,7 @@ export async function POST(request: Request) {
       ? await verifyBasePayment(txHash) 
       : await verifySolanaPayment(txHash);
 
-    
     if (verification.verified) {
-      
       
       const rotationExpiry = new Date(Date.now() + selectedPackage.minutes * 60 * 1000);
 
@@ -39,18 +46,17 @@ export async function POST(request: Request) {
         },
       });
 
-      console.log(`🔥 GUARDIAN ALERT: ${updated.name} has ascended to Limelight for ${selectedPackage.label}.`);
+      console.log(`🔥 GUARDIAN ALERT: ${updated.name} has ascended for ${selectedPackage.label}.`);
 
       return NextResponse.json({ 
         success: true, 
         message: "Signal Amplified",
-        startup: updated,
+        startup: updated, 
         expiresAt: rotationExpiry,
         duration: selectedPackage.label
       });
     }
 
-    // 5. Payment Rejection
     return NextResponse.json(
       { success: false, error: "Protocol Error: Payment Signal Not Found" }, 
       { status: 402 }
@@ -58,9 +64,6 @@ export async function POST(request: Request) {
 
   } catch (error: any) {
     console.error("🛡️ Shield Failure in /api/pin:", error);
-    return NextResponse.json(
-      { error: "System Error: Transmission Interrupted" }, 
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "System Error: Transmission Interrupted" }, { status: 500 });
   }
 }
