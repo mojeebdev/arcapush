@@ -6,7 +6,6 @@ import { AdminConfig } from "@/lib/adminConfig";
 
 export const revalidate = 30;
 
-
 async function getPinnedStartups() {
   const now = new Date();
   return prisma.startup.findMany({
@@ -83,32 +82,45 @@ export default async function HomePage() {
       <section className="relative pt-32 pb-16 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
           
-          {/* 🟢 Live Pulse & Milestone Signal */}
+          
           <div className="flex flex-col items-center mb-12">
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-white/5 bg-zinc-900/40 backdrop-blur-md mb-6">
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-[#4E24CF]/20 bg-zinc-900/40 backdrop-blur-md mb-6 hover:border-[#D4AF37]/30 transition-colors duration-500">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]"></span>
               </span>
               <span className="text-[10px] font-black tracking-[0.3em] text-white/70 uppercase">
-                VibeStream Live — {totalCount} Initialized
+                VibeStream Live — <span className="text-[#D4AF37]">{totalCount}</span> Initialized
               </span>
             </div>
           </div>
 
-          <div className="text-center mb-20">
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 italic uppercase leading-none">
-              Discover the <br />
-              <span className="text-vibe-gradient">Next Wave</span>
+          {/*  Hero Section */}
+          <div className="text-center mb-24">
+            <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-8 leading-[0.85] uppercase">
+              Vibes for <br />
+              <span className="text-vibe-gradient">Developers</span>
             </h1>
-            <p className="text-zinc-500 text-lg md:text-xl max-w-2xl mx-auto font-medium italic">
+            <p className="text-zinc-500 text-lg md:text-xl max-w-2xl mx-auto font-medium">
               {AdminConfig.SITE_DESCRIPTION}
             </p>
+            
+            {/* CTA Buttons  */}
+            <div className="flex items-center justify-center gap-4 mt-12">
+              <button className="bg-white text-black px-10 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-[#4E24CF] hover:text-white transition-all duration-300">
+                Get Started
+              </button>
+              <button className="text-zinc-500 font-bold hover:text-white transition-colors tracking-widest uppercase text-sm">
+                Documentation
+              </button>
+            </div>
           </div>
 
-          {/* 💎 Featured Tier (Pinned) */}
+          {/* 💎 Featured Tier*/}
           {pinnedStartups.length > 0 && (
-            <div className="mb-24">
+            <div className="mb-32 relative">
+              <div className="absolute -inset-4 bg-[#4E24CF]/5 blur-3xl rounded-full -z-10" />
               <HeroPin startups={pinnedStartups} />
             </div>
           )}
@@ -116,8 +128,12 @@ export default async function HomePage() {
           {/* 🌊 Recent Signals (Discovery) */}
           <div className="mt-20">
             <div className="flex items-center justify-between mb-10 border-b border-white/5 pb-6">
-              <h2 className="text-sm font-black uppercase tracking-[0.4em] text-zinc-500">Recent Signals</h2>
-              <span className="text-[10px] font-mono text-zinc-700">{freeStartups.length} Registered</span>
+              <h2 className="text-sm font-black uppercase tracking-[0.4em] text-zinc-500">
+                Recent <span className="text-[#4E24CF]">Signals</span>
+              </h2>
+              <span className="text-[10px] font-mono text-zinc-700 tracking-widest">
+                {freeStartups.length} Registered
+              </span>
             </div>
             <DiscoveryTicker startups={freeStartups as any} />
           </div>
