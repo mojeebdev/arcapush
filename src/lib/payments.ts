@@ -10,7 +10,6 @@ export interface PaymentVerification {
   currency: string;
 }
 
-
 const USDC_BASE_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 const TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"; 
 
@@ -22,10 +21,13 @@ export async function verifyBasePayment(txHash: string): Promise<PaymentVerifica
     if (!receipt || receipt.status !== 1) throw new Error("Invalid receipt");
 
     
+    const targetWallet = AdminConfig.PAYMENT_WALLET_BASE?.toLowerCase().replace('0x', '');
+    if (!targetWallet) throw new Error("Base Payment Vault address is not configured.");
+
     const usdcLog = receipt.logs.find(log => 
       log.address.toLowerCase() === USDC_BASE_ADDRESS.toLowerCase() &&
       log.topics[0] === TRANSFER_TOPIC &&
-      log.topics[2].toLowerCase().includes(AdminConfig.PAYMENT_WALLET_BASE.toLowerCase().replace('0x', ''))
+      log.topics[2].toLowerCase().includes(targetWallet)
     );
 
     if (!usdcLog) throw new Error("No matching USDC transfer to your vault found");
@@ -53,9 +55,12 @@ export async function verifySolanaPayment(txHash: string): Promise<PaymentVerifi
     if (!tx || tx.meta?.err) throw new Error("Transaction not found or failed");
 
     
+    const solVault = AdminConfig.PAYMENT_WALLET_SOL;
+    if (!solVault) throw new Error("Solana Payment Vault address is not configured.");
+
     const destinationFound = tx.transaction.message.instructions.some((ix: any) => 
-      ix.parsed?.info?.destination === AdminConfig.PAYMENT_WALLET_SOL ||
-      ix.parsed?.info?.newAccount === AdminConfig.PAYMENT_WALLET_SOL
+      ix.parsed?.info?.destination === solVault ||
+      ix.parsed?.info?.newAccount === solVault
     );
 
     if (!destinationFound) throw new Error("Receiver does not match your vault");
