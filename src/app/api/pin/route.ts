@@ -3,8 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { verifyBasePayment, verifySolanaPayment } from "@/lib/payments";
 import { AdminConfig } from "@/lib/adminConfig";
 
-
-
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -27,6 +25,7 @@ export async function POST(request: Request) {
     
     if (verification.verified) {
       
+      
       const rotationExpiry = new Date(Date.now() + selectedPackage.minutes * 60 * 1000);
 
       const updated = await prisma.startup.update({
@@ -36,24 +35,24 @@ export async function POST(request: Request) {
           pinnedUntil: rotationExpiry, 
           pinTxHash: txHash,
           pinChain: chain,
-          
-          pinnedAt: new Date(),
+          pinnedAt: new Date(), 
         },
       });
 
-      console.log(`🔥 Signal Confirmed: ${updated.name} for ${selectedPackage.label}. Expires: ${rotationExpiry.toISOString()}`);
+      console.log(`🔥 GUARDIAN ALERT: ${updated.name} has ascended to Limelight for ${selectedPackage.label}.`);
 
       return NextResponse.json({ 
         success: true, 
+        message: "Signal Amplified",
         startup: updated,
         expiresAt: rotationExpiry,
         duration: selectedPackage.label
       });
     }
 
-    
+    // 5. Payment Rejection
     return NextResponse.json(
-      { success: false, error: "Invalid Signal: Verification Failed" }, 
+      { success: false, error: "Protocol Error: Payment Signal Not Found" }, 
       { status: 402 }
     );
 

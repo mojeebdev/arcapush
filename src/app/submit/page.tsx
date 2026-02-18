@@ -5,120 +5,133 @@ import toast, { Toaster } from 'react-hot-toast';
 import confetti from 'canvas-confetti'; 
 import { track } from '@vercel/analytics';
 
+const CATEGORIES = [
+  "SaaS", "FinTech", "AI / ML", "E-commerce", "HealthTech", "EdTech", 
+  "DeFi", "Infrastructure", "Gaming / GameFi", "Social", "DAO Tooling", 
+  "AI x Crypto", "RWA", "Privacy", "Developer Tools", "Other"
+];
+
 export default function SubmitStartup() {
-  const [formData, setFormData] = useState({ name: "", email: "", firm: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    tagline: "",
+    problemStatement: "",
+    category: "SaaS",
+    website: "",
+    twitter: "",
+    bannerUrl: "",
+    logoUrl: "",
+    pitchDeckUrl: "",
+    founderName: "",
+    founderEmail: ""
+  });
+  
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  const handleSuccess = () => {
-    const duration = 3 * 1000;
-    const end = Date.now() + duration;
-
-    (function frame() {
-      confetti({
-        particleCount: 3,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ['#10b981', '#fbbf24'] 
-      });
-      confetti({
-        particleCount: 3,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ['#10b981', '#fbbf24']
-      });
-
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
-    }());
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const res = await fetch('/api/access-request', {
+      const res = await fetch('/api/startups', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          requesterName: formData.name, 
-          requesterEmail: formData.email,
-          requesterFirm: formData.firm,
-          startupId: "waitlist" 
-        }),
+        body: JSON.stringify(formData),
       });
 
       if (res.ok) {
-        track('Startup Submitted'); 
-        handleSuccess(); 
-        toast.success("Signal Received. Welcome to the VibeStream.");
-        setTimeout(() => router.push('/'), 3000);
+        track('Vibe Code Submitted'); 
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#4E24CF', '#D4AF37'] });
+        toast.success("Vibe Code Indexed Successfully.");
+        setTimeout(() => router.push('/pricing'), 2000); 
       } else {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Signal Lost");
+        throw new Error("Transmission Interrupted");
       }
     } catch (error: any) {
-      toast.error(error.message || "Transmission failed.");
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-6 overflow-hidden">
-      <Toaster toastOptions={{ style: { background: '#18181b', color: '#fff' } }} />
+    <div className="min-h-screen bg-black pt-32 pb-20 px-6 overflow-x-hidden">
+      <Toaster toastOptions={{ style: { background: '#09090b', color: '#fff', border: '1px solid #27272a' } }} />
       
-      {/* 1. Ambient Background (Guardian Aesthetic) */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-600/10 blur-[120px] rounded-full pointer-events-none" />
+      {/* 🌌 Ambient Background */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#4E24CF]/5 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="z-10 w-full max-w-lg p-10 border border-white/10 rounded-[2.5rem] bg-zinc-900/20 backdrop-blur-2xl">
-        <div className="flex flex-col items-center mb-10 text-center">
-          <img src="/logo.png" alt="VibeStream" className="h-12 mb-6" />
-          <h1 className="text-sm font-black tracking-[0.4em] uppercase text-zinc-500">
-            Initial Application
+      <div className="max-w-4xl mx-auto relative z-10">
+        <div className="mb-12">
+          <span className="text-[#D4AF37] text-[10px] font-black uppercase tracking-[0.4em]">Encyclopedia Entry</span>
+          <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mt-2">
+            Register Your <span className="text-[#4E24CF]">Vibe Code.</span>
           </h1>
         </div>
-        
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-2">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 ml-4 font-bold">Full Name</label>
-            <input 
-              type="text" required placeholder="e.g. Satoshi Nakamoto" 
-              className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50 transition-all font-medium"
-              value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
-            />
+
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Section 1: Identity */}
+          <div className="space-y-6 bg-zinc-950 p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
+            <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">01. Identity</h3>
+            <div className="space-y-4">
+              <input 
+                type="text" required placeholder="Startup Name" 
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+              />
+              <input 
+                type="text" required placeholder="One-line Tagline" 
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                onChange={(e) => setFormData({...formData, tagline: e.target.value})}
+              />
+              <textarea 
+                required placeholder="What problem does this Vibe Code solve?" 
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm h-32 focus:border-[#D4AF37] outline-none transition-all resize-none placeholder:text-zinc-700"
+                onChange={(e) => setFormData({...formData, problemStatement: e.target.value})}
+              />
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 ml-4 font-bold">Professional Email</label>
-            <input 
-              type="email" required placeholder="name@firm.cc" 
-              className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50 transition-all font-medium"
-              value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 ml-4 font-bold">Startup Name</label>
-            <input 
-              type="text" required placeholder="The name of your venture" 
-              className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50 transition-all font-medium"
-              value={formData.firm}
-              onChange={(e) => setFormData({...formData, firm: e.target.value})}
-            />
+          {/* Section 2: Assets & Classification */}
+          <div className="space-y-6 bg-zinc-950 p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
+            <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">02. Classification</h3>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-[9px] uppercase tracking-widest text-zinc-600 font-black ml-2">Vertical</label>
+                <select 
+                  className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-zinc-300 text-sm focus:border-[#D4AF37] outline-none cursor-pointer appearance-none"
+                  onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  value={formData.category}
+                >
+                  {CATEGORIES.map(cat => (
+                    <option key={cat} value={cat} className="bg-black text-white">{cat}</option>
+                  ))}
+                </select>
+              </div>
+              <input 
+                type="url" placeholder="Banner Image URL" 
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                onChange={(e) => setFormData({...formData, bannerUrl: e.target.value})}
+              />
+              <input 
+                type="url" placeholder="Website URL" 
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                onChange={(e) => setFormData({...formData, website: e.target.value})}
+              />
+              <input 
+                type="url" placeholder="Pitch Deck URL" 
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                onChange={(e) => setFormData({...formData, pitchDeckUrl: e.target.value})}
+              />
+            </div>
           </div>
 
           <button 
             type="submit" disabled={loading}
-            className="w-full bg-white text-black py-5 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-emerald-400 hover:text-black active:scale-95 transition-all disabled:opacity-50 mt-4"
+            className="md:col-span-2 w-full bg-white text-black py-6 rounded-2xl font-black uppercase tracking-[0.3em] text-[11px] hover:bg-[#D4AF37] transition-all disabled:opacity-50 shadow-xl active:scale-[0.98]"
           >
-            {loading ? "Transmitting..." : "Initialize Application"}
+            {loading ? "Transmitting to Encyclopedia..." : "Submit Startup"}
           </button>
         </form>
       </div>
