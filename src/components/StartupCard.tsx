@@ -24,6 +24,11 @@ interface StartupCardProps {
 
 export function StartupCard({ startup, variant }: StartupCardProps) {
   
+  
+  if (startup.name === "General Waitlist") {
+    return null;
+  }
+
   if (variant === "ticker") {
     return (
       <div className="bg-zinc-950 border border-white/5 rounded-[2rem] overflow-hidden group shadow-[0_0_50px_-20px_rgba(78,36,207,0.2)]">
@@ -130,7 +135,6 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
             {startup.problemStatement}
           </p>
         </div>
-        
         
         <div className="h-1 w-0 bg-[#D4AF37] group-hover:w-full transition-all duration-500" />
       </motion.div>
