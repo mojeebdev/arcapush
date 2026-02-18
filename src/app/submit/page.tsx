@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
-import confetti from 'canvas-confetti'; // 🎊 The Celebration Logic
+import confetti from 'canvas-confetti'; 
 import { track } from '@vercel/analytics';
 
 export default function SubmitStartup() {
@@ -11,7 +11,6 @@ export default function SubmitStartup() {
   const router = useRouter();
 
   const handleSuccess = () => {
-    // 🛡️ Guardian Celebration: Emerald and Gold sparks
     const duration = 3 * 1000;
     const end = Date.now() + duration;
 
@@ -21,7 +20,7 @@ export default function SubmitStartup() {
         angle: 60,
         spread: 55,
         origin: { x: 0 },
-        colors: ['#10b981', '#fbbf24']
+        colors: ['#10b981', '#fbbf24'] 
       });
       confetti({
         particleCount: 3,
@@ -49,7 +48,7 @@ export default function SubmitStartup() {
           requesterName: formData.name, 
           requesterEmail: formData.email,
           requesterFirm: formData.firm,
-          startupId: "general-waitlist" 
+          startupId: "waitlist" 
         }),
       });
 
@@ -62,8 +61,8 @@ export default function SubmitStartup() {
         const errorData = await res.json();
         throw new Error(errorData.message || "Signal Lost");
       }
-    } catch (error) {
-      toast.error("Transmission failed. Please verify your connection.");
+    } catch (error: any) {
+      toast.error(error.message || "Transmission failed.");
     } finally {
       setLoading(false);
     }
@@ -73,12 +72,12 @@ export default function SubmitStartup() {
     <div className="min-h-screen bg-black flex items-center justify-center p-6 overflow-hidden">
       <Toaster toastOptions={{ style: { background: '#18181b', color: '#fff' } }} />
       
-      {/* Background Ambience */}
+      {/* 1. Ambient Background (Guardian Aesthetic) */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-600/10 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="z-10 w-full max-w-lg p-10 border border-white/10 rounded-[2.5rem] bg-zinc-900/20 backdrop-blur-2xl">
         <div className="flex flex-col items-center mb-10 text-center">
-          <img src="/wordmark.png" alt="VibeStream" className="h-8 mb-6 opacity-80" />
+          <img src="/logo.png" alt="VibeStream" className="h-12 mb-6" />
           <h1 className="text-sm font-black tracking-[0.4em] uppercase text-zinc-500">
             Initial Application
           </h1>

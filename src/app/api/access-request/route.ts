@@ -1,29 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const body = await request.json();
-    const { requesterName, requesterEmail, requesterFirm, startupId } = body;
+    const body = await req.json();
+    const { requesterName, requesterEmail, requesterFirm } = body;
 
-    // 🛡️ Guardian Safety: Prevent empty submissions
-    if (!requesterEmail || !requesterName || !startupId) {
-      return NextResponse.json({ error: 'Missing identity signals' }, { status: 400 });
-    }
-
+    
     const newRequest = await prisma.accessRequest.create({
       data: {
         requesterName,
         requesterEmail,
         requesterFirm,
-        startupId, 
-        status: 'PENDING',
+        requesterRole: "Founder", 
+        requesterLinkedIn: "https://linkedin.com/in/pending", 
+        status: "PENDING",
+        startupId: "waitlist", 
       },
     });
 
-    return NextResponse.json({ success: true, data: newRequest });
-  } catch (error) {
-    console.error("Submission Crash:", error);
-    return NextResponse.json({ error: 'Transmission failed' }, { status: 500 });
+    return NextResponse.json({ 
+      message: "Signal Received", 
+      id: newRequest.id 
+    }, { status: 200 });
+
+  } catch (error: any) {
+    console.error("Transmission Error:", error);
+    return NextResponse.json({ 
+      message: "Signal Lost", 
+      error: error.message 
+    }, { status: 500 });
   }
 }
