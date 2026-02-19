@@ -26,6 +26,7 @@ export function ClientDetails({ startup, children }: { startup: any, children: R
       {isModalOpen && (
         <PaymentModal 
           startupId={startup.id} 
+          status={startup.status}
           onClose={() => setIsModalOpen(false)} 
           onSuccess={(data: any) => setSuccessData(data)} 
         />
