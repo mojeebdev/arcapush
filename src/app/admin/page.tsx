@@ -16,7 +16,7 @@ export default function AdminPage() {
 
     try {
       
-      const response = await fetch("/api/admin/verify", {
+      const response = await fetch("/app/admin/verify", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
