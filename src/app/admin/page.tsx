@@ -15,22 +15,28 @@ export default function AdminPage() {
     setLoading(true);
 
     try {
+      
       const response = await fetch("/api/admin/verify", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pin }),
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json" 
+        },
+        body: JSON.stringify({ pin: pin.trim() }),
       });
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      
+      if (response.ok && data.authorized) {
         setIsAuthorized(true);
         toast.success("Guardian Identified");
       } else {
-        toast.error("Invalid Guardian Pin");
+        toast.error(data.error || "Invalid Guardian Pin");
         setPin("");
       }
-    } catch {
+    } catch (err) {
+      console.error("📡 Signal Failure:", err);
       toast.error("Signal Lost");
     } finally {
       setLoading(false);
