@@ -22,7 +22,7 @@ interface StartupCardProps {
   variant: "ticker" | "grid";
 }
 
-export function StartupCard({ startup, variant }: StartupCardProps) 
+export function StartupCard({ startup, variant }: StartupCardProps) {
   if (variant === "ticker") {
     return (
       <div className="bg-zinc-950 border border-white/5 rounded-[2rem] overflow-hidden group shadow-[0_0_50px_-20px_rgba(78,36,207,0.2)]">
@@ -46,8 +46,10 @@ export function StartupCard({ startup, variant }: StartupCardProps)
                 {startup.category}
               </span>
               <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-zinc-600">
-                <HiOutlineEye className="w-3 h-3" />
-                {startup.viewCount} Signals
+                <span className="flex items-center gap-1">
+                  <HiOutlineEye className="w-3 h-3" />
+                  {startup.viewCount} Signals
+                </span>
               </span>
             </div>
 
