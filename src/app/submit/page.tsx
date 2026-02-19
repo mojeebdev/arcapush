@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import confetti from 'canvas-confetti'; 
-import { track } from '@vercel/analytics';
+import { track } from '@vercel-analytics';
 
 const CATEGORIES = [
+  "Select Category...", 
   "SaaS", "FinTech", "AI / ML", "E-commerce", "HealthTech", "EdTech", 
   "DeFi", "Infrastructure", "Gaming / GameFi", "Social", "DAO Tooling", 
   "AI x Crypto", "RWA", "Privacy", "Developer Tools", "Other"
@@ -16,14 +17,15 @@ export default function SubmitStartup() {
     name: "",
     tagline: "",
     problemStatement: "",
-    category: "SaaS",
+    category: "",
     website: "",
     twitter: "",
     bannerUrl: "",
     logoUrl: "",
     pitchDeckUrl: "",
     founderName: "",
-    founderEmail: ""
+    founderEmail: "",
+    founderTwitter: ""
   });
   
   const [loading, setLoading] = useState(false);
@@ -31,6 +33,11 @@ export default function SubmitStartup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.category || formData.category === "Select a Vertical...") {
+      toast.error("Please select a Vertical for your Vibe Code.");
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -42,7 +49,12 @@ export default function SubmitStartup() {
 
       if (res.ok) {
         track('Vibe Code Submitted'); 
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#4E24CF', '#D4AF37'] });
+        confetti({ 
+          particleCount: 150, 
+          spread: 70, 
+          origin: { y: 0.6 }, 
+          colors: ['#4E24CF', '#D4AF37'] 
+        });
         toast.success("Vibe Code Indexed Successfully.");
         setTimeout(() => router.push('/pricing'), 2000); 
       } else {
@@ -59,7 +71,6 @@ export default function SubmitStartup() {
     <div className="min-h-screen bg-black pt-32 pb-20 px-6 overflow-x-hidden">
       <Toaster toastOptions={{ style: { background: '#09090b', color: '#fff', border: '1px solid #27272a' } }} />
       
-      {/* 🌌 Ambient Background */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#4E24CF]/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-4xl mx-auto relative z-10">
@@ -78,16 +89,19 @@ export default function SubmitStartup() {
               <input 
                 type="text" required placeholder="Startup Name" 
                 className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
               />
               <input 
                 type="text" required placeholder="One-line Tagline" 
                 className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                value={formData.tagline}
                 onChange={(e) => setFormData({...formData, tagline: e.target.value})}
               />
               <textarea 
                 required placeholder="What problem does this Vibe Code solve?" 
                 className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm h-32 focus:border-[#D4AF37] outline-none transition-all resize-none placeholder:text-zinc-700"
+                value={formData.problemStatement}
                 onChange={(e) => setFormData({...formData, problemStatement: e.target.value})}
               />
             </div>
@@ -98,30 +112,67 @@ export default function SubmitStartup() {
             <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">02. Classification</h3>
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-[9px] uppercase tracking-widest text-zinc-600 font-black ml-2">Vertical</label>
+                <label className="text-[9px] uppercase tracking-widest text-zinc-600 font-black ml-2">Vertical (Dropdown)</label>
                 <select 
                   className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-zinc-300 text-sm focus:border-[#D4AF37] outline-none cursor-pointer appearance-none"
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
                   value={formData.category}
+                  required
                 >
                   {CATEGORIES.map(cat => (
-                    <option key={cat} value={cat} className="bg-black text-white">{cat}</option>
+                    <option key={cat} value={cat === "Select a Vertical..." ? "" : cat} className="bg-black text-white">
+                      {cat}
+                    </option>
                   ))}
                 </select>
               </div>
               <input 
-                type="url" placeholder="Banner Image URL" 
+                type="url" required placeholder="Website URL" 
                 className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
-                onChange={(e) => setFormData({...formData, bannerUrl: e.target.value})}
-              />
-              <input 
-                type="url" placeholder="Website URL" 
-                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                value={formData.website}
                 onChange={(e) => setFormData({...formData, website: e.target.value})}
               />
               <input 
-                type="url" placeholder="Pitch Deck URL" 
+                type="url" placeholder="Startup Twitter URL (Optional)" 
                 className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                value={formData.twitter}
+                onChange={(e) => setFormData({...formData, twitter: e.target.value})}
+              />
+              <input 
+                type="url" placeholder="Banner Image URL" 
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                value={formData.bannerUrl}
+                onChange={(e) => setFormData({...formData, bannerUrl: e.target.value})}
+              />
+            </div>
+          </div>
+
+          {/* Section 3: Founder Contact */}
+          <div className="md:col-span-2 space-y-6 bg-zinc-950 p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
+            <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">03. Contact Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input 
+                type="text" required placeholder="Founder Full Name" 
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                value={formData.founderName}
+                onChange={(e) => setFormData({...formData, founderName: e.target.value})}
+              />
+              <input 
+                type="email" required placeholder="Founder Email Address" 
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                value={formData.founderEmail}
+                onChange={(e) => setFormData({...formData, founderEmail: e.target.value})}
+              />
+              <input 
+                type="url" placeholder="Founder Twitter URL (Optional)" 
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                value={formData.founderTwitter}
+                onChange={(e) => setFormData({...formData, founderTwitter: e.target.value})}
+              />
+               <input 
+                type="url" placeholder="Pitch Deck URL (Optional)" 
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                value={formData.pitchDeckUrl}
                 onChange={(e) => setFormData({...formData, pitchDeckUrl: e.target.value})}
               />
             </div>
