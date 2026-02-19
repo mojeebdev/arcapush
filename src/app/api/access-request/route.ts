@@ -4,6 +4,37 @@ import { NextResponse } from 'next/server';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+
+export async function GET(req: Request) {
+  try {
+    const pin = req.headers.get("x-guardian-pin");
+
+    
+    if (!pin || pin !== process.env.ADMIN_PIN) {
+      return NextResponse.json({ error: "Unauthorized Handshake" }, { status: 401 });
+    }
+
+    
+    const requests = await prisma.accessRequest.findMany({
+      include: {
+        startup: {
+          select: { 
+            name: true, 
+            id: true, 
+            approved: true 
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    return NextResponse.json({ requests });
+  } catch (error: any) {
+    return NextResponse.json({ error: 'Signal Interrupted' }, { status: 500 });
+  }
+}
+
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -26,7 +57,7 @@ export async function POST(req: Request) {
       }
     }
 
-    
+    /
     const newRequest = await prisma.accessRequest.create({
       data: {
         requesterName,
@@ -35,7 +66,6 @@ export async function POST(req: Request) {
         requesterRole,
         requesterLinkedIn, 
         status: "PENDING",
-        
         startupId: startupId === "general_access" ? null : startupId, 
       },
     });
@@ -57,7 +87,7 @@ export async function POST(req: Request) {
       `
     });
 
-   
+    
     await resend.emails.send({
       from: 'System <system@vibestream.cc>',
       to: 'blindspotlabs1@gmail.com', 
