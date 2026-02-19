@@ -60,6 +60,7 @@ export function HeroPin({ startups }: HeroPinProps) {
           <PaymentModal 
             onClose={() => setShowPayment(false)} 
             startupId="hero-empty-slot" 
+            status="APPROVED"
             onSuccess={() => window.location.reload()} 
           />
         )}
