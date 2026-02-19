@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
-import * as solanaWeb3 from "@solana/web3.js";
 import { AdminConfig } from "./adminConfig";
+import { Connection, PublicKey } from "@solana/web3.js";
 
 export interface PaymentVerification {
   verified: boolean;
@@ -50,7 +50,10 @@ export async function verifyBasePayment(txHash: string): Promise<PaymentVerifica
 
 export async function verifySolanaPayment(txHash: string): Promise<PaymentVerification> {
   try {
-    const connection = new solanaWeb3.Connection("https://api.mainnet-beta.solana.com", "confirmed");
+   
+    const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
+    
+    
     const tx = await connection.getParsedTransaction(txHash, { 
       maxSupportedTransactionVersion: 0 
     });
@@ -62,10 +65,12 @@ export async function verifySolanaPayment(txHash: string): Promise<PaymentVerifi
 
     
     const destinationFound = tx.transaction.message.instructions.some((ix: any) => {
-     
+      
       const nativeTarget = ix.parsed?.info?.destination === solVault;
       
-      const tokenTarget = ix.parsed?.info?.authority === solVault || ix.meta?.postTokenBalances?.some((b: any) => b.owner === solVault);
+      
+      const tokenTarget = ix.parsed?.info?.authority === solVault || 
+                          tx.meta?.postTokenBalances?.some((b: any) => b.owner === solVault);
       
       return nativeTarget || tokenTarget;
     });

@@ -3,11 +3,17 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
-import { HiOutlineGlobeAlt, HiOutlineBolt, HiOutlineSearch } from "react-icons/hi2";
+import { HiOutlineGlobeAlt, HiOutlineBolt, HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { useSendTransaction } from 'wagmi';
 import { parseUnits } from 'viem';
 import { AdminConfig } from "@/lib/adminConfig";
-import * as solanaWeb3 from "@solana/web3.js";
+import { 
+  Connection, 
+  PublicKey, 
+  Transaction, 
+  SystemProgram, 
+  LAMPORTS_PER_SOL 
+} from "@solana/web3.js";
 
 export default function PricingPage() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -24,7 +30,6 @@ export default function PricingPage() {
     fetchApproved();
   }, []);
 
-  // 🚀 BASE: STATIC USDC (1:1 with USD)
   const handleBasePayment = async (plan: any) => {
     if (!selectedStartupId) return toast.error("Select a startup first.");
     setIsProcessing(true);
@@ -32,7 +37,7 @@ export default function PricingPage() {
     try {
       const hash = await sendBaseTx({
         to: AdminConfig.PAYMENT_WALLET_BASE as `0x${string}`,
-        value: parseUnits(plan.price, 6), 
+        value: parseUnits(plan.price.toString(), 6), 
       });
       await fetch("/api/pin", {
         method: "POST",
@@ -45,7 +50,6 @@ export default function PricingPage() {
     } finally { setIsProcessing(false); }
   };
 
-  
   const handleSolanaPayment = async (plan: any) => {
     if (!selectedStartupId) return toast.error("Select a startup first.");
     if (!window.solana) return toast.error("Wallet not found.");
@@ -54,36 +58,33 @@ export default function PricingPage() {
     const toastId = toast.loading("Fetching Market Oracle...");
 
     try {
-      // 1. Get Real-Time SOL Price
       const priceRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
       const priceData = await priceRes.json();
       const solPriceInUsd = priceData.solana.usd;
 
-      // 2. Calculate Exact SOL Amount ($150 / $SOL_Price)
       const usdAmount = parseFloat(plan.price);
       const solAmount = usdAmount / solPriceInUsd;
-      const lamports = Math.floor(solAmount * solanaWeb3.LAMPORTS_PER_SOL);
+      const lamports = Math.floor(solAmount * LAMPORTS_PER_SOL);
 
       toast.loading(`Transmitting ${solAmount.toFixed(4)} SOL...`, { id: toastId });
 
-      // 3. Handshake with Wallet
       const resp = await window.solana.connect();
-      const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
+      // 🛠️ USAGE: Calling tools directly (no solanaWeb3 prefix)
+      const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
       const { blockhash } = await connection.getLatestBlockhash();
       
-      const transaction = new solanaWeb3.Transaction({
+      const transaction = new Transaction({
         recentBlockhash: blockhash,
         feePayer: resp.publicKey
       }).add(
-        solanaWeb3.SystemProgram.transfer({
+        SystemProgram.transfer({
           fromPubkey: resp.publicKey,
-          toPubkey: new solanaWeb3.PublicKey(AdminConfig.PAYMENT_WALLET_SOLANA),
+          toPubkey: new PublicKey(AdminConfig.PAYMENT_WALLET_SOLANA),
           lamports: lamports,
         })
       );
 
       const { signature } = await window.solana.signAndSendTransaction(transaction);
-      
       
       await fetch("/api/pin", {
         method: "POST",
@@ -98,19 +99,24 @@ export default function PricingPage() {
   };
 
   return (
-    <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto min-h-screen">
+    <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto min-h-screen bg-black">
       <Toaster position="bottom-right" />
       
+      {/* Startup Selector */}
       <section className="mb-12 max-w-xl mx-auto">
         <div className="p-6 rounded-[2rem] bg-zinc-900/50 border border-white/5 backdrop-blur-xl text-center">
           <label className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.3em] mb-4 block">Identity Approved Signal</label>
-          <select value={selectedStartupId} onChange={(e) => setSelectedStartupId(e.target.value)} className="w-full bg-black border border-white/10 rounded-xl px-4 py-4 text-xs font-bold text-white outline-none">
-            <option value="">Select your startup...</option>
-            {approvedStartups.map(s => <option key={s.id} value={s.id}>{s.name.toUpperCase()}</option>)}
-          </select>
+          <div className="relative">
+             <select value={selectedStartupId} onChange={(e) => setSelectedStartupId(e.target.value)} className="w-full bg-black border border-white/10 rounded-xl px-4 py-4 text-xs font-bold text-white outline-none appearance-none">
+                <option value="">Select your startup...</option>
+                {approvedStartups.map(s => <option key={s.id} value={s.id}>{s.name.toUpperCase()}</option>)}
+             </select>
+             <HiOutlineMagnifyingGlass className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+          </div>
         </div>
       </section>
 
+      {/* Pricing Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {AdminConfig.PIN_PACKAGES.map((plan) => (
           <motion.div key={plan.label} className={`relative rounded-[3rem] p-10 bg-zinc-950/80 border ${plan.featured ? 'border-[#4E24CF]' : 'border-white/5'} flex flex-col`}>
