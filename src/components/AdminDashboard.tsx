@@ -39,7 +39,7 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
     setLoading(true);
     try {
       
-      const res = await fetch(`/api/submit/requests?status=${filter}`, {
+      const res = await fetch(`/api/startups?status=${filter}`, {
         headers: { "x-guardian-pin": guardianPin }
       });
       const data = await res.json();
