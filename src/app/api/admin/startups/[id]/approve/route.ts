@@ -1,12 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> } 
 ) {
   try {
-    const { id } = params;
+    
+    const { id } = await params; 
+    
     const body = await req.json();
     const pin = req.headers.get("x-guardian-pin");
 
