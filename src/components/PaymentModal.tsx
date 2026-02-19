@@ -1,4 +1,4 @@
-"use client";
+\"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,7 +8,6 @@ import {
   HiOutlineXMark, 
   HiOutlineBolt, 
   HiOutlineShieldCheck, 
-  HiOutlineLockClosed,
   HiOutlineGlobeAlt 
 } from "react-icons/hi2";
 import { useSendTransaction } from 'wagmi';
@@ -33,9 +32,6 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
   const [step, setStep] = useState<"package" | "chain">("package");
   const [selectedPackage, setSelectedPackage] = useState(AdminConfig.PIN_PACKAGES[0]);
 
-
-  const isApproved = status?.toUpperCase() === "APPROVED";
-  
   const { mutateAsync: sendBaseTx } = useSendTransaction();
 
   const handleBasePay = async () => {
@@ -133,12 +129,12 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
           {/* Header */}
           <div className="p-8 border-b border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${isApproved ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-red-500/10 border-red-500/20'}`}>
-                {isApproved ? <HiOutlineShieldCheck className="w-5 h-5 text-emerald-500" /> : <HiOutlineLockClosed className="w-5 h-5 text-red-500" />}
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center border bg-emerald-500/10 border-emerald-500/20">
+                <HiOutlineShieldCheck className="w-5 h-5 text-emerald-500" />
               </div>
               <div>
-                <h3 className="text-lg font-black text-white uppercase italic leading-none">{isApproved ? "Ascension" : "Locked"}</h3>
-                <p className="text-[9px] text-zinc-500 font-bold uppercase mt-1 tracking-widest">Protocol Terminal</p>
+                <h3 className="text-lg font-black text-white uppercase italic leading-none">Ascension</h3>
+                <p className="text-[9px] text-zinc-500 font-bold uppercase mt-1 tracking-widest">Signal Terminal</p>
               </div>
             </div>
             <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
@@ -147,62 +143,49 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
           </div>
 
           <div className="p-8">
-            {!isApproved ? (
-              <div className="text-center py-10 space-y-6">
-                <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest px-10 leading-relaxed">
-                   Signal Stream Blocked. 
-                   <br/>
-                   The Guardian must authorize this food item before signal ascension is possible.
-                </p>
-                <div className="pt-4">
-                   <button onClick={onClose} className="px-8 py-3 bg-zinc-900 text-white rounded-xl font-black text-[10px] uppercase hover:bg-white hover:text-black transition-all">Return to Feed</button>
+            <div className="space-y-6">
+              {step === "package" ? (
+                <div className="space-y-4">
+                  <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Choose Duration</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {AdminConfig.PIN_PACKAGES.map((pkg) => (
+                      <button 
+                        key={pkg.value} 
+                        onClick={() => { setSelectedPackage(pkg); setStep("chain"); }} 
+                        className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-[#D4AF37] hover:bg-white/[0.05] text-left transition-all group"
+                      >
+                        <p className="text-white font-black text-[10px] uppercase group-hover:text-[#D4AF37]">{pkg.label}</p>
+                        <p className="text-[10px] text-zinc-500 font-bold">${pkg.price}</p>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {step === "package" ? (
-                  <div className="space-y-4">
-                    <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Choose Duration</p>
-                    <div className="grid grid-cols-2 gap-3">
-                      {AdminConfig.PIN_PACKAGES.map((pkg) => (
-                        <button 
-                          key={pkg.value} 
-                          onClick={() => { setSelectedPackage(pkg); setStep("chain"); }} 
-                          className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-[#D4AF37] hover:bg-white/[0.05] text-left transition-all group"
-                        >
-                          <p className="text-white font-black text-[10px] uppercase group-hover:text-[#D4AF37]">{pkg.label}</p>
-                          <p className="text-[10px] text-zinc-500 font-bold">${pkg.price}</p>
-                        </button>
-                      ))}
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Select Protocol</p>
+                  
+                  <button onClick={handleBasePay} disabled={loading} className="w-full p-5 rounded-2xl border border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 flex justify-between items-center group transition-all">
+                    <div className="flex items-center gap-3">
+                      <HiOutlineGlobeAlt className="w-5 h-5 text-blue-500" />
+                      <span className="text-white font-black text-xs uppercase italic">Base One-Tap</span>
                     </div>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Select Protocol</p>
-                    
-                    <button onClick={handleBasePay} disabled={loading} className="w-full p-5 rounded-2xl border border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 flex justify-between items-center group transition-all">
-                      <div className="flex items-center gap-3">
-                        <HiOutlineGlobeAlt className="w-5 h-5 text-blue-500" />
-                        <span className="text-white font-black text-xs uppercase italic">Base One-Tap</span>
-                      </div>
-                      {loading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <span className="text-[9px] text-blue-500/50 font-black">USDC</span>}
-                    </button>
-                    
-                    <button onClick={handleSolanaPay} disabled={loading} className="w-full p-5 rounded-2xl border border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 flex justify-between items-center group transition-all">
-                      <div className="flex items-center gap-3">
-                        <HiOutlineBolt className="w-5 h-5 text-purple-500" />
-                        <span className="text-white font-black text-xs uppercase italic">Solana One-Tap</span>
-                      </div>
-                      {loading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <span className="text-[9px] text-purple-500/50 font-black">SOL</span>}
-                    </button>
+                    {loading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <span className="text-[9px] text-blue-500/50 font-black">USDC</span>}
+                  </button>
+                  
+                  <button onClick={handleSolanaPay} disabled={loading} className="w-full p-5 rounded-2xl border border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 flex justify-between items-center group transition-all">
+                    <div className="flex items-center gap-3">
+                      <HiOutlineBolt className="w-5 h-5 text-purple-500" />
+                      <span className="text-white font-black text-xs uppercase italic">Solana One-Tap</span>
+                    </div>
+                    {loading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <span className="text-[9px] text-purple-500/50 font-black">SOL</span>}
+                  </button>
 
-                    <button onClick={() => setStep("package")} className="w-full text-[9px] font-black text-zinc-700 hover:text-zinc-500 uppercase pt-4 transition-colors">
-                      ← Change Package ({selectedPackage.label})
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
+                  <button onClick={() => setStep("package")} className="w-full text-[9px] font-black text-zinc-700 hover:text-zinc-500 uppercase pt-4 transition-colors">
+                    ← Change Package ({selectedPackage.label})
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </motion.div>
       </motion.div>
