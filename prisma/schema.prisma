@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" 
+  provider = "postgresql"
 }
-  
 
 enum StartupTier {
   FREE
@@ -51,22 +50,24 @@ model Startup {
   founderTwitter    String?
   pitchDeckUrl      String?
 
+  
+  approved          Boolean  @default(false) 
   // Tier & Pinning
   tier              StartupTier @default(FREE)
   pinnedAt          DateTime?
   pinnedUntil       DateTime?
   pinTxHash         String?
-  pinChain          String?     // "base" | "solana"
+  pinChain          String?      // "base" | "solana"
 
   // Relations
-  founderId         String?
+  founderId         String?      // Already optional (?) - Good for Guest mode!
   founder           User?        @relation(fields: [founderId], references: [id])
   accessRequests    AccessRequest[]
 
   // Metadata
-  viewCount         Int         @default(0)
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  viewCount         Int          @default(0)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 
   @@index([tier, pinnedUntil])
   @@index([createdAt])
@@ -83,17 +84,17 @@ model AccessRequest {
   requesterLinkedIn  String?
 
   // Status
-  status            RequestStatus @default(PENDING)
+  status             RequestStatus @default(PENDING)
 
   // Relations
-  startupId         String
-  startup           Startup       @relation(fields: [startupId], references: [id], onDelete: Cascade)
-  requesterId       String?
-  requester         User?         @relation(fields: [requesterId], references: [id])
+  startupId          String
+  startup            Startup       @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  requesterId        String?
+  requester          User?         @relation(fields: [requesterId], references: [id])
 
   // Timestamps
-  createdAt         DateTime      @default(now())
-  reviewedAt        DateTime?
+  createdAt          DateTime      @default(now())
+  reviewedAt         DateTime?
 
   @@unique([requesterEmail, startupId])
   @@index([startupId, status])

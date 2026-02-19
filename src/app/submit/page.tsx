@@ -33,7 +33,9 @@ export default function SubmitStartup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.category || formData.category === "Select a Vertical...") {
+    
+    
+    if (!formData.category || formData.category === "Select Category...") {
       toast.error("Please select a Vertical for your Vibe Code.");
       return;
     }
@@ -41,6 +43,7 @@ export default function SubmitStartup() {
     setLoading(true);
 
     try {
+      
       const res = await fetch('/api/startups', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -49,19 +52,25 @@ export default function SubmitStartup() {
 
       if (res.ok) {
         track('Vibe Code Submitted'); 
+        
+        
         confetti({ 
           particleCount: 150, 
           spread: 70, 
           origin: { y: 0.6 }, 
           colors: ['#4E24CF', '#D4AF37'] 
         });
-        toast.success("Vibe Code Indexed Successfully.");
-        setTimeout(() => router.push('/pricing'), 2000); 
+
+        toast.success("Vibe Code Indexed Successfully. Pending Guardian Approval.");
+        
+        setTimeout(() => router.push('/pricing'), 3000); 
       } else {
-        throw new Error("Transmission Interrupted");
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Transmission Interrupted");
       }
     } catch (error: any) {
       toast.error(error.message);
+      console.error("Submission Failure:", error);
     } finally {
       setLoading(false);
     }
@@ -71,6 +80,7 @@ export default function SubmitStartup() {
     <div className="min-h-screen bg-black pt-32 pb-20 px-6 overflow-x-hidden">
       <Toaster toastOptions={{ style: { background: '#09090b', color: '#fff', border: '1px solid #27272a' } }} />
       
+      {/* Visual Vibe: Background Glow */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#4E24CF]/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-4xl mx-auto relative z-10">
@@ -82,6 +92,7 @@ export default function SubmitStartup() {
         </div>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
           {/* Section 1: Identity */}
           <div className="space-y-6 bg-zinc-950 p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
             <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">01. Identity</h3>
@@ -120,7 +131,7 @@ export default function SubmitStartup() {
                   required
                 >
                   {CATEGORIES.map(cat => (
-                    <option key={cat} value={cat === "Select a Vertical..." ? "" : cat} className="bg-black text-white">
+                    <option key={cat} value={cat === "Select Category..." ? "" : cat} className="bg-black text-white">
                       {cat}
                     </option>
                   ))}

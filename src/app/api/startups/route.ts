@@ -6,35 +6,30 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    
     const startup = await prisma.startup.create({
       data: {
         name: body.name,
-        tagline: body.tagline || "A new vibe in the ecosystem", 
-        problemStatement: body.problemStatement || "Problem statement pending...", 
-        bannerUrl: body.bannerUrl || "/default-banner.png", 
-        category: body.category || "DeFi",
+        tagline: body.tagline,
+        problemStatement: body.problemStatement,
+        category: body.category,
         website: body.website,
+        twitter: body.twitter,
+        bannerUrl: body.bannerUrl || "/default-banner.png",
+        logoUrl: body.logoUrl,
+        pitchDeckUrl: body.pitchDeckUrl,
         founderName: body.founderName,
         founderEmail: body.founderEmail,
-        founderLinkedIn: body.founderLinkedIn,
-        pitchDeckUrl: body.pitchDeckUrl,
-        
-        
-        tier: StartupTier.FREE, 
-        
-        
-        founder: {
-          connect: { id: body.founderId } 
-        }
+        founderTwitter: body.founderTwitter,
+        tier: StartupTier.FREE,
+        approved: false, 
       },
     });
 
-    return NextResponse.json(startup);
+    return NextResponse.json(startup, { status: 201 });
   } catch (error: any) {
-    console.error("Submission Error:", error);
+    console.error("Database Error:", error);
     return NextResponse.json(
-      { error: "Failed to process food item", details: error.message }, 
+      { error: "Transmission Interrupted", details: error.message },
       { status: 500 }
     );
   }
