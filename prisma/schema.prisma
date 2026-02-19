@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  
+  provider = "postgresql" 
 }
+  
 
 enum StartupTier {
   FREE
@@ -59,8 +59,8 @@ model Startup {
   pinChain          String?     // "base" | "solana"
 
   // Relations
-  founderId         String
-  founder           User        @relation(fields: [founderId], references: [id])
+  founderId         String?
+  founder           User?        @relation(fields: [founderId], references: [id])
   accessRequests    AccessRequest[]
 
   // Metadata
