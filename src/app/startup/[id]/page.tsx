@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { 
   HiOutlineGlobeAlt, 
   HiOutlineLink, 
@@ -38,7 +39,6 @@ export default async function StartupDetailsPage({ params }: PageProps) {
                 <span className="bg-[#4E24CF]/10 text-[#4E24CF] text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.3em] border border-[#4E24CF]/20">
                   {startup.category || "Vibe Code"}
                 </span>
-                {/* 🥂 High-Signal Limelight Badge */}
                 {startup.tier === "PINNED" && (
                   <span className="bg-[#D4AF37]/10 text-[#D4AF37] text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.3em] border border-[#D4AF37]/20 flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
@@ -90,15 +90,19 @@ export default async function StartupDetailsPage({ params }: PageProps) {
                   <span className="text-[10px] font-black uppercase tracking-widest text-white">Platform</span>
                   <HiOutlineGlobeAlt className="w-4 h-4 text-zinc-500 group-hover:text-white" />
                 </a>
-                <a href={startup.founderLinkedIn || "#"} target="_blank" className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-[#4E24CF]/50 hover:bg-[#4E24CF]/5 transition-all group">
+                <a href={startup.founderTwitter || "#"} target="_blank" className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-[#4E24CF]/50 hover:bg-[#4E24CF]/5 transition-all group">
                   <span className="text-[10px] font-black uppercase tracking-widest text-white">Founder</span>
                   <HiOutlineLink className="w-4 h-4 text-zinc-500 group-hover:text-white" />
                 </a>
               </div>
 
-              <button className="w-full py-6 rounded-[2rem] bg-white text-black font-black uppercase tracking-[0.3em] text-[11px] hover:bg-[#D4AF37] transition-all shadow-xl shadow-white/5 flex items-center justify-center gap-2">
+              
+              <Link 
+                href={`/request?startupId=${startup.id}&startupName=${encodeURIComponent(startup.name)}`}
+                className="w-full py-6 rounded-[2rem] bg-white text-black font-black uppercase tracking-[0.3em] text-[11px] hover:bg-[#D4AF37] transition-all shadow-xl shadow-white/5 flex items-center justify-center gap-2"
+              >
                 Request Pitch Access <HiOutlineArrowUpRight className="w-4 h-4" />
-              </button>
+              </Link>
               
               <p className="text-[9px] text-zinc-700 font-black text-center uppercase tracking-[0.5em]">
                 VIBE-ID: {id.slice(0, 8)}

@@ -6,10 +6,12 @@ import { AdminConfig } from "@/lib/adminConfig";
 
 export const revalidate = 30;
 
+
 async function getPinnedStartups() {
   const now = new Date();
   return prisma.startup.findMany({
     where: {
+      approved: true, 
       tier: "PINNED",
       pinnedUntil: { gt: now },
     },
@@ -33,9 +35,11 @@ async function getPinnedStartups() {
   });
 }
 
+
 async function getFreeStartups() {
   return prisma.startup.findMany({
     where: {
+      approved: true, 
       OR: [
         { tier: "FREE" },
         {
@@ -63,8 +67,11 @@ async function getFreeStartups() {
   });
 }
 
+
 async function getStartupCount() {
-  const count = await prisma.startup.count();
+  const count = await prisma.startup.count({
+    where: { approved: true } 
+  });
   return new Intl.NumberFormat().format(count);
 }
 
@@ -106,7 +113,6 @@ export default async function HomePage() {
               Vibes for <br />
               <span className="bg-gradient-to-r from-white via-zinc-400 to-[#4E24CF] bg-clip-text text-transparent">Developers</span>
             </h1>
-            
             
             <div className="max-w-3xl mx-auto mb-12">
               <p className="text-2xl md:text-3xl text-zinc-300 font-serif italic leading-relaxed opacity-90" style={{ fontFamily: "'Playfair Display', serif" }}>

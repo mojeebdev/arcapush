@@ -7,6 +7,7 @@ import {
   HiOutlineClock,
   HiOutlineBuildingOffice2,
   HiOutlineArrowPath,
+  HiOutlineCheckBadge, 
 } from "react-icons/hi2";
 
 
@@ -23,7 +24,9 @@ interface AccessRequest {
   status: string;
   createdAt: string;
   startup?: {
+    id: string; 
     name: string;
+    approved: boolean; 
   };
 }
 
@@ -35,7 +38,8 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
   const fetchRequests = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/requests?status=${filter}`, {
+      
+      const res = await fetch(`/api/submit/requests?status=${filter}`, {
         headers: { "x-guardian-pin": guardianPin }
       });
       const data = await res.json();
@@ -52,6 +56,7 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
     fetchRequests();
   }, [filter, guardianPin]);
 
+  
   const handleAction = async (requestId: string, action: "APPROVED" | "REJECTED") => {
     try {
       const res = await fetch(`/api/access-request/${requestId}/approve`, {
@@ -61,10 +66,30 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      toast.success(`Signal ${action === "APPROVED" ? "Broadcasted" : "Silenced"}`);
+      toast.success(`Investor Signal ${action === "APPROVED" ? "Broadcasted" : "Silenced"}`);
       fetchRequests(); 
     } catch (err: any) {
       toast.error(err.message);
+    }
+  };
+
+  
+  const handleApproveStartup = async (startupId: string) => {
+    try {
+      const res = await fetch(`/api/admin/startups/${startupId}/approve`, {
+        method: "PATCH",
+        headers: { 
+          "Content-Type": "application/json",
+          "x-guardian-pin": guardianPin 
+        },
+        body: JSON.stringify({ approved: true }),
+      });
+      if (res.ok) {
+        toast.success("Vibe Code Authorized for Public Feed");
+        fetchRequests();
+      }
+    } catch (err) {
+      toast.error("Failed to push Startup live.");
     }
   };
 
@@ -76,6 +101,7 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
 
   return (
     <div className="space-y-8">
+      {/* Tab Controls */}
       <div className="flex items-center gap-2 overflow-x-auto pb-4 no-scrollbar">
         {(["PENDING", "APPROVED", "REJECTED", "ALL"] as const).map((s) => (
           <button
@@ -117,14 +143,28 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
                     <span className="text-[9px] font-black text-[#4E24CF] uppercase tracking-[0.2em]">{req.requesterRole} Access</span>
                   </div>
                   <h4 className="text-3xl font-black text-white italic tracking-tighter uppercase">{req.requesterName} @ {req.requesterFirm}</h4>
+                  
                   <div className="flex flex-wrap gap-6 text-[11px] text-zinc-500 font-bold uppercase tracking-widest">
-                    <div className="flex items-center gap-2"><HiOutlineBuildingOffice2 className="w-4 h-4 text-[#D4AF37]" /> Startup: <span className="text-white">{req.startup?.name || "The Waitlist"}</span></div>
-                    <span className="font-mono text-zinc-600 lowercase tracking-normal">{req.requesterEmail}</span>
+                    <div className="flex items-center gap-2">
+                      <HiOutlineBuildingOffice2 className="w-4 h-4 text-[#D4AF37]" /> 
+                      Startup: <span className="text-white">{req.startup?.name || "The Waitlist"}</span>
+                    </div>
+                   
+                    {req.startup && !req.startup.approved && (
+                      <button 
+                        onClick={() => handleApproveStartup(req.startup!.id)}
+                        className="flex items-center gap-2 text-[#D4AF37] hover:text-white transition-colors"
+                      >
+                        <HiOutlineCheckBadge className="w-4 h-4" />
+                        [PENDING APPROVAL]
+                      </button>
+                    )}
                   </div>
                 </div>
+
                 {req.status === "PENDING" && (
                   <div className="flex items-center gap-4">
-                    <button onClick={() => handleAction(req.id, "APPROVED")} className="px-12 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[#D4AF37] transition-all">Authorize</button>
+                    <button onClick={() => handleAction(req.id, "APPROVED")} className="px-12 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[#D4AF37] transition-all">Authorize Investor</button>
                     <button onClick={() => handleAction(req.id, "REJECTED")} className="p-4 bg-zinc-900 text-zinc-600 hover:text-red-500 border border-white/5 rounded-2xl transition-all"><HiOutlineXCircle className="w-6 h-6" /></button>
                   </div>
                 )}

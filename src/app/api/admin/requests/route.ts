@@ -16,33 +16,53 @@ export async function GET(request: Request) {
     }
 
     
-    const requests = await prisma.accessRequest.findMany({
-      where: status === 'ALL' ? {} : { 
-        status: status as any 
-      },
-      orderBy: { createdAt: 'desc' },
-      
-      
-      include: {
-        startup: {
-          select: { 
-            name: true,
-            tier: true,
-            category: true
+    try {
+      const requests = await prisma.accessRequest.findMany({
+        where: status === 'ALL' ? {} : { 
+          status: status as any 
+        },
+        orderBy: { createdAt: 'desc' },
+        include: {
+          startup: {
+            select: { 
+              name: true,
+              tier: true,
+              category: true
+            }
           }
         }
-      }
-    });
+      });
 
-    return NextResponse.json({ 
-      success: true,
-      timestamp: new Date().toISOString(),
-      count: requests.length,
-      requests 
-    });
+      return NextResponse.json({ 
+        success: true,
+        count: requests.length,
+        requests 
+      });
+
+    } catch (relationError) {
+      
+      console.warn("⚠️ Database Relation Mismatch: Fetching raw access signals.");
+      
+      const rawRequests = await prisma.accessRequest.findMany({
+        where: status === 'ALL' ? {} : { 
+          status: status as any 
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      return NextResponse.json({ 
+        success: true,
+        count: rawRequests.length,
+        requests: rawRequests,
+        warning: "Model relationship sync required in schema.prisma" 
+      });
+    }
 
   } catch (error: any) {
     console.error("🛡️ Guardian Fetch Error:", error);
-    return NextResponse.json({ error: 'Signal Error: Database Sync Failed' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Signal Error: Database Sync Failed',
+      details: error.message 
+    }, { status: 500 });
   }
 }

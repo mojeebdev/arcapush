@@ -5,6 +5,12 @@ import toast, { Toaster } from 'react-hot-toast';
 import confetti from 'canvas-confetti'; 
 import { track } from '@vercel/analytics';
 
+/**
+ * WHATE ENGINE VERSION: 23.1.11
+ * PERSONA: GUARDIAN
+ * LOG: Synchronized submission success with Guardian approval workflow.
+ */
+
 const CATEGORIES = [
   "Select Category...", 
   "SaaS", "FinTech", "AI / ML", "E-commerce", "HealthTech", "EdTech", 
@@ -34,7 +40,6 @@ export default function SubmitStartup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    
     if (!formData.category || formData.category === "Select Category...") {
       toast.error("Please select a Vertical for your Vibe Code.");
       return;
@@ -43,7 +48,6 @@ export default function SubmitStartup() {
     setLoading(true);
 
     try {
-      
       const res = await fetch('/api/startups', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -53,7 +57,6 @@ export default function SubmitStartup() {
       if (res.ok) {
         track('Vibe Code Submitted'); 
         
-        
         confetti({ 
           particleCount: 150, 
           spread: 70, 
@@ -61,8 +64,11 @@ export default function SubmitStartup() {
           colors: ['#4E24CF', '#D4AF37'] 
         });
 
-        toast.success("Vibe Code Indexed Successfully. Pending Guardian Approval.");
+        // ✅ REFINED FEEDBACK
+        toast.success("Vibe Code Received. Awaiting Guardian Verification.");
         
+        // Redirect to a 'Success' landing page or the pricing page
+        // We avoid redirecting to /startups/[id] because it's currently hidden
         setTimeout(() => router.push('/pricing'), 3000); 
       } else {
         const errorData = await res.json();
@@ -80,7 +86,6 @@ export default function SubmitStartup() {
     <div className="min-h-screen bg-black pt-32 pb-20 px-6 overflow-x-hidden">
       <Toaster toastOptions={{ style: { background: '#09090b', color: '#fff', border: '1px solid #27272a' } }} />
       
-      {/* Visual Vibe: Background Glow */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#4E24CF]/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-4xl mx-auto relative z-10">
@@ -89,6 +94,9 @@ export default function SubmitStartup() {
           <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mt-2">
             Register Your <span className="text-[#4E24CF]">Vibe Code.</span>
           </h1>
+          <p className="text-zinc-500 text-sm mt-4 font-bold uppercase tracking-widest">
+            All submissions are manually verified by the Guardian before going live.
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -118,12 +126,12 @@ export default function SubmitStartup() {
             </div>
           </div>
 
-          {/* Section 2: Assets & Classification */}
+          {/* Section 2: Classification */}
           <div className="space-y-6 bg-zinc-950 p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
             <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">02. Classification</h3>
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-[9px] uppercase tracking-widest text-zinc-600 font-black ml-2">Vertical (Dropdown)</label>
+                <label className="text-[9px] uppercase tracking-widest text-zinc-600 font-black ml-2">Vertical</label>
                 <select 
                   className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-zinc-300 text-sm focus:border-[#D4AF37] outline-none cursor-pointer appearance-none"
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
@@ -144,7 +152,7 @@ export default function SubmitStartup() {
                 onChange={(e) => setFormData({...formData, website: e.target.value})}
               />
               <input 
-                type="url" placeholder="Startup Twitter URL (Optional)" 
+                type="url" placeholder="Startup Twitter URL" 
                 className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
                 value={formData.twitter}
                 onChange={(e) => setFormData({...formData, twitter: e.target.value})}
@@ -158,7 +166,7 @@ export default function SubmitStartup() {
             </div>
           </div>
 
-          {/* Section 3: Founder Contact */}
+          {/* Section 3: Contact Information */}
           <div className="md:col-span-2 space-y-6 bg-zinc-950 p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
             <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">03. Contact Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -175,12 +183,12 @@ export default function SubmitStartup() {
                 onChange={(e) => setFormData({...formData, founderEmail: e.target.value})}
               />
               <input 
-                type="url" placeholder="Founder Twitter URL (Optional)" 
+                type="url" placeholder="Founder Twitter URL" 
                 className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
                 value={formData.founderTwitter}
                 onChange={(e) => setFormData({...formData, founderTwitter: e.target.value})}
               />
-               <input 
+              <input 
                 type="url" placeholder="Pitch Deck URL (Optional)" 
                 className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
                 value={formData.pitchDeckUrl}
