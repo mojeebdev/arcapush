@@ -33,10 +33,11 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
   const [step, setStep] = useState<"package" | "chain">("package");
   const [selectedPackage, setSelectedPackage] = useState(AdminConfig.PIN_PACKAGES[0]);
 
-  const isApproved = status === "APPROVED";
+
+  const isApproved = status?.toUpperCase() === "APPROVED";
+  
   const { mutateAsync: sendBaseTx } = useSendTransaction();
 
-  
   const handleBasePay = async () => {
     setLoading(true);
     const toastId = toast.loading("Initiating Base Handshake...");
@@ -68,22 +69,18 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
     } finally { setLoading(false); }
   };
 
-  
   const handleSolanaPay = async () => {
     if (!window.solana) return toast.error("Please install Phantom or Solflare.");
     setLoading(true);
     const toastId = toast.loading("Fetching SOL Market Price...");
 
     try {
-      
       const priceRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
       const priceData = await priceRes.json();
       const solAmount = selectedPackage.price / priceData.solana.usd;
       const lamports = Math.floor(solAmount * LAMPORTS_PER_SOL);
 
-      
       const resp = await window.solana.connect();
-      
       const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
       const { blockhash } = await connection.getLatestBlockhash();
       
@@ -101,7 +98,6 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       const { signature } = await window.solana.signAndSendTransaction(transaction);
       toast.loading("Verifying Solana Signal...", { id: toastId });
 
-      
       const res = await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -153,8 +149,14 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
           <div className="p-8">
             {!isApproved ? (
               <div className="text-center py-10 space-y-6">
-                <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest px-10">Guardian verification pending. Identity must be confirmed before ascension.</p>
-                <button onClick={onClose} className="px-8 py-3 bg-zinc-900 text-white rounded-xl font-black text-[10px] uppercase hover:bg-zinc-800 transition-all">Exit Terminal</button>
+                <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest px-10 leading-relaxed">
+                   Signal Stream Blocked. 
+                   <br/>
+                   The Guardian must authorize this food item before signal ascension is possible.
+                </p>
+                <div className="pt-4">
+                   <button onClick={onClose} className="px-8 py-3 bg-zinc-900 text-white rounded-xl font-black text-[10px] uppercase hover:bg-white hover:text-black transition-all">Return to Feed</button>
+                </div>
               </div>
             ) : (
               <div className="space-y-6">
@@ -178,7 +180,6 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
                   <div className="space-y-3">
                     <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Select Protocol</p>
                     
-                    {/* Base Button */}
                     <button onClick={handleBasePay} disabled={loading} className="w-full p-5 rounded-2xl border border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 flex justify-between items-center group transition-all">
                       <div className="flex items-center gap-3">
                         <HiOutlineGlobeAlt className="w-5 h-5 text-blue-500" />
@@ -187,7 +188,6 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
                       {loading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <span className="text-[9px] text-blue-500/50 font-black">USDC</span>}
                     </button>
                     
-                    {/* Solana Button */}
                     <button onClick={handleSolanaPay} disabled={loading} className="w-full p-5 rounded-2xl border border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 flex justify-between items-center group transition-all">
                       <div className="flex items-center gap-3">
                         <HiOutlineBolt className="w-5 h-5 text-purple-500" />
