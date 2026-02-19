@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import confetti from 'canvas-confetti'; 
-import { track } from '@vercel-analytics';
+import { track } from '@vercel/analytics';
 
 const CATEGORIES = [
   "Select Category...", 
