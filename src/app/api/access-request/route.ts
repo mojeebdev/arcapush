@@ -4,17 +4,14 @@ import { NextResponse } from 'next/server';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-
 export async function GET(req: Request) {
   try {
     const pin = req.headers.get("x-guardian-pin");
 
-    
     if (!pin || pin !== process.env.ADMIN_PIN) {
       return NextResponse.json({ error: "Unauthorized Handshake" }, { status: 401 });
     }
 
-    
     const requests = await prisma.accessRequest.findMany({
       include: {
         startup: {
@@ -34,7 +31,6 @@ export async function GET(req: Request) {
   }
 }
 
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -47,7 +43,6 @@ export async function POST(req: Request) {
       requesterRole = "Investor, VC"
     } = body;
 
-    
     if (startupId && startupId !== "general_access") {
       const startupExists = await prisma.startup.findUnique({
         where: { id: startupId }
@@ -57,7 +52,6 @@ export async function POST(req: Request) {
       }
     }
 
-    /
     const newRequest = await prisma.accessRequest.create({
       data: {
         requesterName,

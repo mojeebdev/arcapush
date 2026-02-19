@@ -71,26 +71,38 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
 
   
   const handleApproveStartup = async (id: string) => {
-    const res = await fetch(`/api/admin/startups/${id}/approve`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", "x-guardian-pin": guardianPin },
-      body: JSON.stringify({ approved: true }),
-    });
-    if (res.ok) {
-      toast.success("Food Item Authorized");
-      fetchData();
+    try {
+      const res = await fetch(`/api/admin/startups/${id}/approve`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "x-guardian-pin": guardianPin },
+        body: JSON.stringify({ approved: true }),
+      });
+      if (res.ok) {
+        toast.success("Food Item Authorized for Feed");
+        fetchData();
+      }
+    } catch (err) {
+      toast.error("Approval failed.");
     }
   };
 
+  
   const handleApproveInvestor = async (id: string, action: "APPROVED" | "REJECTED") => {
-    const res = await fetch(`/api/access-request/${id}/approve`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: action, adminSecret: guardianPin }),
-    });
-    if (res.ok) {
-      toast.success(action === "APPROVED" ? "Investor Authorized" : "Signal Silenced");
-      fetchData();
+    try {
+      const res = await fetch(`/api/access-request/${id}/approve`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          status: action, 
+          adminSecret: guardianPin 
+        }),
+      });
+      if (res.ok) {
+        toast.success(action === "APPROVED" ? "Investor Authorized" : "Signal Silenced");
+        fetchData();
+      }
+    } catch (err) {
+      toast.error("Handshake failed.");
     }
   };
 
@@ -107,10 +119,10 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
     <div className="space-y-8">
       {/* 🛡️ Primary View Toggle */}
       <div className="flex bg-zinc-900/50 p-1 rounded-3xl border border-white/5 w-fit">
-        {["SUBMISSIONS", "SIGNALS"].map((v) => (
+        {(["SUBMISSIONS", "SIGNALS"] as const).map((v) => (
           <button
             key={v}
-            onClick={() => setView(v as any)}
+            onClick={() => setView(v)}
             className={`px-8 py-3 rounded-2xl text-[10px] font-black tracking-widest transition-all ${
               view === v ? "bg-white text-black shadow-xl" : "text-zinc-500 hover:text-white"
             }`}
@@ -126,7 +138,7 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
             key={s}
             onClick={() => setFilter(s)}
             className={`px-6 py-2 rounded-full text-[9px] font-black uppercase tracking-widest border ${
-              filter === s ? "bg-[#4E24CF] border-[#4E24CF] text-white" : "bg-zinc-900 text-zinc-500 border-white/5"
+              filter === s ? "bg-[#4E24CF] border-[#4E24CF] text-white" : "bg-zinc-900 text-zinc-500 border-white/5 hover:text-white"
             }`}
           >
             {s}
@@ -144,60 +156,83 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
       ) : (
         <div className="grid gap-6">
           {view === "SUBMISSIONS" ? (
-            filteredStartups.map((startup) => (
-              <div key={startup.id} className="group bg-zinc-950 border border-white/5 rounded-[2.5rem] p-8 hover:border-[#4E24CF]/30 transition-all">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-4">
-                      <span className={`px-3 py-1 rounded-full border text-[8px] font-black uppercase ${startup.approved ? 'text-emerald-400 border-emerald-400/20' : 'text-[#D4AF37] border-[#D4AF37]/20'}`}>
-                        {startup.approved ? "LIVE" : "UNAUTHORIZED"}
-                      </span>
-                      <span className="text-[9px] font-black text-[#4E24CF] uppercase tracking-widest">{startup.category}</span>
+            // --- STARTUP VIEW ---
+            filteredStartups.length === 0 ? (
+              <EmptyState message="No Submissions Found" />
+            ) : (
+              filteredStartups.map((startup) => (
+                <div key={startup.id} className="group bg-zinc-950 border border-white/5 rounded-[2.5rem] p-8 hover:border-[#4E24CF]/30 transition-all">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-4">
+                        <span className={`px-3 py-1 rounded-full border text-[8px] font-black uppercase ${startup.approved ? 'text-emerald-400 border-emerald-400/20' : 'text-[#D4AF37] border-[#D4AF37]/20'}`}>
+                          {startup.approved ? "LIVE" : "UNAUTHORIZED"}
+                        </span>
+                        <span className="text-[9px] font-black text-[#4E24CF] uppercase tracking-widest">{startup.category}</span>
+                      </div>
+                      <h4 className="text-3xl font-black text-white italic tracking-tighter uppercase">{startup.name}</h4>
+                      <p className="text-zinc-500 text-sm italic">{startup.tagline}</p>
+                      <div className="flex items-center gap-4 text-[10px] text-zinc-600 font-bold uppercase pt-2">
+                        <span className="text-white">Founder: {startup.founderName}</span>
+                        <span>{startup.founderEmail}</span>
+                      </div>
                     </div>
-                    <h4 className="text-3xl font-black text-white italic tracking-tighter uppercase">{startup.name}</h4>
-                    <p className="text-zinc-500 text-sm">{startup.tagline}</p>
-                    <div className="flex items-center gap-4 text-[10px] text-zinc-600 font-bold uppercase pt-2">
-                      <span className="text-white">Founder: {startup.founderName}</span>
-                      <span>{startup.founderEmail}</span>
-                    </div>
+                    {!startup.approved && (
+                      <button onClick={() => handleApproveStartup(startup.id)} className="px-10 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase hover:bg-[#D4AF37] transition-all">
+                        Authorize Entry
+                      </button>
+                    )}
                   </div>
-                  {!startup.approved && (
-                    <button onClick={() => handleApproveStartup(startup.id)} className="px-10 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase hover:bg-[#D4AF37] transition-all">
-                      Authorize Entry
-                    </button>
-                  )}
                 </div>
-              </div>
-            ))
+              ))
+            )
           ) : (
-            filteredRequests.map((req) => (
-              <div key={req.id} className="group bg-zinc-950 border border-white/5 rounded-[2.5rem] p-8 hover:border-[#D4AF37]/30 transition-all">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-4">
-                      <span className={`px-3 py-1 rounded-full border text-[8px] font-black uppercase ${req.status === 'APPROVED' ? 'text-emerald-400 border-emerald-400/20' : 'text-[#D4AF37] border-[#D4AF37]/20'}`}>
-                        {req.status}
-                      </span>
-                      <span className="text-[9px] font-black text-[#D4AF37] uppercase tracking-widest">Investor Signal</span>
+            // --- INVESTOR SIGNALS VIEW ---
+            filteredRequests.length === 0 ? (
+              <EmptyState message="No Investor Signals" />
+            ) : (
+              filteredRequests.map((req) => (
+                <div key={req.id} className="group bg-zinc-950 border border-white/5 rounded-[2.5rem] p-8 hover:border-[#D4AF37]/30 transition-all">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-4">
+                        <span className={`px-3 py-1 rounded-full border text-[8px] font-black uppercase ${req.status === 'APPROVED' ? 'text-emerald-400 border-emerald-400/20' : 'text-[#D4AF37] border-[#D4AF37]/20'}`}>
+                          {req.status}
+                        </span>
+                        <span className="text-[9px] font-black text-[#D4AF37] uppercase tracking-widest">Signal Request</span>
+                      </div>
+                      <h4 className="text-3xl font-black text-white italic tracking-tighter uppercase">{req.requesterName} @ {req.requesterFirm}</h4>
+                      <div className="flex items-center gap-2 text-zinc-500 text-[10px] font-bold uppercase italic">
+                        <HiOutlineBuildingOffice2 className="w-4 h-4 text-[#4E24CF]" />
+                        Target: <span className="text-white">{req.startup?.name || "General Terminal Access"}</span>
+                      </div>
                     </div>
-                    <h4 className="text-3xl font-black text-white italic tracking-tighter uppercase">{req.requesterName} @ {req.requesterFirm}</h4>
-                    <div className="flex items-center gap-2 text-zinc-500 text-[10px] font-bold uppercase">
-                      <HiOutlineBuildingOffice2 className="w-4 h-4 text-[#4E24CF]" />
-                      Target: <span className="text-white">{req.startup?.name || "General Access"}</span>
-                    </div>
+                    {req.status === "PENDING" && (
+                      <div className="flex gap-3">
+                        <button onClick={() => handleApproveInvestor(req.id, "APPROVED")} className="px-8 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase hover:bg-emerald-400 transition-all">
+                          Grant Access
+                        </button>
+                        <button onClick={() => handleApproveInvestor(req.id, "REJECTED")} className="p-4 bg-zinc-900 text-zinc-600 hover:text-red-500 rounded-2xl transition-colors">
+                          <HiOutlineXCircle className="w-6 h-6" />
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  {req.status === "PENDING" && (
-                    <div className="flex gap-3">
-                      <button onClick={() => handleApproveInvestor(req.id, "APPROVED")} className="px-8 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase hover:bg-emerald-400 transition-all">Grant Access</button>
-                      <button onClick={() => handleApproveInvestor(req.id, "REJECTED")} className="p-4 bg-zinc-900 text-zinc-600 hover:text-red-500 rounded-2xl"><HiOutlineXCircle className="w-6 h-6" /></button>
-                    </div>
-                  )}
                 </div>
-              </div>
-            ))
+              ))
+            )
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+function EmptyState({ message }: { message: string }) {
+  return (
+    <div className="bg-zinc-950 border border-white/5 rounded-[3rem] p-32 text-center shadow-2xl">
+      <HiOutlineClock className="w-16 h-16 text-zinc-900 mx-auto mb-6" />
+      <p className="text-zinc-700 font-black uppercase tracking-[0.5em] text-[10px]">{message}</p>
     </div>
   );
 }
