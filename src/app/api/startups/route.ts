@@ -2,6 +2,25 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { StartupTier } from "@prisma/client";
 
+
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const pin = req.headers.get('x-guardian-pin');
+    const isAdmin = pin === process.env.ADMIN_PIN;
+
+    
+    const startups = await prisma.startup.findMany({
+      where: isAdmin ? {} : { approved: true }, 
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return NextResponse.json({ startups });
+  } catch (error: any) {
+    return NextResponse.json({ error: "Signal Failure" }, { status: 500 });
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
