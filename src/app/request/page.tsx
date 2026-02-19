@@ -12,6 +12,7 @@ import {
 
 function RequestForm() {
   const searchParams = useSearchParams();
+  
   const startupId = searchParams.get("startupId") || "general_access";
   const startupName = searchParams.get("name") || "VibeStream Network";
 
@@ -29,13 +30,20 @@ function RequestForm() {
     setLoading(true);
 
     try {
+     
+      const payload = {
+        requesterName: formData.name,     
+        requesterEmail: formData.email,   
+        requesterFirm: formData.firm,      
+        requesterLinkedIn: formData.linkedIn, 
+        status: "PENDING",                 
+        startupId: startupId,              
+      };
+
       const res = await fetch("/api/access-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          startupId: startupId, 
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();

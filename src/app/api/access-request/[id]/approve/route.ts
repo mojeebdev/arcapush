@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Resend } from 'resend';
 import { RequestStatus } from '@prisma/client'; 
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(
@@ -32,7 +33,7 @@ export async function POST(
       const startup = updatedRequest.startup;
 
       
-      if (startup && updatedRequest.startupId !== 'general_access') {
+      if (startup && updatedRequest.startupId && updatedRequest.startupId !== 'general_access') {
         await resend.emails.send({
           from: 'Guardian <system@vibestream.cc>',
           to: updatedRequest.requesterEmail,
@@ -72,7 +73,7 @@ export async function POST(
               </div>
               
               <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;" />
-              <p style="font-size: 10px; color: #666; letter-spacing: 0.3em; text-align: center;">VIBESTREAM.CC | V10.2.0</p>
+              <p style="font-size: 10px; color: #666; letter-spacing: 0.3em; text-align: center;">VIBESTREAM.CC </p>
             </div>
           `
         });

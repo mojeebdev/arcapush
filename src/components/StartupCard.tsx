@@ -22,18 +22,12 @@ interface StartupCardProps {
   variant: "ticker" | "grid";
 }
 
-export function StartupCard({ startup, variant }: StartupCardProps) {
-  
-  
-  if (startup.name === "General Waitlist") {
-    return null;
-  }
-
+export function StartupCard({ startup, variant }: StartupCardProps) 
   if (variant === "ticker") {
     return (
       <div className="bg-zinc-950 border border-white/5 rounded-[2rem] overflow-hidden group shadow-[0_0_50px_-20px_rgba(78,36,207,0.2)]">
         <div className="flex flex-col lg:flex-row">
-          {/* 🌑 Visual Signal with Deep Gradients */}
+          {/* 🌑 Visual Signal */}
           <div className="relative lg:w-1/2 h-[220px] lg:h-[380px] overflow-hidden">
             <Image
               src={startup.bannerUrl}
@@ -69,10 +63,14 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
                   />
                 </div>
               )}
-              <h3 className="text-4xl lg:text-5xl font-black text-white uppercase tracking-tighter leading-none">{startup.name}</h3>
+              <h3 className="text-4xl lg:text-5xl font-black text-white uppercase tracking-tighter leading-none">
+                {startup.name}
+              </h3>
             </div>
 
-            <p className="text-[#D4AF37] font-bold text-xs mb-3 tracking-[0.1em] uppercase">{startup.tagline}</p>
+            <p className="text-[#D4AF37] font-bold text-xs mb-3 tracking-[0.1em] uppercase">
+              {startup.tagline}
+            </p>
             <p className="text-zinc-500 text-sm font-medium line-clamp-2 mb-10 leading-relaxed">
               {startup.problemStatement}
             </p>
@@ -113,7 +111,7 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
             </span>
           </div>
         </div>
-        
+
         <div className="p-8 flex-grow">
           <div className="flex items-center gap-3 mb-4">
             {startup.logoUrl && (
@@ -135,7 +133,7 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
             {startup.problemStatement}
           </p>
         </div>
-        
+
         <div className="h-1 w-0 bg-[#D4AF37] group-hover:w-full transition-all duration-500" />
       </motion.div>
     </Link>

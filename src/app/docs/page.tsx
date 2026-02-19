@@ -86,7 +86,7 @@ export default function DocsPage() {
       <div className="mt-20 p-10 rounded-[3rem] bg-gradient-to-b from-[#4E24CF]/10 to-transparent border border-[#4E24CF]/20 text-center">
         <h3 className="text-sm font-black uppercase tracking-[0.5em] mb-4">Need Human Assistance?</h3>
         <p className="text-zinc-400 mb-8 font-playfair italic">Our Guardians are standing by for institutional inquiries.</p>
-        <a href="mailto:support@vibestream.cc" className="royal-button inline-block">
+        <a href="mailto:blindspotlabs1@gmail.com" className="royal-button inline-block">
           Contact Support
         </a>
       </div>

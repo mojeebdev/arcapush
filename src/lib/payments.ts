@@ -10,25 +10,27 @@ export interface PaymentVerification {
   currency: string;
 }
 
-const USDC_BASE_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+const USDC_BASE_ADDRESS = AdminConfig.USDC_CONTRACT_BASE;
 const TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"; 
+
 
 export async function verifyBasePayment(txHash: string): Promise<PaymentVerification> {
   try {
     const provider = new ethers.JsonRpcProvider("https://mainnet.base.org");
     const receipt = await provider.getTransactionReceipt(txHash);
 
-    if (!receipt || receipt.status !== 1) throw new Error("Invalid receipt");
+    if (!receipt || receipt.status !== 1) throw new Error("Invalid or failed receipt");
+
+    const targetWallet = AdminConfig.PAYMENT_WALLET_BASE?.toLowerCase();
+    if (!targetWallet) throw new Error("Base Payment Vault is not configured.");
 
     
-    const targetWallet = AdminConfig.PAYMENT_WALLET_BASE?.toLowerCase().replace('0x', '');
-    if (!targetWallet) throw new Error("Base Payment Vault address is not configured.");
-
-    const usdcLog = receipt.logs.find(log => 
-      log.address.toLowerCase() === USDC_BASE_ADDRESS.toLowerCase() &&
-      log.topics[0] === TRANSFER_TOPIC &&
-      log.topics[2].toLowerCase().includes(targetWallet)
-    );
+    const usdcLog = receipt.logs.find(log => {
+      const isUSDC = log.address.toLowerCase() === USDC_BASE_ADDRESS.toLowerCase();
+      const isTransfer = log.topics[0] === TRANSFER_TOPIC;
+      const toAddress = log.topics[2] ? ethers.getAddress(`0x${log.topics[2].slice(26)}`).toLowerCase() : "";
+      return isUSDC && isTransfer && toAddress === targetWallet;
+    });
 
     if (!usdcLog) throw new Error("No matching USDC transfer to your vault found");
 
@@ -40,10 +42,11 @@ export async function verifyBasePayment(txHash: string): Promise<PaymentVerifica
       currency: "USDC",
     };
   } catch (err) {
-    console.error("Base Verification Fail:", err);
+    console.error("🛡️ Base Verification Failure:", err);
     return { verified: false, chain: "base", txHash, amount: "0", currency: "USDC" };
   }
 }
+
 
 export async function verifySolanaPayment(txHash: string): Promise<PaymentVerification> {
   try {
@@ -52,16 +55,20 @@ export async function verifySolanaPayment(txHash: string): Promise<PaymentVerifi
       maxSupportedTransactionVersion: 0 
     });
 
-    if (!tx || tx.meta?.err) throw new Error("Transaction not found or failed");
+    if (!tx || tx.meta?.err) throw new Error("Transaction failed or not found");
+
+    const solVault = AdminConfig.PAYMENT_WALLET_SOLANA;
+    if (!solVault) throw new Error("Solana Payment Vault is not configured.");
 
     
-    const solVault = AdminConfig.PAYMENT_WALLET_SOL;
-    if (!solVault) throw new Error("Solana Payment Vault address is not configured.");
-
-    const destinationFound = tx.transaction.message.instructions.some((ix: any) => 
-      ix.parsed?.info?.destination === solVault ||
-      ix.parsed?.info?.newAccount === solVault
-    );
+    const destinationFound = tx.transaction.message.instructions.some((ix: any) => {
+     
+      const nativeTarget = ix.parsed?.info?.destination === solVault;
+      
+      const tokenTarget = ix.parsed?.info?.authority === solVault || ix.meta?.postTokenBalances?.some((b: any) => b.owner === solVault);
+      
+      return nativeTarget || tokenTarget;
+    });
 
     if (!destinationFound) throw new Error("Receiver does not match your vault");
 
@@ -70,10 +77,10 @@ export async function verifySolanaPayment(txHash: string): Promise<PaymentVerifi
       chain: "solana",
       txHash,
       amount: "Verified",
-      currency: "USDC/SOL",
+      currency: "SOL/USDC",
     };
   } catch (err) {
-    console.error("Solana Verification Fail:", err);
+    console.error("🛡️ Solana Verification Failure:", err);
     return { verified: false, chain: "solana", txHash, amount: "0", currency: "SOL" };
   }
 }

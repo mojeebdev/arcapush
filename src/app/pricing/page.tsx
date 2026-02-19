@@ -1,116 +1,132 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
-import { ethers } from "ethers";
-// import * as solanaWeb3 from "@solana/web3.js"; // 
-import { 
-  HiCheck, 
-  HiOutlineShieldCheck,
-  HiOutlineGlobeAlt,
-  HiOutlineBolt
-} from "react-icons/hi2";
-
-
-declare global {
-  interface Window {
-    ethereum?: any;
-    solana?: any;
-  }
-}
-
-const BASE_RECEIVER = "0x16a067b833d37f198b04ea685b3e89a0280eac7c";
-// const SOL_RECEIVER = "7FHgVSbCptaLFNBcUouDXWUboChNnDSbF7Au71LMkwgr"; 
-const USDC_BASE_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
-
-const plans = [
-  { label: "30 Mins", price: "25", rotations: "90", perks: ["90 Rotations (20s each)", "Permanent Encyclopedia Entry", "Search Engine Indexed"], featured: false },
-  { label: "1 Day", price: "150", rotations: "4,320", perks: ["4,320 Rotations", "Thoughtful X Storytelling Post", "Permanent Presence", "Discovery Feed Priority"], featured: true },
-  { label: "1 Week", price: "600", rotations: "30,240", perks: ["30,240 Rotations", "X Storytelling Post", "1-on-1 Marketing Call", "Verified Vibe Badge"], featured: false },
-  { label: "1 Month", price: "1,800", rotations: "129,600", perks: ["129,600 Rotations", "Lifetime Encyclopedia Entry", "VC Access Channel", "Founder Strategy Retainer"], featured: false }
-];
+import { HiOutlineGlobeAlt, HiOutlineBolt, HiOutlineSearch } from "react-icons/hi2";
+import { useSendTransaction } from 'wagmi';
+import { parseUnits } from 'viem';
+import { AdminConfig } from "@/lib/adminConfig";
+import * as solanaWeb3 from "@solana/web3.js";
 
 export default function PricingPage() {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedStartupId, setSelectedStartupId] = useState<string>("");
+  const [approvedStartups, setApprovedStartups] = useState<any[]>([]);
+  const { mutateAsync: sendBaseTx } = useSendTransaction();
 
-  const payWithBase = async (amount: string) => {
-    if (!window.ethereum) throw new Error("Please install Coinbase Wallet or MetaMask");
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner();
-    const abi = ["function transfer(address to, uint256 amount) returns (bool)"];
-    const usdcContract = new ethers.Contract(USDC_BASE_ADDRESS, abi, signer);
-    const tokens = ethers.parseUnits(amount, 6);
-    const tx = await usdcContract.transfer(BASE_RECEIVER, tokens);
-    return tx.wait();
-  };
+  useEffect(() => {
+    const fetchApproved = async () => {
+      const res = await fetch('/api/startups?status=APPROVED');
+      const data = await res.json();
+      setApprovedStartups(data.startups || []);
+    };
+    fetchApproved();
+  }, []);
 
-  const payWithSolana = async (_amount: string) => {
-    if (!window.solana) throw new Error("Please install Phantom or Solflare");
-    await window.solana.connect();
-    toast.success("Phantom Connected. Transmission logic coming in next Whate Engine update.");
-  };
-
-  const handlePayment = async (chain: 'BASE' | 'SOLANA', price: string) => {
+  // 🚀 BASE: STATIC USDC (1:1 with USD)
+  const handleBasePayment = async (plan: any) => {
+    if (!selectedStartupId) return toast.error("Select a startup first.");
     setIsProcessing(true);
-    const toastId = toast.loading(`Preparing ${chain} Transmission...`);
+    const toastId = toast.loading("Connecting to Base...");
     try {
-      if (chain === 'BASE') {
-        await payWithBase(price);
-      } else {
-        await payWithSolana(price);
-      }
-      toast.success("Signal Verified. Transaction Indexed.", { id: toastId });
+      const hash = await sendBaseTx({
+        to: AdminConfig.PAYMENT_WALLET_BASE as `0x${string}`,
+        value: parseUnits(plan.price, 6), 
+      });
+      await fetch("/api/pin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ startupId: selectedStartupId, chain: "base", txHash: hash, packageValue: plan.value }),
+      });
+      toast.success("🚀 Base Ascension Complete!", { id: toastId });
     } catch (err: any) {
-      toast.error(err.message || "Transaction Aborted", { id: toastId });
-    } finally {
-      setIsProcessing(false);
-    }
+      toast.error(err.message || "Base Error", { id: toastId });
+    } finally { setIsProcessing(false); }
+  };
+
+  
+  const handleSolanaPayment = async (plan: any) => {
+    if (!selectedStartupId) return toast.error("Select a startup first.");
+    if (!window.solana) return toast.error("Wallet not found.");
+
+    setIsProcessing(true);
+    const toastId = toast.loading("Fetching Market Oracle...");
+
+    try {
+      // 1. Get Real-Time SOL Price
+      const priceRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
+      const priceData = await priceRes.json();
+      const solPriceInUsd = priceData.solana.usd;
+
+      // 2. Calculate Exact SOL Amount ($150 / $SOL_Price)
+      const usdAmount = parseFloat(plan.price);
+      const solAmount = usdAmount / solPriceInUsd;
+      const lamports = Math.floor(solAmount * solanaWeb3.LAMPORTS_PER_SOL);
+
+      toast.loading(`Transmitting ${solAmount.toFixed(4)} SOL...`, { id: toastId });
+
+      // 3. Handshake with Wallet
+      const resp = await window.solana.connect();
+      const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl("mainnet-beta"));
+      const { blockhash } = await connection.getLatestBlockhash();
+      
+      const transaction = new solanaWeb3.Transaction({
+        recentBlockhash: blockhash,
+        feePayer: resp.publicKey
+      }).add(
+        solanaWeb3.SystemProgram.transfer({
+          fromPubkey: resp.publicKey,
+          toPubkey: new solanaWeb3.PublicKey(AdminConfig.PAYMENT_WALLET_SOLANA),
+          lamports: lamports,
+        })
+      );
+
+      const { signature } = await window.solana.signAndSendTransaction(transaction);
+      
+      
+      await fetch("/api/pin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ startupId: selectedStartupId, chain: "solana", txHash: signature, packageValue: plan.value }),
+      });
+
+      toast.success("🔥 Solana Ascension Complete!", { id: toastId });
+    } catch (err: any) {
+      toast.error(err.message || "Solana Error", { id: toastId });
+    } finally { setIsProcessing(false); }
   };
 
   return (
-    <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto">
+    <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto min-h-screen">
       <Toaster position="bottom-right" />
-      <motion.section 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-16 p-8 rounded-[3rem] bg-zinc-900/10 border border-[#D4AF37]/20 flex flex-col md:flex-row items-center justify-between gap-6 backdrop-blur-3xl"
-      >
-        <div className="flex items-center gap-6">
-          <div className="w-14 h-14 rounded-full bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/20">
-            <HiOutlineShieldCheck className="w-7 h-7 text-[#D4AF37]" />
-          </div>
-          <div>
-            <h4 className="text-sm font-black text-white uppercase tracking-[0.3em]">The Perpetual Standard</h4>
-            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Every Vibe Code is indexed forever.</p>
-          </div>
+      
+      <section className="mb-12 max-w-xl mx-auto">
+        <div className="p-6 rounded-[2rem] bg-zinc-900/50 border border-white/5 backdrop-blur-xl text-center">
+          <label className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.3em] mb-4 block">Identity Approved Signal</label>
+          <select value={selectedStartupId} onChange={(e) => setSelectedStartupId(e.target.value)} className="w-full bg-black border border-white/10 rounded-xl px-4 py-4 text-xs font-bold text-white outline-none">
+            <option value="">Select your startup...</option>
+            {approvedStartups.map(s => <option key={s.id} value={s.id}>{s.name.toUpperCase()}</option>)}
+          </select>
         </div>
-      </motion.section>
+      </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-        {plans.map((plan) => (
-          <motion.div key={plan.label} className={`relative rounded-[3rem] p-10 bg-zinc-950/80 border ${plan.featured ? 'border-[#4E24CF]' : 'border-white/5'} flex flex-col backdrop-blur-md`}>
-            <div className="flex justify-between items-start mb-6">
-              <h3 className="text-2xl font-black text-white uppercase tracking-tighter italic">{plan.label}</h3>
-              <span className="text-[10px] font-black text-[#D4AF37]">{plan.rotations} Rots.</span>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {AdminConfig.PIN_PACKAGES.map((plan) => (
+          <motion.div key={plan.label} className={`relative rounded-[3rem] p-10 bg-zinc-950/80 border ${plan.featured ? 'border-[#4E24CF]' : 'border-white/5'} flex flex-col`}>
+            <h3 className="text-2xl font-black text-white uppercase italic mb-6">{plan.label}</h3>
             <div className="flex items-baseline gap-1 mb-8">
               <span className="text-5xl font-black text-white">${plan.price}</span>
-              <span className="text-zinc-600 text-[10px] font-black italic">USDC</span>
+              <span className="text-zinc-600 text-[10px] font-black italic">USD VALUE</span>
             </div>
-            <ul className="space-y-4 mb-12 flex-grow">
-              {plan.perks.map((perk) => (
-                <li key={perk} className="flex items-start gap-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                  <HiCheck className={`w-4 h-4 mt-0.5 ${plan.featured ? 'text-[#4E24CF]' : 'text-zinc-700'}`} /> {perk}
-                </li>
-              ))}
-            </ul>
-            <div className="space-y-3">
-              <button onClick={() => handlePayment('BASE', plan.price)} disabled={isProcessing} className="w-full py-4 rounded-2xl font-black text-[10px] bg-blue-600 text-white hover:bg-blue-500 transition-all flex items-center justify-center gap-2">
-                <HiOutlineGlobeAlt className="w-4 h-4" /> Base USDC
+            
+            <div className="space-y-3 mt-auto">
+              <button onClick={() => handleBasePayment(plan)} disabled={isProcessing || !selectedStartupId} className="w-full py-4 rounded-2xl font-black text-[10px] bg-blue-600 text-white hover:bg-blue-500 flex items-center justify-center gap-2 uppercase tracking-widest transition-all">
+                <HiOutlineGlobeAlt className="w-5 h-5" /> Pay USDC (Base)
               </button>
-              <button onClick={() => handlePayment('SOLANA', plan.price)} disabled={isProcessing} className="w-full py-4 rounded-2xl font-black text-[10px] bg-white text-black hover:bg-[#D4AF37] transition-all flex items-center justify-center gap-2">
-                <HiOutlineBolt className="w-4 h-4" /> Solana USDC
+
+              <button onClick={() => handleSolanaPayment(plan)} disabled={isProcessing || !selectedStartupId} className="w-full py-4 rounded-2xl font-black text-[10px] bg-white text-black hover:bg-[#D4AF37] flex items-center justify-center gap-2 uppercase tracking-widest transition-all">
+                <HiOutlineBolt className="w-5 h-5" /> Pay SOL (Dynamic)
               </button>
             </div>
           </motion.div>

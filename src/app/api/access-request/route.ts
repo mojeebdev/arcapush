@@ -36,9 +36,7 @@ export async function POST(req: Request) {
         requesterLinkedIn, 
         status: "PENDING",
         
-        startup: {
-          connect: { id: startupId === "general_access" ? "YOUR_GENERAL_ID_HERE" : startupId }
-        }
+        startupId: startupId === "general_access" ? null : startupId, 
       },
     });
 
@@ -59,19 +57,18 @@ export async function POST(req: Request) {
       `
     });
 
-    
+   
     await resend.emails.send({
       from: 'System <system@vibestream.cc>',
       to: 'blindspotlabs1@gmail.com', 
       subject: `🚨 Investor Request: ${requesterFirm}`,
-      text: `${requesterName} (${requesterRole}) from ${requesterFirm} wants access to ${startupId}. Approve them in the admin dashboard.`
+      text: `${requesterName} (${requesterRole}) from ${requesterFirm} wants access to ${startupId}.`
     });
 
     return NextResponse.json({ success: true, requestId: newRequest.id }, { status: 200 });
 
   } catch (error: any) {
     console.error("Transmission Error:", error);
-    
     return NextResponse.json({ error: 'Transmission Lost', details: error.message }, { status: 500 });
   }
 }
