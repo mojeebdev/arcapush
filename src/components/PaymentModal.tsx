@@ -48,23 +48,25 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
 
   const { writeContractAsync } = useWriteContract();
 
-  
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const handleBasePay = async () => {
+    
+    const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_BASE;
+    const usdcContract = process.env.NEXT_PUBLIC_BASE_USDC_ADDRESS;
+
+    if (!destination || !usdcContract) {
+      return toast.error("Guardian configuration incomplete for Base.");
+    }
+
     setLoading(true);
     const toastId = toast.loading("Verifying Base USDC Path...");
     try {
-      const destination = AdminConfig.PAYMENT_WALLET_BASE;
-      if (!destination || destination === "MISSING_CONFIG") {
-        throw new Error("Guardian wallet address is not set in .env");
-      }
-
       
       const hash = await writeContractAsync({
-        address: AdminConfig.USDC_CONTRACT_BASE as `0x${string}`,
+        address: usdcContract as `0x${string}`,
         abi: USDC_ABI,
         functionName: 'transfer',
         args: [
@@ -87,7 +89,7 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      toast.success("🔥 Signal Boosted on Base!", { id: toastId });
+      toast.success("🚀 Signal Boosted on Base!", { id: toastId });
       onSuccess?.(data);
       onClose();
     } catch (err: any) {
@@ -98,6 +100,13 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
 
   const handleSolanaPay = async () => {
     if (!window.solana) return toast.error("Please install Phantom or Solflare.");
+    
+    
+    const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_SOLANA;
+    if (!destination) {
+      return toast.error("Guardian configuration incomplete for Solana.");
+    }
+
     setLoading(true);
     const toastId = toast.loading("Fetching SOL Market Price...");
 
@@ -117,7 +126,8 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       }).add(
         SystemProgram.transfer({
           fromPubkey: resp.publicKey,
-          toPubkey: new PublicKey(AdminConfig.PAYMENT_WALLET_SOLANA),
+          
+          toPubkey: new PublicKey(destination),
           lamports: lamports,
         })
       );
@@ -197,7 +207,7 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
                 <div className="space-y-3">
                   <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Select Protocol</p>
                   
-                  <button onClick={handleBasePay} disabled={loading} className="w-full p-5 rounded-2xl border border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 flex justify-between items-center group transition-all">
+                  <button onClick={handleBasePay} disabled={loading} className="w-full p-5 rounded-2xl border border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 flex justify-between items-center group transition-all disabled:opacity-30">
                     <div className="flex items-center gap-3">
                       <HiOutlineGlobeAlt className="w-5 h-5 text-blue-500" />
                       <span className="text-white font-black text-xs uppercase italic">Base One-Tap</span>
@@ -205,7 +215,7 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
                     {loading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <span className="text-[9px] text-blue-500/50 font-black">USDC</span>}
                   </button>
                   
-                  <button onClick={handleSolanaPay} disabled={loading} className="w-full p-5 rounded-2xl border border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 flex justify-between items-center group transition-all">
+                  <button onClick={handleSolanaPay} disabled={loading} className="w-full p-5 rounded-2xl border border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 flex justify-between items-center group transition-all disabled:opacity-30">
                     <div className="flex items-center gap-3">
                       <HiOutlineBolt className="w-5 h-5 text-purple-500" />
                       <span className="text-white font-black text-xs uppercase italic">Solana One-Tap</span>
