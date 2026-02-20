@@ -10,19 +10,19 @@ export default function GlobalSearch() {
   const router = useRouter();
 
   
-  useEffect(() => {
+     useEffect(() => {
     const categories = AdminConfig.CATEGORIES;
-    if (!categories || categories.length === 0) return;
-
+    if (!categories?.length) return;
     let i = 0;
     const interval = setInterval(() => {
-      
       const currentCat = categories[i];
-      setPlaceholder(`Search Category: ${currentCat}...`);
+      if (currentCat) {
+        setPlaceholder(`Search Category: ${currentCat}...`);
+      }
       i = (i + 1) % categories.length;
     }, 3000); 
-
     return () => clearInterval(interval);
+
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
