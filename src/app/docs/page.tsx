@@ -18,42 +18,42 @@ const sections = [
     title: "The Vibe Code Protocol",
     icon: <HiOutlineSparkles className="w-6 h-6 text-[#D4AF37]" />,
     content: "VibeStream is a curated encyclopedia of high-signal startups. We categorize 'food items' (projects) based on technical brilliance and market potential using the proprietary Whate Engine logic.",
-    linkText: "View Encyclopedia",
+    linkText: "VIEW ENCYCLOPEDIA",
     href: "/"
   },
   {
     title: "Multichain Infrastructure",
     icon: <HiOutlineCpuChip className="w-6 h-6 text-[#4E24CF]" />,
     content: "Our architecture supports high-speed Solana (SVM) and secure Base (EVM) transactions. We use Wagmi and @solana/web3.js for non-custodial wallet handshakes, ensuring you always retain control of your assets.",
-    linkText: "Network Specs",
+    linkText: "NETWORK SPECS",
     href: "/pricing"
   },
   {
     title: "Founder Submission",
     icon: <HiOutlineRocketLaunch className="w-6 h-6 text-[#D4AF37]" />,
     content: "Founders can list projects via our intake portal. Data is validated and stored via Prisma ORM on a secure PostgreSQL layer before being indexed in the Discovery Ticker.",
-    linkText: "Submit Project",
+    linkText: "SUBMIT PROJECT",
     href: "/submit"
   },
   {
     title: "Oracle & API Integrity",
     icon: <HiOutlineGlobeAlt className="w-6 h-6 text-[#4E24CF]" />,
     content: "We utilize Alchemy RPC nodes for real-time ledger syncing and CoinGecko Oracles for precise USD-to-crypto pricing. This prevents slippage and ensures fair 'Ascension' costs.",
-    linkText: "Verify Oracles",
+    linkText: "VERIFY ORACLES",
     href: "/pricing"
   },
   {
     title: "Investor Clearance",
     icon: <HiOutlineLockClosed className="w-6 h-6 text-[#D4AF37]" />,
     content: "To maintain confidentiality, pitch decks are gated. Investors must submit institutional credentials to receive an encrypted access key, protecting founder intellectual property.",
-    linkText: "Get Clearance",
+    linkText: "GET CLEARANCE",
     href: "/request"
   },
   {
     title: "Premium Pinned Status",
     icon: <HiOutlineCreditCard className="w-6 h-6 text-[#4E24CF]" />,
     content: "Elevate your signal to the Featured Tier. Pinned status grants top-of-page placement and prioritized indexing. Payments are verified on-chain before the Registry updates.",
-    linkText: "View Pricing",
+    linkText: "VIEW PRICING",
     href: "/pricing"
   }
 ];
@@ -72,10 +72,9 @@ export default function DocsPage() {
 
       <div className="grid gap-8">
         {sections.map((section, index) => (
-          <Link 
+          <div 
             key={index} 
-            href={section.href}
-            className="group relative p-8 rounded-[2rem] border border-white/5 bg-zinc-950/30 hover:bg-zinc-900/40 transition-all duration-500 block"
+            className="group relative p-8 rounded-[2rem] border border-white/5 bg-zinc-950/30 transition-all duration-500 block"
           >
             <div className="flex items-start gap-6">
               <div className="p-4 rounded-2xl bg-black border border-white/10 group-hover:border-[#D4AF37]/50 transition-colors">
@@ -83,45 +82,50 @@ export default function DocsPage() {
               </div>
               <div className="flex-grow">
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-xl font-black uppercase tracking-widest group-hover:text-[#D4AF37] transition-colors">
+                  <h2 className="text-xl font-black uppercase tracking-widest text-zinc-200">
                     {section.title}
                   </h2>
-                  <HiOutlineArrowUpRight className="w-5 h-5 text-zinc-700 group-hover:text-white transition-colors" />
                 </div>
-                <p className="text-zinc-500 leading-relaxed font-medium mb-6 text-sm">
+                <p className="text-zinc-500 leading-relaxed font-medium mb-8 text-sm max-w-2xl">
                   {section.content}
                 </p>
-                <div className="flex items-center gap-2">
-                  <HiOutlineShieldCheck className="w-3 h-3 text-[#4E24CF]" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#4E24CF] group-hover:text-[#D4AF37] transition-colors">
-                    Execute: {section.linkText}
+                
+                
+                <Link 
+                  href={section.href}
+                  className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-[#4E24CF]/20 bg-[#4E24CF]/5 hover:bg-[#D4AF37]/10 hover:border-[#D4AF37]/50 transition-all duration-300 group/link"
+                >
+                  <HiOutlineShieldCheck className="w-4 h-4 text-[#D4AF37]" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white group-hover/link:text-[#D4AF37] transition-colors">
+                    EXECUTE: {section.linkText}
                   </span>
-                </div>
+                  <HiOutlineArrowUpRight className="w-3.5 h-3.5 text-zinc-600 group-hover/link:text-white transition-colors ml-2" />
+                </Link>
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
 
-      
+      {/* Safety Protocol Section */}
       <div className="mt-20 p-10 rounded-[3rem] bg-zinc-950 border border-white/5 relative overflow-hidden group">
         <div className="absolute inset-0 bg-gradient-to-r from-[#4E24CF]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         <h3 className="text-xs font-black uppercase tracking-[0.5em] mb-6 text-[#D4AF37]">Trust & Safety Protocol</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-          <div className="p-4 rounded-xl bg-black/50 border border-white/5">
-            <h4 className="text-[10px] font-black text-white uppercase mb-2">Non-Custodial</h4>
+          <div className="p-5 rounded-xl bg-black/50 border border-white/5">
+            <h4 className="text-[10px] font-black text-white uppercase mb-2 tracking-widest">Non-Custodial</h4>
             <p className="text-zinc-500 text-[10px] leading-relaxed">VibeStream never stores private keys. All transactions are signed locally via your browser extension (Phantom/MetaMask).</p>
           </div>
-          <div className="p-4 rounded-xl bg-black/50 border border-white/5">
-            <h4 className="text-[10px] font-black text-white uppercase mb-2">Encrypted Transmission</h4>
+          <div className="p-5 rounded-xl bg-black/50 border border-white/5">
+            <h4 className="text-[10px] font-black text-white uppercase mb-2 tracking-widest">Encrypted Transmission</h4>
             <p className="text-zinc-500 text-[10px] leading-relaxed">Sensitive metadata is encrypted via industry-standard SSL and gated by institutional verification filters.</p>
           </div>
         </div>
       </div>
 
-      <div className="mt-12 text-center">
+      <div className="mt-16 text-center">
         <p className="text-zinc-600 mb-8 font-playfair italic">Our Guardians are standing by for institutional inquiries.</p>
-        <a href="mailto:blindspotlabs1@gmail.com" className="bg-zinc-900 hover:bg-white hover:text-black text-white px-8 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all duration-500">
+        <a href="mailto:blindspotlabs1@gmail.com" className="bg-zinc-900 hover:bg-white hover:text-black text-white px-10 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all duration-500 border border-white/5">
           Contact Support
         </a>
       </div>
