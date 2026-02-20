@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: AdminConfig.SITE_NAME,
     type: "website",
     images: [{ 
-      url: '/wordmark.png',
+      url: '/og-vibestream.png',
       width: 1200,
       height: 630,
       alt: `${AdminConfig.SITE_NAME} Official Wordmark`,
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: AdminConfig.SITE_NAME,
     description: AdminConfig.SITE_TAGLINE,
-    images: ['/wordmark.png'],
+    images: ['/og-vibestream.png'],
   },
 };
 
