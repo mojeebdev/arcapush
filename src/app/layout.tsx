@@ -28,7 +28,7 @@ export const metadata: Metadata = {
       url: '/og-vibestream.png',
       width: 1200,
       height: 630,
-      alt: `${AdminConfig.SITE_NAME} Official Wordmark`,
+      alt: `${AdminConfig.SITE_NAME} Official Open Graph Image`,
     }], 
   },
 
