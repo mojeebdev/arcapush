@@ -48,10 +48,10 @@ export const AdminConfig = {
   
   
   CATEGORIES: [
-    "SaaS", "FinTech", "AI / ML", "E-commerce", "HealthTech", 
-    "EdTech", "DeFi", "Infrastructure", "Gaming / GameFi", 
-    "Social", "DAO Tooling", "AI x Crypto", "RWA", "Privacy", 
-    "Developer Tools", "Other",
+  "SaaS", "FinTech", "AI / ML","Productivity", "Lifestyle", "DeAI (Decentralized AI)", "E-commerce", 
+  "HealthTech", "Bio-Tech & Longevity", "EdTech", "DeFi", "Infrastructure", 
+  "Gaming / GameFi", "Social", "DAO Tooling", "AI x Crypto", "RWA", 
+  "Privacy", "Developer Tools", "Other"
   ],
   
   

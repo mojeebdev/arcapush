@@ -1,3 +1,5 @@
+
+
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -7,10 +9,11 @@ import { track } from '@vercel/analytics';
 
 
 const CATEGORIES = [
-  "Select Category...", 
-  "SaaS", "FinTech", "AI / ML", "E-commerce", "HealthTech", "EdTech", 
-  "DeFi", "Infrastructure", "Gaming / GameFi", "Social", "DAO Tooling", 
-  "AI x Crypto", "RWA", "Privacy", "Developer Tools", "Other"
+  "Select Category", 
+  "SaaS", "FinTech", "AI / ML","Productivity", "Lifestyle", "DeAI (Decentralized AI)", "E-commerce", 
+  "HealthTech", "Bio-Tech & Longevity", "EdTech", "DeFi", "Infrastructure", 
+  "Gaming / GameFi", "Social", "DAO Tooling", "AI x Crypto", "RWA", 
+  "Privacy", "Developer Tools", "Other"
 ];
 
 export default function SubmitStartup() {
@@ -43,6 +46,7 @@ export default function SubmitStartup() {
     setLoading(true);
 
     try {
+      
       const res = await fetch('/api/startups', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -50,6 +54,18 @@ export default function SubmitStartup() {
       });
 
       if (res.ok) {
+        const result = await res.json();
+        await fetch('/api/notify-submission', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            founderEmail: formData.founderEmail,
+            founderName: formData.founderName,
+            startupName: formData.name,
+            startupId: result.id 
+          }),
+        });
+
         track('Vibe Code Submitted'); 
         
         confetti({ 
@@ -59,11 +75,11 @@ export default function SubmitStartup() {
           colors: ['#4E24CF', '#D4AF37'] 
         });
 
-        // ✅ REFINED FEEDBACK
-        toast.success("Vibe Code Received. Awaiting Guardian Verification.");
+        toast.success("Vibe Code Received. Guardian notified for fast-track verification.");
         
-        // Redirect to a 'Success' landing page or the pricing page
-        // We avoid redirecting to /startups/[id] because it's currently hidden
+        
+        console.log("🚀 Milestone: New Signal Registered in Encyclopedia!");
+        
         setTimeout(() => router.push('/pricing'), 3000); 
       } else {
         const errorData = await res.json();
@@ -90,13 +106,13 @@ export default function SubmitStartup() {
             Register Your <span className="text-[#4E24CF]">Vibe Code.</span>
           </h1>
           <p className="text-zinc-500 text-sm mt-4 font-bold uppercase tracking-widest">
-            All submissions are manually verified by the Guardian before going live.
+            Guardian verification protocol: Active. Fast-track approvals enabled.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
-          {/* Section 1: Identity */}
+          {/* Identity Section */}
           <div className="space-y-6 bg-zinc-950 p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
             <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">01. Identity</h3>
             <div className="space-y-4">
@@ -121,7 +137,7 @@ export default function SubmitStartup() {
             </div>
           </div>
 
-          {/* Section 2: Classification */}
+          {/* Classification Section */}
           <div className="space-y-6 bg-zinc-950 p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
             <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">02. Classification</h3>
             <div className="space-y-4">
@@ -161,7 +177,7 @@ export default function SubmitStartup() {
             </div>
           </div>
 
-          {/* Section 3: Contact Information */}
+          {/* Contact Section */}
           <div className="md:col-span-2 space-y-6 bg-zinc-950 p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
             <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">03. Contact Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
