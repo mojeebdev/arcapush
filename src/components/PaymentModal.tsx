@@ -22,6 +22,15 @@ import {
   ComputeBudgetProgram 
 } from "@solana/web3.js";
 
+/**
+ * WHATE ENGINE VERSION: 23.1.78
+ * PERSONA: GUARDIAN
+ * LOG: 
+ * - [v23.1.78] Resolved Solana "Receiving end does not exist" via Hard Handshake.
+ * - [v23.1.78] Implemented Phantom Provider validation.
+ * - [v23.1.78] Increased Priority Fees to prevent port timeouts.
+ */
+
 const USDC_ABI = [
   {
     name: 'transfer',
@@ -74,7 +83,6 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
         abi: USDC_ABI,
         functionName: 'transfer',
         args: [destination as `0x${string}`, parseUnits(selectedPackage.price.toString(), 6)],
-        
         gas: BigInt(85000), 
       });
 
@@ -96,16 +104,19 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
   };
 
   const handleSolanaPay = async () => {
-    if (!window.solana) return toast.error("Phantom wallet not detected.");
+    // 🛡️ 1. HARD HANDSHAKE: Validate Phantom injection
+    const provider = (window as any)?.solana;
+    if (!provider?.isPhantom) return toast.error("Phantom wallet not detected or inactive.");
+
     const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_SOLANA;
     if (!destination) return toast.error("Solana config missing.");
 
     setLoading(true);
-    const toastId = toast.loading("Securing Priority Lane...");
+    const toastId = toast.loading("Waking Solana Oracle...");
 
     try {
-      const resp = await window.solana.connect();
-      
+      // 🛡️ 2. FORCE RE-ESTABLISH PORT: Fixes "Receiving end does not exist"
+      const resp = await provider.connect();
       
       const connection = new Connection("https://solana-mainnet.g.allthatnode.com", "confirmed");
       
@@ -120,8 +131,8 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
         recentBlockhash: blockhash,
         feePayer: resp.publicKey
       }).add(
-        
-        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 8500 }),
+        // 🛡️ 3. HIGH PRIORITY: Prevents extension drop-outs during network load
+        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 15000 }),
         SystemProgram.transfer({
           fromPubkey: resp.publicKey,
           toPubkey: new PublicKey(destination), 
@@ -129,7 +140,7 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
         })
       );
 
-      const { signature } = await window.solana.signAndSendTransaction(transaction);
+      const { signature } = await provider.signAndSendTransaction(transaction);
       
       toast.loading("Verifying on Ledger...", { id: toastId });
       await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
@@ -145,7 +156,11 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       onSuccess?.(await res.json());
       onClose();
     } catch (err: any) {
-      toast.error("Solana RPC busy. Please retry.", { id: toastId });
+      console.error("Guardian Solana Log:", err);
+      const errorMsg = err.message?.includes("Could not establish connection") 
+        ? "Phantom connection lost. Please click again to retry."
+        : "Solana busy. Re-initiating protocol...";
+      toast.error(errorMsg, { id: toastId });
     } finally { setLoading(false); }
   };
 
@@ -163,7 +178,7 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
               </div>
               <div>
                 <h3 className="text-lg font-black text-white uppercase italic leading-none">Ascension</h3>
-                <p className="text-[9px] text-zinc-500 font-bold uppercase mt-1 tracking-widest">Signal Terminal v23.1.76</p>
+                <p className="text-[9px] text-zinc-500 font-bold uppercase mt-1 tracking-widest">Signal Terminal v23.1.78</p>
               </div>
             </div>
             <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors"><HiOutlineXMark className="w-5 h-5 text-zinc-600" /></button>

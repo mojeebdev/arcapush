@@ -1,3 +1,4 @@
+
 import { ethers } from "ethers";
 import { AdminConfig } from "./adminConfig";
 import { Connection, PublicKey } from "@solana/web3.js";
@@ -13,10 +14,10 @@ export interface PaymentVerification {
 const USDC_BASE_ADDRESS = AdminConfig.USDC_CONTRACT_BASE;
 const TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"; 
 
-
 export async function verifyBasePayment(txHash: string): Promise<PaymentVerification> {
   try {
-    const provider = new ethers.JsonRpcProvider("https://mainnet.base.org");
+    
+    const provider = new ethers.JsonRpcProvider("https://base-mainnet.public.blastapi.io");
     const receipt = await provider.getTransactionReceipt(txHash);
 
     if (!receipt || receipt.status !== 1) throw new Error("Invalid or failed receipt");
@@ -24,7 +25,6 @@ export async function verifyBasePayment(txHash: string): Promise<PaymentVerifica
     const targetWallet = AdminConfig.PAYMENT_WALLET_BASE?.toLowerCase();
     if (!targetWallet) throw new Error("Base Payment Vault is not configured.");
 
-    
     const usdcLog = receipt.logs.find(log => {
       const isUSDC = log.address.toLowerCase() === USDC_BASE_ADDRESS.toLowerCase();
       const isTransfer = log.topics[0] === TRANSFER_TOPIC;
@@ -47,18 +47,17 @@ export async function verifyBasePayment(txHash: string): Promise<PaymentVerifica
   }
 }
 
-
 export async function verifySolanaPayment(txHash: string): Promise<PaymentVerification> {
   try {
-   
-    const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
     
+    const connection = new Connection("https://solana-mainnet.g.allthatnode.com", "confirmed");
     
     const tx = await connection.getParsedTransaction(txHash, { 
       maxSupportedTransactionVersion: 0 
     });
 
-    if (!tx || tx.meta?.err) throw new Error("Transaction failed or not found");
+    if (!tx) throw new Error("Transaction not found on ledger yet");
+    if (tx.meta?.err) throw new Error("Transaction marked as failed on-chain");
 
     const solVault = AdminConfig.PAYMENT_WALLET_SOLANA;
     if (!solVault) throw new Error("Solana Payment Vault is not configured.");
@@ -66,16 +65,22 @@ export async function verifySolanaPayment(txHash: string): Promise<PaymentVerifi
     
     const destinationFound = tx.transaction.message.instructions.some((ix: any) => {
       
-      const nativeTarget = ix.parsed?.info?.destination === solVault;
+      const isNativeMatch = ix.parsed?.info?.destination === solVault;
       
       
-      const tokenTarget = ix.parsed?.info?.authority === solVault || 
-                          tx.meta?.postTokenBalances?.some((b: any) => b.owner === solVault);
+      const isTokenMatch = tx.meta?.postTokenBalances?.some((b: any) => 
+        b.owner === solVault && 
+        (Number(b.uiTokenAmount.amount) > Number(tx.meta?.preTokenBalances?.find((pb: any) => pb.owner === solVault)?.uiTokenAmount.amount || 0))
+      );
       
-      return nativeTarget || tokenTarget;
+      return isNativeMatch || isTokenMatch;
     });
 
-    if (!destinationFound) throw new Error("Receiver does not match your vault");
+    
+    const balanceIncreased = (tx.meta?.postBalances[tx.transaction.message.accountKeys.findIndex(k => k.pubkey.toBase58() === solVault)] || 0) > 
+                             (tx.meta?.preBalances[tx.transaction.message.accountKeys.findIndex(k => k.pubkey.toBase58() === solVault)] || 0);
+
+    if (!destinationFound && !balanceIncreased) throw new Error("Vault balance did not increase in this transaction");
 
     return {
       verified: true,

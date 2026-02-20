@@ -1,3 +1,4 @@
+
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -7,8 +8,9 @@ import { coinbaseWallet, injected } from "wagmi/connectors";
 import { ReactNode, useState, useMemo, useEffect } from "react";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { clusterApiUrl } from '@solana/web3.js';
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
+
+
 import '@solana/wallet-adapter-react-ui/styles.css';
 
 export const config = createConfig({
@@ -18,7 +20,8 @@ export const config = createConfig({
     coinbaseWallet({ appName: "Vibestream" }),
   ],
   transports: {
-    [base.id]: http(),
+    
+    [base.id]: http("https://base-mainnet.public.blastapi.io"),
   },
 });
 
@@ -26,24 +29,25 @@ export function Web3Provider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
   const [queryClient] = useState(() => new QueryClient());
 
-  
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const endpoint = useMemo(() => clusterApiUrl('mainnet-beta'), []);
   
+  const endpoint = useMemo(() => "https://solana-mainnet.g.allthatnode.com", []);
   
   const wallets = useMemo(() => [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
   ], []);
 
+  
   if (!mounted) return null;
 
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
+        {/* 🟣 Solana Connection Protocol */}
         <ConnectionProvider endpoint={endpoint}>
           <WalletProvider wallets={wallets} autoConnect>
             <WalletModalProvider>
