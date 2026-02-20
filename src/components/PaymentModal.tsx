@@ -10,7 +10,7 @@ import {
   HiOutlineShieldCheck, 
   HiOutlineGlobeAlt 
 } from "react-icons/hi2";
-import { useWriteContract, useAccount, useConnect, useSwitchChain } from 'wagmi'; 
+import { useWriteContract, useAccount, useSwitchChain } from 'wagmi'; 
 import { parseUnits } from 'viem';
 import { base } from 'wagmi/chains'; 
 import { 
@@ -19,7 +19,7 @@ import {
   Transaction, 
   SystemProgram, 
   LAMPORTS_PER_SOL,
-  ComputeBudgetProgram // 🛡️ Added for Priority Fees
+  ComputeBudgetProgram 
 } from "@solana/web3.js";
 
 const USDC_ABI = [
@@ -60,7 +60,10 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
     const toastId = toast.loading("Preparing Base USDC Handshake...");
 
     try {
-      if (chainId !== base.id) await switchChainAsync({ chainId: base.id });
+      if (chainId !== base.id) {
+        toast.loading("Switching to Base...", { id: toastId });
+        await switchChainAsync({ chainId: base.id });
+      }
 
       const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_BASE;
       if (!destination) throw new Error("Base destination wallet missing.");
@@ -71,8 +74,11 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
         abi: USDC_ABI,
         functionName: 'transfer',
         args: [destination as `0x${string}`, parseUnits(selectedPackage.price.toString(), 6)],
+        
+        gas: BigInt(85000), 
       });
 
+      toast.loading("Syncing with Signal Registry...", { id: toastId });
       const res = await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -84,7 +90,8 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       onSuccess?.(await res.json());
       onClose();
     } catch (err: any) {
-      toast.error(err.shortMessage || err.message || "Base Error", { id: toastId });
+        const msg = err.message?.includes("insufficient funds") ? "Insufficient USDC on Base." : (err.shortMessage || "Base Handshake Failed");
+        toast.error(msg, { id: toastId });
     } finally { setLoading(false); }
   };
 
@@ -97,24 +104,24 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
     const toastId = toast.loading("Securing Priority Lane...");
 
     try {
-      // 1. Connection & Price
       const resp = await window.solana.connect();
-      const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
+      
+      
+      const connection = new Connection("https://solana-mainnet.g.allthatnode.com", "confirmed");
+      
       const priceRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
       const priceData = await priceRes.json();
       const solAmount = selectedPackage.price / priceData.solana.usd;
       const lamports = Math.floor(solAmount * LAMPORTS_PER_SOL);
 
-      // 2. Fetch Latest Blockhash
-      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
       
-      // 3. Build Hardened Transaction
       const transaction = new Transaction({
         recentBlockhash: blockhash,
         feePayer: resp.publicKey
       }).add(
-        // 🛡️ Priority Fee Instruction (Ensures success under congestion)
-        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 5000 }),
+        
+        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 8500 }),
         SystemProgram.transfer({
           fromPubkey: resp.publicKey,
           toPubkey: new PublicKey(destination), 
@@ -122,11 +129,9 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
         })
       );
 
-      // 4. Sign and Send
       const { signature } = await window.solana.signAndSendTransaction(transaction);
       
-      // 5. Wait for Confirmation (Crucial for Client Safety)
-      toast.loading("Verifying on Blockchain...", { id: toastId });
+      toast.loading("Verifying on Ledger...", { id: toastId });
       await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
 
       const res = await fetch("/api/pin", {
@@ -140,7 +145,7 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       onSuccess?.(await res.json());
       onClose();
     } catch (err: any) {
-      toast.error(err.message || "Solana Error", { id: toastId });
+      toast.error("Solana RPC busy. Please retry.", { id: toastId });
     } finally { setLoading(false); }
   };
 
@@ -150,16 +155,20 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
     <AnimatePresence>
       <motion.div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
         <motion.div className="w-full max-w-md bg-zinc-950 border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} onClick={(e) => e.stopPropagation()}>
+          
           <div className="p-8 border-b border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center border bg-white/10 border-white/20"><HiOutlineShieldCheck className="w-5 h-5 text-white" /></div>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center border bg-white/10 border-white/20">
+                <HiOutlineShieldCheck className="w-5 h-5 text-white" />
+              </div>
               <div>
                 <h3 className="text-lg font-black text-white uppercase italic leading-none">Ascension</h3>
-                <p className="text-[9px] text-zinc-500 font-bold uppercase mt-1 tracking-widest">Signal Terminal</p>
+                <p className="text-[9px] text-zinc-500 font-bold uppercase mt-1 tracking-widest">Signal Terminal v23.1.76</p>
               </div>
             </div>
             <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors"><HiOutlineXMark className="w-5 h-5 text-zinc-600" /></button>
           </div>
+
           <div className="p-8">
             <div className="space-y-6">
               {step === "package" ? (

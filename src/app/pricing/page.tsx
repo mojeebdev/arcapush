@@ -40,7 +40,6 @@ export default function PricingPage() {
   const [selectedStartupId, setSelectedStartupId] = useState<string>("");
   const [approvedStartups, setApprovedStartups] = useState<any[]>([]);
   
-  // 🛡️ Guardian Hooks
   const { isConnected, chainId } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const { writeContractAsync } = useWriteContract();
@@ -69,7 +68,6 @@ export default function PricingPage() {
     const toastId = toast.loading("Verifying Base USDC Handshake...");
     
     try {
-      
       if (chainId !== base.id) {
         toast.loading("Switching to Base Mainnet...", { id: toastId });
         await switchChainAsync({ chainId: base.id });
@@ -83,24 +81,23 @@ export default function PricingPage() {
           destination as `0x${string}`,
           parseUnits(plan.price.toString(), 6) 
         ],
+       
+        gas: BigInt(80000), 
       });
 
       toast.loading("Syncing with Signal Registry...", { id: toastId });
       const res = await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          startupId: selectedStartupId, 
-          chain: "base", 
-          txHash: hash, 
-          packageValue: plan.value 
-        }),
+        body: JSON.stringify({ startupId: selectedStartupId, chain: "base", txHash: hash, packageValue: plan.value }),
       });
 
       if (!res.ok) throw new Error("Database verification delayed.");
       toast.success("🚀 Base Ascension Complete!", { id: toastId });
     } catch (err: any) {
-      toast.error(err.shortMessage || err.message || "Handshake Rejected", { id: toastId });
+     
+      const errorMsg = err.message?.includes("insufficient funds") ? "Insufficient USDC on Base." : (err.shortMessage || "Handshake Rejected");
+      toast.error(errorMsg, { id: toastId });
     } finally { setIsProcessing(false); }
   };
 
@@ -121,17 +118,18 @@ export default function PricingPage() {
       const lamports = Math.floor(solAmount * LAMPORTS_PER_SOL);
 
       const resp = await window.solana.connect();
-      const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
       
-      // 🛡️ Fetch fresh blockhash for safety
-      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+      
+      const connection = new Connection("https://solana-mainnet.g.allthatnode.com", "confirmed");
+      
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
       
       const transaction = new Transaction({
         recentBlockhash: blockhash,
         feePayer: resp.publicKey
       }).add(
         
-        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 5000 }),
+        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 8000 }),
         SystemProgram.transfer({
           fromPubkey: resp.publicKey,
           toPubkey: new PublicKey(destination),
@@ -141,25 +139,20 @@ export default function PricingPage() {
 
       const { signature } = await window.solana.signAndSendTransaction(transaction);
       
-      
       toast.loading("Confirming on Solana Ledger...", { id: toastId });
       await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
 
       const res = await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          startupId: selectedStartupId, 
-          chain: "solana", 
-          txHash: signature, 
-          packageValue: plan.value 
-        }),
+        body: JSON.stringify({ startupId: selectedStartupId, chain: "solana", txHash: signature, packageValue: plan.value }),
       });
 
       if (!res.ok) throw new Error("Database sync failed.");
       toast.success("🔥 Solana Ascension Complete!", { id: toastId });
     } catch (err: any) {
-      toast.error(err.message || "Solana Error", { id: toastId });
+      console.error("Solana Fault:", err);
+      toast.error("Solana Network Busy. Please try again.", { id: toastId });
     } finally { setIsProcessing(false); }
   };
 
@@ -167,7 +160,6 @@ export default function PricingPage() {
     <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto min-h-screen bg-black text-white">
       <Toaster position="bottom-right" />
       
-      {/* Selector Container */}
       <section className="mb-12 max-w-xl mx-auto">
         <div className="p-8 rounded-[2.5rem] bg-zinc-950 border border-white/5 backdrop-blur-xl text-center shadow-2xl relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -185,13 +177,9 @@ export default function PricingPage() {
              </select>
              <HiOutlineMagnifyingGlass className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
           </div>
-          {!selectedStartupId && (
-            <p className="mt-4 text-[9px] text-zinc-500 font-bold uppercase tracking-tighter animate-pulse">Connection required to initiate boost protocol</p>
-          )}
         </div>
       </section>
 
-      {/* Pricing Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {AdminConfig.PIN_PACKAGES.map((plan) => (
           <motion.div 
@@ -199,32 +187,17 @@ export default function PricingPage() {
             whileHover={{ y: -8 }}
             className={`relative rounded-[3rem] p-10 bg-zinc-950 border ${plan.featured ? 'border-[#4E24CF] shadow-[0_0_40px_rgba(78,36,207,0.15)]' : 'border-white/5'} flex flex-col transition-all duration-500`}
           >
-            {plan.featured && (
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#4E24CF] text-white text-[8px] font-black px-4 py-1 rounded-full uppercase tracking-widest">Most Viral</div>
-            )}
-            
             <h3 className="text-2xl font-black text-white uppercase italic mb-2">{plan.label}</h3>
-            <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-widest mb-6">Signal Expansion</p>
-            
             <div className="flex items-baseline gap-2 mb-10">
               <span className="text-5xl font-black text-white tracking-tighter">${plan.price}</span>
               <span className="text-zinc-700 text-[9px] font-black uppercase">USD</span>
             </div>
             
             <div className="space-y-3 mt-auto">
-              <button 
-                onClick={() => handleBasePayment(plan)} 
-                disabled={isProcessing || !selectedStartupId} 
-                className="w-full py-4 rounded-2xl font-black text-[10px] bg-blue-600/10 border border-blue-600/20 text-blue-500 hover:bg-blue-600 hover:text-white flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-10"
-              >
+              <button onClick={() => handleBasePayment(plan)} disabled={isProcessing || !selectedStartupId} className="w-full py-4 rounded-2xl font-black text-[10px] bg-blue-600/10 border border-blue-600/20 text-blue-500 hover:bg-blue-600 hover:text-white flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-10">
                 <HiOutlineGlobeAlt className="w-5 h-5" /> Base USDC
               </button>
-
-              <button 
-                onClick={() => handleSolanaPayment(plan)} 
-                disabled={isProcessing || !selectedStartupId} 
-                className="w-full py-4 rounded-2xl font-black text-[10px] bg-white text-black hover:bg-[#D4AF37] hover:text-white flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-10"
-              >
+              <button onClick={() => handleSolanaPayment(plan)} disabled={isProcessing || !selectedStartupId} className="w-full py-4 rounded-2xl font-black text-[10px] bg-white text-black hover:bg-[#D4AF37] hover:text-white flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-10">
                 <HiOutlineBolt className="w-5 h-5" /> Solana SOL
               </button>
             </div>
@@ -235,7 +208,6 @@ export default function PricingPage() {
       <div className="mt-20 text-center">
         <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-zinc-900/50 border border-white/5">
           <HiOutlineShieldCheck className="w-4 h-4 text-[#D4AF37]" />
-          <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Encrypted Ascension Protocol v23.1.74</span>
         </div>
       </div>
     </main>
