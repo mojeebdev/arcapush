@@ -10,8 +10,9 @@ import {
   HiOutlineShieldCheck, 
   HiOutlineGlobeAlt 
 } from "react-icons/hi2";
-import { useWriteContract } from 'wagmi'; 
+import { useWriteContract, useAccount, useConnect, useSwitchChain } from 'wagmi'; 
 import { parseUnits } from 'viem';
+import { base } from 'wagmi/chains'; 
 import { 
   Connection, 
   PublicKey, 
@@ -19,6 +20,7 @@ import {
   SystemProgram, 
   LAMPORTS_PER_SOL 
 } from "@solana/web3.js";
+
 
 const USDC_ABI = [
   {
@@ -46,6 +48,9 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
   const [step, setStep] = useState<"package" | "chain">("package");
   const [selectedPackage, setSelectedPackage] = useState(AdminConfig.PIN_PACKAGES[0]);
 
+  const { isConnected, chainId } = useAccount();
+  const { connect, connectors } = useConnect();
+  const { switchChainAsync } = useSwitchChain();
   const { writeContractAsync } = useWriteContract();
 
   useEffect(() => {
@@ -53,20 +58,21 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
   }, []);
 
   const handleBasePay = async () => {
-    
-    const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_BASE;
-    const usdcContract = process.env.NEXT_PUBLIC_BASE_USDC_ADDRESS;
-
-    if (!destination || !usdcContract) {
-      return toast.error("Guardian configuration incomplete for Base.");
-    }
-
+    if (!isConnected) return toast.error("Guardian: Please connect EVM wallet.");
     setLoading(true);
-    const toastId = toast.loading("Verifying Base USDC Path...");
+    const toastId = toast.loading("Preparing Base USDC Handshake...");
+
     try {
-      
+      if (chainId !== base.id) {
+        await switchChainAsync({ chainId: base.id });
+      }
+
+      const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_BASE;
+      if (!destination) throw new Error("Base destination wallet missing.");
+
       const hash = await writeContractAsync({
-        address: usdcContract as `0x${string}`,
+        chainId: base.id,
+        address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as `0x${string}`,
         abi: USDC_ABI,
         functionName: 'transfer',
         args: [
@@ -78,34 +84,24 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       const res = await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          startupId, 
-          chain: "base", 
-          txHash: hash, 
-          packageValue: selectedPackage.value 
-        }),
+        body: JSON.stringify({ startupId, chain: "base", txHash: hash, packageValue: selectedPackage.value }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-
-      toast.success("🚀 Signal Boosted on Base!", { id: toastId });
-      onSuccess?.(data);
+      if (!res.ok) throw new Error("Database sync failed.");
+      toast.success("🚀 Base Ascension Complete!", { id: toastId });
+      onSuccess?.(await res.json());
       onClose();
     } catch (err: any) {
-      console.error("Payment Error:", err);
-      toast.error(err.shortMessage || err.message || "Handshake Rejected", { id: toastId });
+      toast.error(err.shortMessage || err.message || "Base Error", { id: toastId });
     } finally { setLoading(false); }
   };
 
   const handleSolanaPay = async () => {
-    if (!window.solana) return toast.error("Please install Phantom or Solflare.");
+    if (!window.solana) return toast.error("Phantom wallet not detected.");
     
     
     const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_SOLANA;
-    if (!destination) {
-      return toast.error("Guardian configuration incomplete for Solana.");
-    }
+    if (!destination) return toast.error("Solana destination wallet missing.");
 
     setLoading(true);
     const toastId = toast.loading("Fetching SOL Market Price...");
@@ -126,34 +122,25 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       }).add(
         SystemProgram.transfer({
           fromPubkey: resp.publicKey,
-          
-          toPubkey: new PublicKey(destination),
+          toPubkey: new PublicKey(destination), 
           lamports: lamports,
         })
       );
 
       const { signature } = await window.solana.signAndSendTransaction(transaction);
-      toast.loading("Verifying Solana Signal...", { id: toastId });
-
+      
       const res = await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          startupId, 
-          chain: "solana", 
-          txHash: signature, 
-          packageValue: selectedPackage.value 
-        }),
+        body: JSON.stringify({ startupId, chain: "solana", txHash: signature, packageValue: selectedPackage.value }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-
-      toast.success("🔥 Signal Boosted on Solana!", { id: toastId });
-      onSuccess?.(data);
+      if (!res.ok) throw new Error("Database sync failed.");
+      toast.success("🔥 Solana Ascension Complete!", { id: toastId });
+      onSuccess?.(await res.json());
       onClose();
     } catch (err: any) {
-      toast.error(err.message || "Solana Transmission Failed", { id: toastId });
+      toast.error(err.message || "Solana Error", { id: toastId });
     } finally { setLoading(false); }
   };
 
@@ -172,15 +159,15 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
           {/* Header */}
           <div className="p-8 border-b border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center border bg-emerald-500/10 border-emerald-500/20">
-                <HiOutlineShieldCheck className="w-5 h-5 text-emerald-500" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center border bg-white/10 border-white/20">
+                <HiOutlineShieldCheck className="w-5 h-5 text-white" />
               </div>
               <div>
                 <h3 className="text-lg font-black text-white uppercase italic leading-none">Ascension</h3>
                 <p className="text-[9px] text-zinc-500 font-bold uppercase mt-1 tracking-widest">Signal Terminal</p>
               </div>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+            <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full">
               <HiOutlineXMark className="w-5 h-5 text-zinc-600" />
             </button>
           </div>
@@ -189,15 +176,15 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
             <div className="space-y-6">
               {step === "package" ? (
                 <div className="space-y-4">
-                  <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Choose Duration</p>
+                  <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Select Signal Duration</p>
                   <div className="grid grid-cols-2 gap-3">
                     {AdminConfig.PIN_PACKAGES.map((pkg) => (
                       <button 
                         key={pkg.value} 
                         onClick={() => { setSelectedPackage(pkg); setStep("chain"); }} 
-                        className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-[#D4AF37] hover:bg-white/[0.05] text-left transition-all group"
+                        className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-[#D4AF37] text-left transition-all"
                       >
-                        <p className="text-white font-black text-[10px] uppercase group-hover:text-[#D4AF37]">{pkg.label}</p>
+                        <p className="text-white font-black text-[10px] uppercase">{pkg.label}</p>
                         <p className="text-[10px] text-zinc-500 font-bold">${pkg.price}</p>
                       </button>
                     ))}
@@ -207,24 +194,26 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
                 <div className="space-y-3">
                   <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Select Protocol</p>
                   
-                  <button onClick={handleBasePay} disabled={loading} className="w-full p-5 rounded-2xl border border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 flex justify-between items-center group transition-all disabled:opacity-30">
+                  {/* Base Option */}
+                  <button onClick={handleBasePay} disabled={loading} className="w-full p-5 rounded-2xl border border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 flex justify-between items-center group transition-all">
                     <div className="flex items-center gap-3">
                       <HiOutlineGlobeAlt className="w-5 h-5 text-blue-500" />
-                      <span className="text-white font-black text-xs uppercase italic">Base One-Tap</span>
+                      <span className="text-white font-black text-xs uppercase italic">Base One-Tap (USDC)</span>
                     </div>
-                    {loading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <span className="text-[9px] text-blue-500/50 font-black">USDC</span>}
+                    {loading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <span className="text-[9px] text-blue-500/50 font-black">EVM</span>}
                   </button>
                   
-                  <button onClick={handleSolanaPay} disabled={loading} className="w-full p-5 rounded-2xl border border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 flex justify-between items-center group transition-all disabled:opacity-30">
+                  {/* Solana Option */}
+                  <button onClick={handleSolanaPay} disabled={loading} className="w-full p-5 rounded-2xl border border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 flex justify-between items-center group transition-all">
                     <div className="flex items-center gap-3">
                       <HiOutlineBolt className="w-5 h-5 text-purple-500" />
-                      <span className="text-white font-black text-xs uppercase italic">Solana One-Tap</span>
+                      <span className="text-white font-black text-xs uppercase italic">Solana One-Tap (SOL)</span>
                     </div>
                     {loading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <span className="text-[9px] text-purple-500/50 font-black">SOL</span>}
                   </button>
 
-                  <button onClick={() => setStep("package")} className="w-full text-[9px] font-black text-zinc-700 hover:text-zinc-500 uppercase pt-4 transition-colors">
-                    ← Change Package ({selectedPackage.label})
+                  <button onClick={() => setStep("package")} className="w-full text-[9px] font-black text-zinc-700 hover:text-zinc-500 uppercase pt-4">
+                    ← Back to Plans
                   </button>
                 </div>
               )}
