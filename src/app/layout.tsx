@@ -9,7 +9,7 @@ import { Web3Provider } from "@/components/Web3Provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: `${AdminConfig.SITE_NAME} — ${AdminConfig.SITE_TAGLINE}`,
+  title: `${AdminConfig.SITE_NAME} · ${AdminConfig.SITE_TAGLINE}`,
   description: AdminConfig.SITE_DESCRIPTION,
   metadataBase: new URL('https://vibestream.cc'),
   
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: `${AdminConfig.SITE_NAME} — ${AdminConfig.SITE_TAGLINE}`,
+    title: `${AdminConfig.SITE_NAME} · ${AdminConfig.SITE_TAGLINE}`,
     description: AdminConfig.SITE_DESCRIPTION,
     siteName: AdminConfig.SITE_NAME,
     type: "website",
