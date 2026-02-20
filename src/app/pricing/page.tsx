@@ -75,7 +75,7 @@ export default function PricingPage() {
         await switchChainAsync({ chainId: base.id });
       }
 
-      /
+    
       const hash = await writeContractAsync({
         address: usdcContract as `0x${string}`,
         abi: USDC_ABI,
