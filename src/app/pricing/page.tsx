@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -41,41 +40,39 @@ export default function PricingPage() {
   const [selectedStartupId, setSelectedStartupId] = useState<string>("");
   const [approvedStartups, setApprovedStartups] = useState<any[]>([]);
   
-  const { isConnected, chainId, address } = useAccount();
+  const { isConnected, chainId } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const { writeContractAsync } = useWriteContract();
-  const publicClient = usePublicClient();
 
   useEffect(() => {
     const fetchApproved = async () => {
       try {
         const res = await fetch('/api/startups?status=APPROVED');
+        if (!res.ok) return;
         const data = await res.json();
         setApprovedStartups(data.startups || []);
       } catch (err) {
-        console.error("Guardian Log: Startup fetch failed", err);
+        console.log("Guardian: Initial fetch standby.");
       }
     };
     fetchApproved();
   }, []);
 
   const handleBasePayment = async (plan: any) => {
-    if (!selectedStartupId) return toast.error("Select a food item to boost first.");
-    if (!isConnected) return toast.error("Connect your wallet in the navbar first.");
+    if (!selectedStartupId) return toast.error("Please select a target to boost.");
+    if (!isConnected) return toast.error("Wallet connection required.");
     
-    const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_BASE;
+    const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_BASE || AdminConfig.PAYMENT_WALLET_BASE;
     const usdcContract = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"; 
 
     setIsProcessing(true);
-    const toastId = toast.loading("Verifying Base USDC Handshake...");
+    const toastId = toast.loading("Preparing Base Handshake...");
     
     try {
       if (chainId !== base.id) {
-        toast.loading("Switching to Base Mainnet...", { id: toastId });
         await switchChainAsync({ chainId: base.id });
       }
 
-    
       const hash = await writeContractAsync({
         address: usdcContract as `0x${string}`,
         abi: USDC_ABI,
@@ -84,11 +81,11 @@ export default function PricingPage() {
           destination as `0x${string}`,
           parseUnits(plan.price.toString(), 6) 
         ],
-        
+        gas: 100000n, 
       });
 
-      toast.loading("Syncing with Signal Registry...", { id: toastId });
-      const res = await fetch("/api/pin", {
+      toast.loading("Verifying Signal...", { id: toastId });
+      await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -99,27 +96,21 @@ export default function PricingPage() {
         }),
       });
 
-      if (!res.ok) throw new Error("Database verification delayed.");
-      
-      
-      toast.success("🚀 Base Ascension Complete! Food Item Boosted.", { id: toastId });
+      toast.success("🚀 Ascension Complete!", { id: toastId });
     } catch (err: any) {
-      const errorMsg = err.message?.includes("insufficient funds") 
-        ? "Insufficient USDC on Base." 
-        : (err.shortMessage || "Handshake Rejected");
-      toast.error(errorMsg, { id: toastId });
+      toast.error("Handshake interrupted. Please check your balance.", { id: toastId });
     } finally { setIsProcessing(false); }
   };
 
   const handleSolanaPayment = async (plan: any) => {
-    if (!selectedStartupId) return toast.error("Select a food item first.");
-    if (!window.solana) return toast.error("Phantom/Solana wallet not detected.");
+    if (!selectedStartupId) return toast.error("Select a target first.");
+    if (!window.solana) return toast.error("Solana wallet not found.");
 
-    const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_SOLANA;
+    const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_SOLANA || AdminConfig.PAYMENT_WALLET_SOLANA;
     const solanaRpc = process.env.NEXT_PUBLIC_ALCHEMY_RPC_SOLANA || "https://api.mainnet-beta.solana.com";
 
     setIsProcessing(true);
-    const toastId = toast.loading("Accessing Market Oracle...");
+    const toastId = toast.loading("Connecting to Solana...");
 
     try {
       const priceRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
@@ -129,16 +120,13 @@ export default function PricingPage() {
 
       const resp = await window.solana.connect();
       const connection = new Connection(solanaRpc, "confirmed");
-      
-      
-      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized');
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
       
       const transaction = new Transaction({
         recentBlockhash: blockhash,
         feePayer: resp.publicKey
       }).add(
-        
-        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 15000 }),
+        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 25000 }),
         SystemProgram.transfer({
           fromPubkey: resp.publicKey,
           toPubkey: new PublicKey(destination!),
@@ -147,11 +135,9 @@ export default function PricingPage() {
       );
 
       const { signature } = await window.solana.signAndSendTransaction(transaction);
-      
-      toast.loading("Confirming on Solana Ledger...", { id: toastId });
       await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
 
-      const res = await fetch("/api/pin", {
+      await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -162,13 +148,12 @@ export default function PricingPage() {
         }),
       });
 
-      if (!res.ok) throw new Error("Database sync failed.");
       
+      if (window.solana?.disconnect) await window.solana.disconnect();
       
-      toast.success("🔥 Solana Ascension Complete! Signal Locked.", { id: toastId });
+      toast.success("🔥 Signal Locked on Solana!", { id: toastId });
     } catch (err: any) {
-      console.error("Solana Fault:", err);
-      toast.error("Handshake Failed. Ensure you have enough SOL for fees.", { id: toastId });
+      toast.error("Transaction standby. Ensure SOL is available for fees.", { id: toastId });
     } finally { setIsProcessing(false); }
   };
 
@@ -176,15 +161,15 @@ export default function PricingPage() {
     <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto min-h-screen bg-black text-white">
       <Toaster position="bottom-right" />
       
+      {/* Target Selector */}
       <section className="mb-12 max-w-xl mx-auto">
-        <div className="p-8 rounded-[2.5rem] bg-zinc-950 border border-white/5 backdrop-blur-xl text-center shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <label className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.3em] mb-4 block italic">Boost Target Selection</label>
+        <div className="p-8 rounded-[2.5rem] bg-zinc-950 border border-white/5 backdrop-blur-xl text-center shadow-2xl relative">
+          <label className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.3em] mb-4 block italic">Target Selection</label>
           <div className="relative">
              <select 
                value={selectedStartupId} 
                onChange={(e) => setSelectedStartupId(e.target.value)} 
-               className="w-full bg-black border border-white/10 rounded-2xl px-5 py-4 text-[11px] font-black text-white outline-none appearance-none cursor-pointer hover:border-white/20 transition-colors uppercase tracking-widest"
+               className="w-full bg-black border border-white/10 rounded-2xl px-5 py-4 text-[11px] font-black text-white outline-none cursor-pointer hover:border-white/20 transition-colors uppercase tracking-widest"
              >
                 <option value="">Choose Food Item...</option>
                 {approvedStartups.map(s => (
@@ -196,12 +181,13 @@ export default function PricingPage() {
         </div>
       </section>
 
+      {/* Pricing Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {AdminConfig.PIN_PACKAGES.map((plan) => (
           <motion.div 
             key={plan.label} 
             whileHover={{ y: -8 }}
-            className={`relative rounded-[3rem] p-10 bg-zinc-950 border ${plan.featured ? 'border-[#4E24CF] shadow-[0_0_40px_rgba(78,36,207,0.15)]' : 'border-white/5'} flex flex-col transition-all duration-500`}
+            className={`relative rounded-[3rem] p-10 bg-zinc-950 border ${plan.featured ? 'border-[#4E24CF]' : 'border-white/5'} flex flex-col transition-all duration-500`}
           >
             <h3 className="text-2xl font-black text-white uppercase italic mb-2">{plan.label}</h3>
             <div className="flex items-baseline gap-2 mb-10">
@@ -232,7 +218,7 @@ export default function PricingPage() {
       <div className="mt-20 text-center">
         <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-zinc-900/50 border border-white/5">
           <HiOutlineShieldCheck className="w-4 h-4 text-[#D4AF37]" />
-          <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Guardian Encryption Active</span>
+          <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Guardian Protocol Verified</span>
         </div>
       </div>
     </main>
