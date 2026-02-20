@@ -18,9 +18,9 @@ import {
   PublicKey, 
   Transaction, 
   SystemProgram, 
-  LAMPORTS_PER_SOL 
+  LAMPORTS_PER_SOL,
+  ComputeBudgetProgram // 🛡️ Added for Priority Fees
 } from "@solana/web3.js";
-
 
 const USDC_ABI = [
   {
@@ -49,23 +49,18 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
   const [selectedPackage, setSelectedPackage] = useState(AdminConfig.PIN_PACKAGES[0]);
 
   const { isConnected, chainId } = useAccount();
-  const { connect, connectors } = useConnect();
   const { switchChainAsync } = useSwitchChain();
   const { writeContractAsync } = useWriteContract();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
   const handleBasePay = async () => {
-    if (!isConnected) return toast.error("Guardian: Please connect EVM wallet.");
+    if (!isConnected) return toast.error("Guardian: Please connect wallet in Navbar.");
     setLoading(true);
     const toastId = toast.loading("Preparing Base USDC Handshake...");
 
     try {
-      if (chainId !== base.id) {
-        await switchChainAsync({ chainId: base.id });
-      }
+      if (chainId !== base.id) await switchChainAsync({ chainId: base.id });
 
       const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_BASE;
       if (!destination) throw new Error("Base destination wallet missing.");
@@ -75,10 +70,7 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
         address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as `0x${string}`,
         abi: USDC_ABI,
         functionName: 'transfer',
-        args: [
-          destination as `0x${string}`,
-          parseUnits(selectedPackage.price.toString(), 6), 
-        ],
+        args: [destination as `0x${string}`, parseUnits(selectedPackage.price.toString(), 6)],
       });
 
       const res = await fetch("/api/pin", {
@@ -98,28 +90,31 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
 
   const handleSolanaPay = async () => {
     if (!window.solana) return toast.error("Phantom wallet not detected.");
-    
-    
     const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_SOLANA;
-    if (!destination) return toast.error("Solana destination wallet missing.");
+    if (!destination) return toast.error("Solana config missing.");
 
     setLoading(true);
-    const toastId = toast.loading("Fetching SOL Market Price...");
+    const toastId = toast.loading("Securing Priority Lane...");
 
     try {
+      // 1. Connection & Price
+      const resp = await window.solana.connect();
+      const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
       const priceRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
       const priceData = await priceRes.json();
       const solAmount = selectedPackage.price / priceData.solana.usd;
       const lamports = Math.floor(solAmount * LAMPORTS_PER_SOL);
 
-      const resp = await window.solana.connect();
-      const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
-      const { blockhash } = await connection.getLatestBlockhash();
+      // 2. Fetch Latest Blockhash
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
       
+      // 3. Build Hardened Transaction
       const transaction = new Transaction({
         recentBlockhash: blockhash,
         feePayer: resp.publicKey
       }).add(
+        // 🛡️ Priority Fee Instruction (Ensures success under congestion)
+        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 5000 }),
         SystemProgram.transfer({
           fromPubkey: resp.publicKey,
           toPubkey: new PublicKey(destination), 
@@ -127,8 +122,13 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
         })
       );
 
+      // 4. Sign and Send
       const { signature } = await window.solana.signAndSendTransaction(transaction);
       
+      // 5. Wait for Confirmation (Crucial for Client Safety)
+      toast.loading("Verifying on Blockchain...", { id: toastId });
+      await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
+
       const res = await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -148,30 +148,18 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
 
   return (
     <AnimatePresence>
-      <motion.div 
-        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl" 
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}
-      >
-        <motion.div 
-          className="w-full max-w-md bg-zinc-950 border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl" 
-          initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
+      <motion.div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
+        <motion.div className="w-full max-w-md bg-zinc-950 border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} onClick={(e) => e.stopPropagation()}>
           <div className="p-8 border-b border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center border bg-white/10 border-white/20">
-                <HiOutlineShieldCheck className="w-5 h-5 text-white" />
-              </div>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center border bg-white/10 border-white/20"><HiOutlineShieldCheck className="w-5 h-5 text-white" /></div>
               <div>
                 <h3 className="text-lg font-black text-white uppercase italic leading-none">Ascension</h3>
                 <p className="text-[9px] text-zinc-500 font-bold uppercase mt-1 tracking-widest">Signal Terminal</p>
               </div>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full">
-              <HiOutlineXMark className="w-5 h-5 text-zinc-600" />
-            </button>
+            <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors"><HiOutlineXMark className="w-5 h-5 text-zinc-600" /></button>
           </div>
-
           <div className="p-8">
             <div className="space-y-6">
               {step === "package" ? (
@@ -179,12 +167,8 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
                   <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Select Signal Duration</p>
                   <div className="grid grid-cols-2 gap-3">
                     {AdminConfig.PIN_PACKAGES.map((pkg) => (
-                      <button 
-                        key={pkg.value} 
-                        onClick={() => { setSelectedPackage(pkg); setStep("chain"); }} 
-                        className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-[#D4AF37] text-left transition-all"
-                      >
-                        <p className="text-white font-black text-[10px] uppercase">{pkg.label}</p>
+                      <button key={pkg.value} onClick={() => { setSelectedPackage(pkg); setStep("chain"); }} className="p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-[#D4AF37] text-left transition-all group">
+                        <p className="text-white font-black text-[10px] uppercase group-hover:text-[#D4AF37]">{pkg.label}</p>
                         <p className="text-[10px] text-zinc-500 font-bold">${pkg.price}</p>
                       </button>
                     ))}
@@ -193,8 +177,6 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
               ) : (
                 <div className="space-y-3">
                   <p className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Select Protocol</p>
-                  
-                  {/* Base Option */}
                   <button onClick={handleBasePay} disabled={loading} className="w-full p-5 rounded-2xl border border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 flex justify-between items-center group transition-all">
                     <div className="flex items-center gap-3">
                       <HiOutlineGlobeAlt className="w-5 h-5 text-blue-500" />
@@ -202,8 +184,6 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
                     </div>
                     {loading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <span className="text-[9px] text-blue-500/50 font-black">EVM</span>}
                   </button>
-                  
-                  {/* Solana Option */}
                   <button onClick={handleSolanaPay} disabled={loading} className="w-full p-5 rounded-2xl border border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 flex justify-between items-center group transition-all">
                     <div className="flex items-center gap-3">
                       <HiOutlineBolt className="w-5 h-5 text-purple-500" />
@@ -211,10 +191,7 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
                     </div>
                     {loading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <span className="text-[9px] text-purple-500/50 font-black">SOL</span>}
                   </button>
-
-                  <button onClick={() => setStep("package")} className="w-full text-[9px] font-black text-zinc-700 hover:text-zinc-500 uppercase pt-4">
-                    ← Back to Plans
-                  </button>
+                  <button onClick={() => setStep("package")} className="w-full text-[9px] font-black text-zinc-700 hover:text-zinc-500 uppercase pt-4 transition-colors">← Back to Plans</button>
                 </div>
               )}
             </div>

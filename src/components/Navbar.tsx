@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image"; 
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,19 +8,41 @@ import {
   HiOutlineBars3,
   HiOutlineXMark,
   HiOutlineMagnifyingGlass, 
-  HiOutlineShieldCheck
+  HiOutlineShieldCheck,
+  HiOutlineWallet
 } from "react-icons/hi2";
+import { useAccount, useConnect, useDisconnect, useChainId } from 'wagmi';
+import { base } from 'wagmi/chains';
+
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  
+  const { address, isConnected } = useAccount();
+  const { connect, connectors } = useConnect();
+  const { disconnect } = useDisconnect();
+  const activeChainId = useChainId();
+
+  useEffect(() => { setMounted(true); }, []);
+
+  const handleWalletClick = () => {
+    if (isConnected) {
+      if (confirm("Disconnect Signal Terminal?")) disconnect();
+    } else {
+      
+      connect({ connector: connectors[0] });
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-8">
           
-          {/* 🏛️ Wordmark Logo - High-Signal Visibility */}
+          {/* 🏛️ Wordmark Logo */}
           <Link href="/" className="flex items-center gap-4 shrink-0 group">
             <div className="relative transition-transform duration-500 group-hover:scale-[1.02] active:scale-95">
               <Image 
@@ -45,13 +67,12 @@ export function Navbar() {
             <Link href="/pricing" className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 hover:text-white transition-colors">
               Pricing
             </Link>
-            {/* Subtle Guardian Entry */}
             <Link href="/admin" className="opacity-0 hover:opacity-100 transition-opacity">
                <HiOutlineShieldCheck className="w-4 h-4 text-zinc-800 hover:text-[#4E24CF]" />
             </Link>
           </div>
 
-          {/* Search Bar - The Encyclopedia Portal */}
+          {/* Search Bar */}
           <div className="flex-1 max-w-md hidden md:block">
             <div className={`relative flex items-center transition-all duration-300 ${searchFocused ? 'scale-[1.02]' : ''}`}>
               <HiOutlineMagnifyingGlass className={`absolute left-4 w-4 h-4 transition-colors ${searchFocused ? 'text-[#4E24CF]' : 'text-zinc-500'}`} />
@@ -65,11 +86,25 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* 🎖️ Action Center - The Conversion Engine */}
+          {/* 🎖️ Action Center */}
           <div className="hidden md:flex items-center gap-4 shrink-0">
-             <Link href="/request" className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-500 hover:text-[#D4AF37] transition-colors pr-4 border-r border-white/10">
-              Investor Access
-            </Link>
+            {/*  CONNECT WALLET */}
+            {mounted && (
+              <button 
+                onClick={handleWalletClick}
+                className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition-colors pr-4 border-r border-white/10 group"
+              >
+                <HiOutlineWallet className={`w-3.5 h-3.5 ${isConnected ? 'text-emerald-500' : 'text-zinc-600 group-hover:text-blue-500'}`} />
+                {isConnected ? (
+                  <span className="flex items-center gap-2">
+                    {address?.slice(0, 4)}...{address?.slice(-4)}
+                    {activeChainId === base.id && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />}
+                  </span>
+                ) : (
+                  "Connect Wallet"
+                )}
+              </button>
+            )}
             
             {/* 🚀 Primary Conversion Button */}
             <Link 
@@ -103,7 +138,15 @@ export function Navbar() {
               <Link href="/about" onClick={() => setMobileOpen(false)} className="text-zinc-400 text-sm font-black uppercase tracking-widest">About</Link>
               <Link href="/submit" onClick={() => setMobileOpen(false)} className="text-zinc-400 text-sm font-black uppercase tracking-widest">Submit Startup</Link>
               <Link href="/pricing" onClick={() => setMobileOpen(false)} className="text-zinc-400 text-sm font-black uppercase tracking-widest">Pricing</Link>
-              <Link href="/request" onClick={() => setMobileOpen(false)} className="text-[#D4AF37] text-sm font-black uppercase tracking-widest border-t border-white/5 pt-4">Investor Access</Link>
+              
+              {/* Mobile Wallet Toggle */}
+              <button 
+                onClick={() => { handleWalletClick(); setMobileOpen(false); }}
+                className="text-[#D4AF37] text-sm font-black uppercase tracking-widest border-t border-white/5 pt-4 text-left"
+              >
+                {isConnected ? `Wallet: ${address?.slice(0, 6)}...` : "Connect Wallet"}
+              </button>
+
               <Link 
                 href="/submit" 
                 onClick={() => setMobileOpen(false)}
