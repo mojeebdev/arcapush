@@ -1,11 +1,3 @@
-/**
- * WHATE ENGINE VERSION: 23.1.82
- * PERSONA: GUARDIAN
- * LOG: 
- * - [v23.1.82] Integrated Dual-Stack Web3 Context (EVM + SVM).
- * - [v23.1.82] Resolved context-loss for Phantom wallet injections.
- * - [v23.1.82] Standardized meta-tags for 2026 search indexing.
- */
 
 import type { Metadata } from "next";
 import { AdminConfig } from "@/lib/adminConfig";
@@ -14,7 +6,6 @@ import { Footer } from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/react"; 
 import { SpeedInsights } from "@vercel/speed-insights/next"; 
 import { Web3Provider } from "@/components/Web3Provider"; 
-import { SolanaProvider } from "@/components/SolanaProvider"; 
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -60,23 +51,21 @@ export default function RootLayout({
         
         
         <Web3Provider>
-          <SolanaProvider>
-            {/* 🌌 Background Ambience */}
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-              <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[1000px] h-[700px] bg-[#4E24CF]/10 rounded-full blur-[140px] opacity-70" />
-              <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#D4AF37]/5 rounded-full blur-[120px]" />
-            </div>
+          {/* 🌌 Background Ambience */}
+          <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+            <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[1000px] h-[700px] bg-[#4E24CF]/10 rounded-full blur-[140px] opacity-70" />
+            <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#D4AF37]/5 rounded-full blur-[120px]" />
+          </div>
 
-            {/* 🛡️ Main Layout Container */}
-            <div className="relative z-10 flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-grow pt-20">
-                {children}
-              </main>
+          {/* 🛡️ Main Layout Container */}
+          <div className="relative z-10 flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-grow pt-20">
+              {children}
+            </main>
 
-              <Footer />
-            </div>
-          </SolanaProvider>
+            <Footer />
+          </div>
         </Web3Provider>
 
         <Analytics />
