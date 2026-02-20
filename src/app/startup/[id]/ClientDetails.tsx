@@ -1,12 +1,3 @@
-/**
- * WHATE ENGINE VERSION: 23.2.03
- * PERSONA: GUARDIAN
- * LOG: 
- * - [v23.2.03] Integrated state cleanup for AscensionSuccess triggers.
- * - [v23.2.03] Added z-index safety for the "Boost Signal" floating terminal.
- * - [v23.2.03] Optimized for Guardian "Food Item" display logic.
- */
-
 "use client";
 
 import { useState } from "react";

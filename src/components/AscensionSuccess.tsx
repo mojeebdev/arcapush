@@ -15,9 +15,9 @@ interface SuccessProps {
   expiresAt: Date;
   txHash: string;
   duration: string;
-}
+  onClose?: () => void; 
 
-export function AscensionSuccess({ startupName, expiresAt, txHash, duration }: SuccessProps) {
+export function AscensionSuccess({ startupName, expiresAt, txHash, duration, onClose }: SuccessProps) {
   const [timeLeft, setTimeLeft] = useState("");
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
@@ -43,7 +43,7 @@ export function AscensionSuccess({ startupName, expiresAt, txHash, duration }: S
   }, [expiresAt]);
 
   const shareOnX = () => {
-    const text = `🚀 Just ascended to PINNED status on VibeStream! \n\nCheck out ${startupName} in the Encyclopedia. \n\n#VibeStream #VibeCode #BuildInPublic`;
+    const text = `🚀 Just ascended to PINNED status on VibeStream! \n\nCheck out ${startupName} in the Encyclopedia. \n\n#VibeStream #BuildInPublic`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -97,11 +97,12 @@ export function AscensionSuccess({ startupName, expiresAt, txHash, duration }: S
             <HiOutlineShare className="w-5 h-5" /> Blast to X
           </button>
           
+          
           <button 
-            onClick={() => window.location.href = '/'}
+            onClick={onClose || (() => window.location.href = '/')}
             className="w-full py-5 rounded-2xl bg-zinc-900 text-zinc-400 font-black uppercase text-[10px] tracking-[0.3em] hover:text-white transition-colors"
           >
-            Return to Encyclopedia
+            Confirm & Return
           </button>
         </div>
 
