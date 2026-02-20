@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 import { HiOutlineGlobeAlt, HiOutlineBolt, HiOutlineMagnifyingGlass } from "react-icons/hi2";
-import { useWriteContract } from 'wagmi'; // 🛡️ Upgraded for secure USDC Handshake
+import { useWriteContract } from 'wagmi'; 
 import { parseUnits } from 'viem';
 import { AdminConfig } from "@/lib/adminConfig";
 import { 
@@ -14,6 +14,7 @@ import {
   SystemProgram, 
   LAMPORTS_PER_SOL 
 } from "@solana/web3.js";
+
 
 const USDC_ABI = [
   {
@@ -32,7 +33,6 @@ export default function PricingPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedStartupId, setSelectedStartupId] = useState<string>("");
   const [approvedStartups, setApprovedStartups] = useState<any[]>([]);
-  
   
   const { writeContractAsync } = useWriteContract();
 
@@ -60,14 +60,14 @@ export default function PricingPage() {
         throw new Error("Guardian wallet not configured in .env");
       }
 
-    
       const hash = await writeContractAsync({
         address: AdminConfig.USDC_CONTRACT_BASE as `0x${string}`,
         abi: USDC_ABI,
         functionName: 'transfer',
         args: [
           destination as `0x${string}`,
-          parseUnits(plan.price.toString(), 6), 
+          parseUnits(plan.price.toString(), 6)
+        ],
       });
 
       const res = await fetch("/api/pin", {
@@ -145,10 +145,9 @@ export default function PricingPage() {
   };
 
   return (
-    <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto min-h-screen bg-black">
+    <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto min-h-screen bg-black text-white">
       <Toaster position="bottom-right" />
       
-      {/* Startup Selector */}
       <section className="mb-12 max-w-xl mx-auto">
         <div className="p-6 rounded-[2rem] bg-zinc-900/50 border border-white/5 backdrop-blur-xl text-center">
           <label className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.3em] mb-4 block">Identity Approved Signal</label>
@@ -168,7 +167,6 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Pricing Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {AdminConfig.PIN_PACKAGES.map((plan) => (
           <motion.div 
@@ -191,7 +189,7 @@ export default function PricingPage() {
               <button 
                 onClick={() => handleBasePayment(plan)} 
                 disabled={isProcessing || !selectedStartupId} 
-                className="w-full py-4 rounded-2xl font-black text-[10px] bg-blue-600 text-white hover:bg-blue-500 flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-30 disabled:grayscale"
+                className="w-full py-4 rounded-2xl font-black text-[10px] bg-blue-600 text-white hover:bg-blue-500 flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-30"
               >
                 <HiOutlineGlobeAlt className="w-5 h-5" /> Pay USDC (Base)
               </button>
@@ -199,7 +197,7 @@ export default function PricingPage() {
               <button 
                 onClick={() => handleSolanaPayment(plan)} 
                 disabled={isProcessing || !selectedStartupId} 
-                className="w-full py-4 rounded-2xl font-black text-[10px] bg-white text-black hover:bg-[#D4AF37] flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-30 disabled:grayscale"
+                className="w-full py-4 rounded-2xl font-black text-[10px] bg-white text-black hover:bg-[#D4AF37] flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-30"
               >
                 <HiOutlineBolt className="w-5 h-5" /> Pay SOL (Dynamic)
               </button>
