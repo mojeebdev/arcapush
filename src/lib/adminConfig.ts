@@ -1,12 +1,17 @@
+
+
 const getEnv = (key: string, defaultValue?: string): string => {
   const value = process.env[key] || defaultValue;
+  
+  
   if (!value && typeof window === "undefined") {
     console.error(`❌ MISSING CONFIG: ${key} is not defined in .env`);
     return "MISSING_CONFIG";
   }
-  return value || "";
+  
+  
+  return value || defaultValue || "";
 };
-
 
 export interface PinPackage {
   label: string;
@@ -40,9 +45,13 @@ export const AdminConfig = {
   TICKER_ROTATION_MS: 30 * 1000,      
   
   
-  PAYMENT_WALLET_BASE: getEnv("NEXT_PUBLIC_PAYMENT_WALLET_BASE") as string, 
-  PAYMENT_WALLET_SOLANA: getEnv("NEXT_PUBLIC_PAYMENT_WALLET_SOL") as string, 
-  USDC_CONTRACT_BASE: getEnv("NEXT_PUBLIC_BASE_USDC_ADDRESS", "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"),
+  PAYMENT_WALLET_BASE: getEnv("NEXT_PUBLIC_PAYMENT_WALLET_BASE"), 
+  PAYMENT_WALLET_SOLANA: getEnv("NEXT_PUBLIC_PAYMENT_WALLET_SOLANA"), 
+  
+  USDC_CONTRACT_BASE: getEnv(
+    "NEXT_PUBLIC_BASE_USDC_ADDRESS", 
+    "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+  ),
   
   
   CATEGORIES: [

@@ -1,6 +1,6 @@
-\"use client";
+"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { AdminConfig } from "@/lib/adminConfig";
@@ -10,7 +10,7 @@ import {
   HiOutlineShieldCheck, 
   HiOutlineGlobeAlt 
 } from "react-icons/hi2";
-import { useSendTransaction } from 'wagmi';
+import { useWriteContract } from 'wagmi'; 
 import { parseUnits } from 'viem';
 import { 
   Connection, 
@@ -20,6 +20,19 @@ import {
   LAMPORTS_PER_SOL 
 } from "@solana/web3.js";
 
+const USDC_ABI = [
+  {
+    name: 'transfer',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'recipient', type: 'address' },
+      { name: 'amount', type: 'uint256' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+] as const;
+
 interface PaymentModalProps {
   startupId: string;
   status: string; 
@@ -28,19 +41,36 @@ interface PaymentModalProps {
 }
 
 export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentModalProps) {
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<"package" | "chain">("package");
   const [selectedPackage, setSelectedPackage] = useState(AdminConfig.PIN_PACKAGES[0]);
 
-  const { mutateAsync: sendBaseTx } = useSendTransaction();
+  const { writeContractAsync } = useWriteContract();
+
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleBasePay = async () => {
     setLoading(true);
-    const toastId = toast.loading("Initiating Base Handshake...");
+    const toastId = toast.loading("Verifying Base USDC Path...");
     try {
-      const hash = await sendBaseTx({
-        to: AdminConfig.PAYMENT_WALLET_BASE as `0x${string}`,
-        value: parseUnits(selectedPackage.price.toString(), 6), 
+      const destination = AdminConfig.PAYMENT_WALLET_BASE;
+      if (!destination || destination === "MISSING_CONFIG") {
+        throw new Error("Guardian wallet address is not set in .env");
+      }
+
+      
+      const hash = await writeContractAsync({
+        address: AdminConfig.USDC_CONTRACT_BASE as `0x${string}`,
+        abi: USDC_ABI,
+        functionName: 'transfer',
+        args: [
+          destination as `0x${string}`,
+          parseUnits(selectedPackage.price.toString(), 6), 
+        ],
       });
 
       const res = await fetch("/api/pin", {
@@ -61,7 +91,8 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       onSuccess?.(data);
       onClose();
     } catch (err: any) {
-      toast.error(err.message || "Base Transmission Failed", { id: toastId });
+      console.error("Payment Error:", err);
+      toast.error(err.shortMessage || err.message || "Handshake Rejected", { id: toastId });
     } finally { setLoading(false); }
   };
 
@@ -115,6 +146,8 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       toast.error(err.message || "Solana Transmission Failed", { id: toastId });
     } finally { setLoading(false); }
   };
+
+  if (!mounted) return null;
 
   return (
     <AnimatePresence>

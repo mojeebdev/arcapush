@@ -5,11 +5,6 @@ import toast, { Toaster } from 'react-hot-toast';
 import confetti from 'canvas-confetti'; 
 import { track } from '@vercel/analytics';
 
-/**
- * WHATE ENGINE VERSION: 23.1.11
- * PERSONA: GUARDIAN
- * LOG: Synchronized submission success with Guardian approval workflow.
- */
 
 const CATEGORIES = [
   "Select Category...", 
