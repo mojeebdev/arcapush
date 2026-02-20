@@ -6,11 +6,12 @@ import Image from "next/image";
 import {
   HiOutlineBars3,
   HiOutlineXMark,
-  HiOutlineMagnifyingGlass, 
   HiOutlineShieldCheck,
   HiOutlineWallet
 } from "react-icons/hi2";
 
+
+import GlobalSearch from "./GlobalSearch"; 
 
 import { useAccount, useConnect, useDisconnect, useChainId, useConnectors } from 'wagmi';
 import { base } from 'wagmi/chains';
@@ -19,17 +20,14 @@ import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [searchFocused, setSearchFocused] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  
   const { address: evmAddress, isConnected: isEvmConnected } = useAccount();
   const { disconnect: disconnectEvm } = useDisconnect();
   const activeChainId = useChainId();
   const connectors = useConnectors();
   const { connect: connectEvm } = useConnect();
 
-  
   const { publicKey, connected: isSolConnected, disconnect: disconnectSol } = useWallet();
   const { setVisible: setSolModalVisible } = useWalletModal();
 
@@ -63,40 +61,33 @@ export function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-8">
+        <div className="flex items-center justify-between h-20 gap-8">
           
+          {/* LOGO */}
           <Link href="/" className="flex items-center gap-4 shrink-0 group">
             <Image 
               src="/wordmark.png" 
               alt="VibeStream Logo" 
-              width={220} 
-              height={55} 
+              width={180} 
+              height={45} 
               priority 
-              className="h-10 w-auto object-contain brightness-200"
+              className="h-8 w-auto object-contain brightness-200"
             />
           </Link>
 
+          {/* DESKTOP NAV */}
           <div className="hidden lg:flex items-center gap-6">
             <Link href="/about" className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 hover:text-white transition-colors">About</Link>
-            <Link href="/submit" className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 hover:text-white transition-colors">Submit</Link>
+            <Link href="/registry" className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 hover:text-white transition-colors">Registry</Link>
             <Link href="/pricing" className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 hover:text-white transition-colors">Pricing</Link>
             <Link href="/admin" className="opacity-0 hover:opacity-100 transition-opacity">
                <HiOutlineShieldCheck className="w-4 h-4 text-zinc-800 hover:text-[#4E24CF]" />
             </Link>
           </div>
 
-          {/* Search Encyclopedia */}
+          {/* 🛡️ THE FUNCTIONAL SEARCH BAR */}
           <div className="flex-1 max-w-md hidden md:block">
-            <div className={`relative flex items-center transition-all duration-300 ${searchFocused ? 'scale-[1.02]' : ''}`}>
-              <HiOutlineMagnifyingGlass className={`absolute left-4 w-4 h-4 transition-colors ${searchFocused ? 'text-[#4E24CF]' : 'text-zinc-500'}`} />
-              <input 
-                type="text"
-                placeholder="Search Encyclopedia..."
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                className="w-full bg-zinc-900/40 border border-white/5 rounded-xl py-2.5 pl-11 pr-4 text-[11px] text-white placeholder:text-zinc-700 focus:outline-none focus:border-[#4E24CF]/50 focus:ring-1 focus:ring-[#4E24CF]/10 transition-all font-medium"
-              />
-            </div>
+            <GlobalSearch />
           </div>
 
           {/* 🛡️ THE UNIFIED TERMINAL */}
@@ -134,7 +125,8 @@ export function Navbar() {
             </Link>
           </div>
 
-          <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden p-2 rounded-lg text-zinc-400">
+          {/* MOBILE TOGGLE */}
+          <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 rounded-lg text-zinc-400">
             {mobileOpen ? <HiOutlineXMark className="w-7 h-7" /> : <HiOutlineBars3 className="w-7 h-7" />}
           </button>
         </div>

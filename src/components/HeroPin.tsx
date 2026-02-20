@@ -26,17 +26,16 @@ export function HeroPin({ startups }: HeroPinProps) {
 
   const { currentItem, prev, next, total } = useRotation({
     items: startups,
-    intervalMs: AdminConfig.HERO_ROTATION_MS || 5000,
+    intervalMs: AdminConfig.HERO_ROTATION_MS ,
     enabled: startups.length > 1,
   });
 
-  const { progress } = useTicker(AdminConfig.HERO_ROTATION_MS || 5000);
+  const { progress } = useTicker(AdminConfig.HERO_ROTATION_MS);
 
   if (startups.length === 0) {
     return (
       <div className="relative rounded-[2.5rem] overflow-hidden border border-white/5 bg-zinc-900/20 backdrop-blur-xl min-h-[420px] flex flex-col items-center justify-center animate-in fade-in zoom-in duration-700">
         <div className="text-center px-8 relative z-10">
-          {/* ⚡ Empty Slot Icon - Royal Purple */}
           <div className="w-20 h-20 rounded-3xl bg-[#4E24CF]/10 border border-[#4E24CF]/20 flex items-center justify-center mx-auto mb-8">
             <HiOutlineBolt className="w-10 h-10 text-[#4E24CF]" />
           </div>
@@ -109,7 +108,7 @@ export function HeroPin({ startups }: HeroPinProps) {
             <div className="absolute top-8 left-8 z-20 flex gap-3">
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#D4AF37] text-black shadow-lg">
                 <HiOutlineFire className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Pinned</span>
+                <span className="text-[10px] font-black uppercase tracking-widest">Featured</span>
               </div>
               <div className="px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-black text-white/70 uppercase tracking-widest">
                 {currentItem.category}
