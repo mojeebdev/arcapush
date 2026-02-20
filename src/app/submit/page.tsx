@@ -1,5 +1,3 @@
-
-
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -7,10 +5,9 @@ import toast, { Toaster } from 'react-hot-toast';
 import confetti from 'canvas-confetti'; 
 import { track } from '@vercel/analytics';
 
-
 const CATEGORIES = [
   "Select Category", 
-  "SaaS", "FinTech", "AI / ML","Productivity", "Lifestyle", "DeAI (Decentralized AI)", "E-commerce", 
+  "SaaS", "FinTech", "AI / ML", "Productivity", "Lifestyle", "DeAI (Decentralized AI)", "E-commerce", 
   "HealthTech", "Bio-Tech & Longevity", "EdTech", "DeFi", "Infrastructure", 
   "Gaming / GameFi", "Social", "DAO Tooling", "AI x Crypto", "RWA", 
   "Privacy", "Developer Tools", "Other"
@@ -38,7 +35,7 @@ export default function SubmitStartup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.category || formData.category === "Select Category...") {
+    if (!formData.category || formData.category === "Select Category") {
       toast.error("Please select a Vertical for your Vibe Code.");
       return;
     }
@@ -55,6 +52,8 @@ export default function SubmitStartup() {
 
       if (res.ok) {
         const result = await res.json();
+        
+        
         await fetch('/api/notify-submission', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -68,6 +67,7 @@ export default function SubmitStartup() {
 
         track('Vibe Code Submitted'); 
         
+        
         confetti({ 
           particleCount: 150, 
           spread: 70, 
@@ -76,11 +76,10 @@ export default function SubmitStartup() {
         });
 
         toast.success("Vibe Code Received. Guardian notified for fast-track verification.");
-        
-        
         console.log("🚀 Milestone: New Signal Registered in Encyclopedia!");
         
-        setTimeout(() => router.push('/pricing'), 3000); 
+        
+        setTimeout(() => router.push('/success'), 3000); 
       } else {
         const errorData = await res.json();
         throw new Error(errorData.error || "Transmission Interrupted");
@@ -112,7 +111,7 @@ export default function SubmitStartup() {
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
-          {/* Identity Section */}
+          {/* Section 1: Identity */}
           <div className="space-y-6 bg-zinc-950 p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
             <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">01. Identity</h3>
             <div className="space-y-4">
@@ -137,7 +136,7 @@ export default function SubmitStartup() {
             </div>
           </div>
 
-          {/* Classification Section */}
+          {/* Section 2: Classification */}
           <div className="space-y-6 bg-zinc-950 p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
             <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">02. Classification</h3>
             <div className="space-y-4">
@@ -150,7 +149,7 @@ export default function SubmitStartup() {
                   required
                 >
                   {CATEGORIES.map(cat => (
-                    <option key={cat} value={cat === "Select Category..." ? "" : cat} className="bg-black text-white">
+                    <option key={cat} value={cat === "Select Category" ? "" : cat} className="bg-black text-white">
                       {cat}
                     </option>
                   ))}
@@ -177,7 +176,7 @@ export default function SubmitStartup() {
             </div>
           </div>
 
-          {/* Contact Section */}
+          {/* Section 3: Contact Information */}
           <div className="md:col-span-2 space-y-6 bg-zinc-950 p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
             <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest border-b border-white/5 pb-4">03. Contact Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
