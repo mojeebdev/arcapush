@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -16,6 +17,7 @@ interface SuccessProps {
   txHash: string;
   duration: string;
   onClose?: () => void; 
+} 
 
 export function AscensionSuccess({ startupName, expiresAt, txHash, duration, onClose }: SuccessProps) {
   const [timeLeft, setTimeLeft] = useState("");
@@ -96,7 +98,6 @@ export function AscensionSuccess({ startupName, expiresAt, txHash, duration, onC
           >
             <HiOutlineShare className="w-5 h-5" /> Blast to X
           </button>
-          
           
           <button 
             onClick={onClose || (() => window.location.href = '/')}
