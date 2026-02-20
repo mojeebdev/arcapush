@@ -10,7 +10,6 @@ import {
   HiOutlineWallet
 } from "react-icons/hi2";
 
-
 import GlobalSearch from "./GlobalSearch"; 
 
 import { useAccount, useConnect, useDisconnect, useChainId, useConnectors } from 'wagmi';
@@ -80,12 +79,9 @@ export function Navbar() {
             <Link href="/about" className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 hover:text-white transition-colors">About</Link>
             <Link href="/registry" className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 hover:text-white transition-colors">Registry</Link>
             <Link href="/pricing" className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 hover:text-white transition-colors">Pricing</Link>
-            <Link href="/admin" className="opacity-0 hover:opacity-100 transition-opacity">
+            <Link href="/submit" className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 hover:text-white transition-colors">Submit</Link>
                <HiOutlineShieldCheck className="w-4 h-4 text-zinc-800 hover:text-[#4E24CF]" />
-            </Link>
           </div>
-
-          {/* 🛡️ THE FUNCTIONAL SEARCH BAR */}
           <div className="flex-1 max-w-md hidden md:block">
             <GlobalSearch />
           </div>
