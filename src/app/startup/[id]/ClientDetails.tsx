@@ -1,3 +1,12 @@
+/**
+ * WHATE ENGINE VERSION: 23.2.03
+ * PERSONA: GUARDIAN
+ * LOG: 
+ * - [v23.2.03] Integrated state cleanup for AscensionSuccess triggers.
+ * - [v23.2.03] Added z-index safety for the "Boost Signal" floating terminal.
+ * - [v23.2.03] Optimized for Guardian "Food Item" display logic.
+ */
+
 "use client";
 
 import { useState } from "react";
@@ -9,36 +18,50 @@ export function ClientDetails({ startup, children }: { startup: any, children: R
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [successData, setSuccessData] = useState<any>(null);
 
+  const handleSuccess = (data: any) => {
+    setIsModalOpen(false);
+    setSuccessData(data);
+  };
+
+  
+  const handleCloseSuccess = () => {
+    setSuccessData(null);
+  };
+
   return (
     <>
       {children}
 
-      {/* 🚀 Signal Boost Floating Button */}
-      <button 
-        onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-10 right-10 z-50 flex items-center gap-3 px-8 py-4 bg-[#D4AF37] text-black font-black uppercase italic tracking-tighter rounded-full shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:scale-110 transition-transform active:scale-95 group"
-      >
-        <HiOutlineBolt className="w-5 h-5 group-hover:animate-bounce" />
-        Boost Signal
-      </button>
+      
+      {!successData && (
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="fixed bottom-10 right-10 z-[60] flex items-center gap-3 px-8 py-4 bg-[#D4AF37] text-black font-black uppercase italic tracking-tighter rounded-full shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:scale-110 transition-transform active:scale-95 group"
+        >
+          <HiOutlineBolt className="w-5 h-5 group-hover:animate-bounce" />
+          Boost Signal
+        </button>
+      )}
 
-      {/* 💳 Payment Modal */}
+      {/* 💳 Payment Modal Terminal */}
       {isModalOpen && (
         <PaymentModal 
           startupId={startup.id} 
           status={startup.status}
           onClose={() => setIsModalOpen(false)} 
-          onSuccess={(data: any) => setSuccessData(data)} 
+          onSuccess={handleSuccess} 
         />
       )}
 
-      {/* 🎊 Celebration Screen */}
+      
       {successData && (
         <AscensionSuccess 
-          startupName={successData.startupName}
+          startupName={successData.startupName || startup.name}
           expiresAt={successData.expiresAt}
           txHash={successData.txHash}
           duration={successData.duration}
+          
+          onClose={handleCloseSuccess} 
         />
       )}
     </>

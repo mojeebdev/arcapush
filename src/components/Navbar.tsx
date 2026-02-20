@@ -1,10 +1,8 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image"; 
-import { motion, AnimatePresence } from "framer-motion";
 import {
   HiOutlineBars3,
   HiOutlineXMark,
@@ -12,9 +10,10 @@ import {
   HiOutlineShieldCheck,
   HiOutlineWallet
 } from "react-icons/hi2";
-import { useAccount, useConnect, useDisconnect, useChainId } from 'wagmi';
-import { base } from 'wagmi/chains';
 
+
+import { useAccount, useConnect, useDisconnect, useChainId, useConnectors } from 'wagmi';
+import { base } from 'wagmi/chains';
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 
@@ -25,9 +24,10 @@ export function Navbar() {
 
   
   const { address: evmAddress, isConnected: isEvmConnected } = useAccount();
-  const { connect: connectEvm, connectors } = useConnect();
   const { disconnect: disconnectEvm } = useDisconnect();
   const activeChainId = useChainId();
+  const connectors = useConnectors();
+  const { connect: connectEvm } = useConnect();
 
   
   const { publicKey, connected: isSolConnected, disconnect: disconnectSol } = useWallet();
@@ -35,26 +35,30 @@ export function Navbar() {
 
   useEffect(() => { setMounted(true); }, []);
 
-  const handleWalletClick = () => {
-    
-    if (isEvmConnected || isSolConnected) {
-      if (confirm("Disconnect Signal Terminal?")) {
-        if (isEvmConnected) disconnectEvm();
-        if (isSolConnected) disconnectSol();
-      }
-      return;
+  const handleDisconnect = () => {
+    if (confirm("Disconnect Signal Terminal?")) {
+      if (isEvmConnected) disconnectEvm();
+      if (isSolConnected) disconnectSol();
     }
-    
-    
-    connectEvm({ connector: connectors[0] });
   };
 
-  
-  const displayAddress = isEvmConnected 
-    ? `${evmAddress?.slice(0, 4)}...${evmAddress?.slice(-4)}`
-    : isSolConnected 
-    ? `${publicKey?.toBase58().slice(0, 4)}...${publicKey?.toBase58().slice(-4)}`
-    : "Connect Wallet";
+  const handleConnect = () => {
+    if (isEvmConnected || isSolConnected) {
+      handleDisconnect();
+      return;
+    }
+    if (connectors.length > 0) {
+      connectEvm({ connector: connectors[0] });
+    }
+  };
+
+  const displayAddress = !mounted 
+    ? "Connect Wallet" 
+    : isEvmConnected 
+      ? `${evmAddress?.slice(0, 4)}...${evmAddress?.slice(-4)}`
+      : isSolConnected 
+      ? `${publicKey?.toBase58().slice(0, 4)}...${publicKey?.toBase58().slice(-4)}`
+      : "Connect Wallet";
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/80 backdrop-blur-md">
@@ -62,16 +66,14 @@ export function Navbar() {
         <div className="flex items-center justify-between h-20 gap-8">
           
           <Link href="/" className="flex items-center gap-4 shrink-0 group">
-            <div className="relative transition-transform duration-500 group-hover:scale-[1.02] active:scale-95">
-              <Image 
-                src="/wordmark.png" 
-                alt="VibeStream Logo" 
-                width={220} 
-                height={55} 
-                priority 
-                className="h-10 w-auto object-contain brightness-200"
-              />
-            </div>
+            <Image 
+              src="/wordmark.png" 
+              alt="VibeStream Logo" 
+              width={220} 
+              height={55} 
+              priority 
+              className="h-10 w-auto object-contain brightness-200"
+            />
           </Link>
 
           <div className="hidden lg:flex items-center gap-6">
@@ -83,6 +85,7 @@ export function Navbar() {
             </Link>
           </div>
 
+          {/* Search Encyclopedia */}
           <div className="flex-1 max-w-md hidden md:block">
             <div className={`relative flex items-center transition-all duration-300 ${searchFocused ? 'scale-[1.02]' : ''}`}>
               <HiOutlineMagnifyingGlass className={`absolute left-4 w-4 h-4 transition-colors ${searchFocused ? 'text-[#4E24CF]' : 'text-zinc-500'}`} />
@@ -96,20 +99,21 @@ export function Navbar() {
             </div>
           </div>
 
+          {/* 🛡️ THE UNIFIED TERMINAL */}
           <div className="hidden md:flex items-center gap-4 shrink-0">
             {mounted && (
               <div className="flex items-center gap-3 pr-4 border-r border-white/10">
-                {/* 🟣 Solana Direct Trigger */}
-                <button 
-                  onClick={() => setSolModalVisible(true)}
-                  className={`p-2 rounded-lg transition-colors ${isSolConnected ? 'bg-purple-500/10 text-purple-400' : 'text-zinc-600 hover:text-purple-400'}`}
-                  title="Connect Solana"
-                >
-                  <span className="text-[9px] font-bold">SOL</span>
-                </button>
+                {!isEvmConnected && (
+                  <button 
+                    onClick={() => setSolModalVisible(true)}
+                    className={`p-2 rounded-lg transition-colors ${isSolConnected ? 'bg-purple-500/10 text-purple-400' : 'text-zinc-600 hover:text-purple-400'}`}
+                  >
+                    <span className="text-[9px] font-bold">SOL</span>
+                  </button>
+                )}
 
                 <button 
-                  onClick={handleWalletClick}
+                  onClick={handleConnect}
                   className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition-colors group"
                 >
                   <HiOutlineWallet className={`w-3.5 h-3.5 ${(isEvmConnected || isSolConnected) ? 'text-emerald-500' : 'text-zinc-600 group-hover:text-blue-500'}`} />

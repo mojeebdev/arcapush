@@ -1,4 +1,5 @@
 
+
 import { NextResponse } from 'next/server';
 import { prisma } from "@/lib/prisma"; 
 import { verifyBasePayment, verifySolanaPayment } from "@/lib/payments";
@@ -26,22 +27,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Hash already indexed" }, { status: 409 });
     }
 
-    
+   
     const selectedPackage = AdminConfig.PIN_PACKAGES.find(p => p.value === packageValue);
     if (!selectedPackage) {
       return NextResponse.json({ error: "Invalid Package Profile" }, { status: 400 });
     }
 
-   
+    
     let verification = { verified: false };
-    for (let i = 0; i < 2; i++) {
+    const maxRetries = 3; 
+    
+    for (let i = 0; i < maxRetries; i++) {
       verification = chain === "base" 
         ? await verifyBasePayment(txHash) 
         : await verifySolanaPayment(txHash);
       
       if (verification.verified) break;
       
-      if (i === 0) await new Promise(r => setTimeout(r, 3000)); 
+      
+      if (i < maxRetries - 1) {
+        await new Promise(r => setTimeout(r, i === 0 ? 3000 : 5000)); 
+      }
     }
 
     if (verification.verified) {
@@ -79,7 +85,7 @@ export async function POST(request: Request) {
               </div>
               <div style="border-top: 1px solid #222; padding-top: 20px;">
                 <p style="font-size: 9px; color: #444; margin: 2px 0;">TX HASH: ${txHash}</p>
-                <p style="font-size: 9px; color: #D4AF37; font-weight: bold; margin: 2px 0;">WHATE ENGINE v23.1.77</p>
+                <p style="font-size: 9px; color: #D4AF37; font-weight: bold; margin: 2px 0;">WHATE ENGINE v23.2.04</p>
               </div>
             </div>
           `
@@ -93,7 +99,8 @@ export async function POST(request: Request) {
         message: "Signal Amplified",
         startup: updated, 
         expiresAt: rotationExpiry,
-        duration: selectedPackage.label
+        duration: selectedPackage.label,
+        txHash: txHash 
       });
     }
 

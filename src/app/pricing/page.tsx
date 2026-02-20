@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,7 +10,7 @@ import {
   HiOutlineMagnifyingGlass,
   HiOutlineShieldCheck 
 } from "react-icons/hi2";
-import { useWriteContract, useAccount, useSwitchChain } from 'wagmi'; 
+import { useWriteContract, useAccount, useSwitchChain, usePublicClient } from 'wagmi'; 
 import { parseUnits } from 'viem';
 import { base } from 'wagmi/chains';
 import { AdminConfig } from "@/lib/adminConfig";
@@ -40,9 +41,10 @@ export default function PricingPage() {
   const [selectedStartupId, setSelectedStartupId] = useState<string>("");
   const [approvedStartups, setApprovedStartups] = useState<any[]>([]);
   
-  const { isConnected, chainId } = useAccount();
+  const { isConnected, chainId, address } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const { writeContractAsync } = useWriteContract();
+  const publicClient = usePublicClient();
 
   useEffect(() => {
     const fetchApproved = async () => {
@@ -73,6 +75,7 @@ export default function PricingPage() {
         await switchChainAsync({ chainId: base.id });
       }
 
+      /
       const hash = await writeContractAsync({
         address: usdcContract as `0x${string}`,
         abi: USDC_ABI,
@@ -81,22 +84,29 @@ export default function PricingPage() {
           destination as `0x${string}`,
           parseUnits(plan.price.toString(), 6) 
         ],
-       
-        gas: BigInt(80000), 
+        
       });
 
       toast.loading("Syncing with Signal Registry...", { id: toastId });
       const res = await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ startupId: selectedStartupId, chain: "base", txHash: hash, packageValue: plan.value }),
+        body: JSON.stringify({ 
+          startupId: selectedStartupId, 
+          chain: "base", 
+          txHash: hash, 
+          packageValue: plan.value 
+        }),
       });
 
       if (!res.ok) throw new Error("Database verification delayed.");
-      toast.success("🚀 Base Ascension Complete!", { id: toastId });
+      
+      
+      toast.success("🚀 Base Ascension Complete! Food Item Boosted.", { id: toastId });
     } catch (err: any) {
-     
-      const errorMsg = err.message?.includes("insufficient funds") ? "Insufficient USDC on Base." : (err.shortMessage || "Handshake Rejected");
+      const errorMsg = err.message?.includes("insufficient funds") 
+        ? "Insufficient USDC on Base." 
+        : (err.shortMessage || "Handshake Rejected");
       toast.error(errorMsg, { id: toastId });
     } finally { setIsProcessing(false); }
   };
@@ -106,7 +116,7 @@ export default function PricingPage() {
     if (!window.solana) return toast.error("Phantom/Solana wallet not detected.");
 
     const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_SOLANA;
-    if (!destination) return toast.error("Solana destination configuration missing.");
+    const solanaRpc = process.env.NEXT_PUBLIC_ALCHEMY_RPC_SOLANA || "https://api.mainnet-beta.solana.com";
 
     setIsProcessing(true);
     const toastId = toast.loading("Accessing Market Oracle...");
@@ -118,21 +128,20 @@ export default function PricingPage() {
       const lamports = Math.floor(solAmount * LAMPORTS_PER_SOL);
 
       const resp = await window.solana.connect();
+      const connection = new Connection(solanaRpc, "confirmed");
       
       
-      const connection = new Connection("https://solana-mainnet.g.allthatnode.com", "confirmed");
-      
-      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized');
       
       const transaction = new Transaction({
         recentBlockhash: blockhash,
         feePayer: resp.publicKey
       }).add(
         
-        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 8000 }),
+        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 15000 }),
         SystemProgram.transfer({
           fromPubkey: resp.publicKey,
-          toPubkey: new PublicKey(destination),
+          toPubkey: new PublicKey(destination!),
           lamports: lamports,
         })
       );
@@ -145,14 +154,21 @@ export default function PricingPage() {
       const res = await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ startupId: selectedStartupId, chain: "solana", txHash: signature, packageValue: plan.value }),
+        body: JSON.stringify({ 
+          startupId: selectedStartupId, 
+          chain: "solana", 
+          txHash: signature, 
+          packageValue: plan.value 
+        }),
       });
 
       if (!res.ok) throw new Error("Database sync failed.");
-      toast.success("🔥 Solana Ascension Complete!", { id: toastId });
+      
+      
+      toast.success("🔥 Solana Ascension Complete! Signal Locked.", { id: toastId });
     } catch (err: any) {
       console.error("Solana Fault:", err);
-      toast.error("Solana Network Busy. Please try again.", { id: toastId });
+      toast.error("Handshake Failed. Ensure you have enough SOL for fees.", { id: toastId });
     } finally { setIsProcessing(false); }
   };
 
@@ -194,10 +210,18 @@ export default function PricingPage() {
             </div>
             
             <div className="space-y-3 mt-auto">
-              <button onClick={() => handleBasePayment(plan)} disabled={isProcessing || !selectedStartupId} className="w-full py-4 rounded-2xl font-black text-[10px] bg-blue-600/10 border border-blue-600/20 text-blue-500 hover:bg-blue-600 hover:text-white flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-10">
+              <button 
+                onClick={() => handleBasePayment(plan)} 
+                disabled={isProcessing || !selectedStartupId} 
+                className="w-full py-4 rounded-2xl font-black text-[10px] bg-blue-600/10 border border-blue-600/20 text-blue-500 hover:bg-blue-600 hover:text-white flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-10"
+              >
                 <HiOutlineGlobeAlt className="w-5 h-5" /> Base USDC
               </button>
-              <button onClick={() => handleSolanaPayment(plan)} disabled={isProcessing || !selectedStartupId} className="w-full py-4 rounded-2xl font-black text-[10px] bg-white text-black hover:bg-[#D4AF37] hover:text-white flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-10">
+              <button 
+                onClick={() => handleSolanaPayment(plan)} 
+                disabled={isProcessing || !selectedStartupId} 
+                className="w-full py-4 rounded-2xl font-black text-[10px] bg-white text-black hover:bg-[#D4AF37] hover:text-white flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-10"
+              >
                 <HiOutlineBolt className="w-5 h-5" /> Solana SOL
               </button>
             </div>
@@ -208,6 +232,7 @@ export default function PricingPage() {
       <div className="mt-20 text-center">
         <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-zinc-900/50 border border-white/5">
           <HiOutlineShieldCheck className="w-4 h-4 text-[#D4AF37]" />
+          <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Guardian Encryption Active</span>
         </div>
       </div>
     </main>

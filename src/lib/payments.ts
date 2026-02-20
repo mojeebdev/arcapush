@@ -1,4 +1,5 @@
 
+
 import { ethers } from "ethers";
 import { AdminConfig } from "./adminConfig";
 import { Connection, PublicKey } from "@solana/web3.js";
@@ -17,7 +18,8 @@ const TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a
 export async function verifyBasePayment(txHash: string): Promise<PaymentVerification> {
   try {
     
-    const provider = new ethers.JsonRpcProvider("https://base-mainnet.public.blastapi.io");
+    const alchemyUrl = process.env.ALCHEMY_RPC_BASE || "https://base-mainnet.public.blastapi.io";
+    const provider = new ethers.JsonRpcProvider(alchemyUrl);
     const receipt = await provider.getTransactionReceipt(txHash);
 
     if (!receipt || receipt.status !== 1) throw new Error("Invalid or failed receipt");
@@ -28,6 +30,7 @@ export async function verifyBasePayment(txHash: string): Promise<PaymentVerifica
     const usdcLog = receipt.logs.find(log => {
       const isUSDC = log.address.toLowerCase() === USDC_BASE_ADDRESS.toLowerCase();
       const isTransfer = log.topics[0] === TRANSFER_TOPIC;
+      
       const toAddress = log.topics[2] ? ethers.getAddress(`0x${log.topics[2].slice(26)}`).toLowerCase() : "";
       return isUSDC && isTransfer && toAddress === targetWallet;
     });
@@ -50,7 +53,8 @@ export async function verifyBasePayment(txHash: string): Promise<PaymentVerifica
 export async function verifySolanaPayment(txHash: string): Promise<PaymentVerification> {
   try {
     
-    const connection = new Connection("https://solana-mainnet.g.allthatnode.com", "confirmed");
+    const solanaRpc = process.env.NEXT_PUBLIC_ALCHEMY_RPC_SOLANA || "https://api.mainnet-beta.solana.com";
+    const connection = new Connection(solanaRpc, "confirmed");
     
     const tx = await connection.getParsedTransaction(txHash, { 
       maxSupportedTransactionVersion: 0 
@@ -63,24 +67,26 @@ export async function verifySolanaPayment(txHash: string): Promise<PaymentVerifi
     if (!solVault) throw new Error("Solana Payment Vault is not configured.");
 
     
-    const destinationFound = tx.transaction.message.instructions.some((ix: any) => {
-      
-      const isNativeMatch = ix.parsed?.info?.destination === solVault;
-      
-      
-      const isTokenMatch = tx.meta?.postTokenBalances?.some((b: any) => 
-        b.owner === solVault && 
-        (Number(b.uiTokenAmount.amount) > Number(tx.meta?.preTokenBalances?.find((pb: any) => pb.owner === solVault)?.uiTokenAmount.amount || 0))
-      );
-      
-      return isNativeMatch || isTokenMatch;
-    });
+    const accountKeys = tx.transaction.message.accountKeys.map(k => k.pubkey.toBase58());
+    const vaultIndex = accountKeys.indexOf(solVault);
+
+    if (vaultIndex === -1) throw new Error("Vault address not involved in this transaction.");
+
+    const preBalance = tx.meta?.preBalances[vaultIndex] || 0;
+    const postBalance = tx.meta?.postBalances[vaultIndex] || 0;
 
     
-    const balanceIncreased = (tx.meta?.postBalances[tx.transaction.message.accountKeys.findIndex(k => k.pubkey.toBase58() === solVault)] || 0) > 
-                             (tx.meta?.preBalances[tx.transaction.message.accountKeys.findIndex(k => k.pubkey.toBase58() === solVault)] || 0);
+    const solIncreased = postBalance > preBalance;
 
-    if (!destinationFound && !balanceIncreased) throw new Error("Vault balance did not increase in this transaction");
+    
+    const tokenIncreased = tx.meta?.postTokenBalances?.some((b: any) => 
+      b.owner === solVault && 
+      (Number(b.uiTokenAmount.amount) > Number(tx.meta?.preTokenBalances?.find((pb: any) => pb.owner === solVault)?.uiTokenAmount.amount || 0))
+    );
+
+    if (!solIncreased && !tokenIncreased) {
+      throw new Error("Vault balance did not increase in this transaction");
+    }
 
     return {
       verified: true,

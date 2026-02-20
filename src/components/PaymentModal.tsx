@@ -22,15 +22,6 @@ import {
   ComputeBudgetProgram 
 } from "@solana/web3.js";
 
-/**
- * WHATE ENGINE VERSION: 23.1.78
- * PERSONA: GUARDIAN
- * LOG: 
- * - [v23.1.78] Resolved Solana "Receiving end does not exist" via Hard Handshake.
- * - [v23.1.78] Implemented Phantom Provider validation.
- * - [v23.1.78] Increased Priority Fees to prevent port timeouts.
- */
-
 const USDC_ABI = [
   {
     name: 'transfer',
@@ -77,13 +68,13 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_BASE;
       if (!destination) throw new Error("Base destination wallet missing.");
 
+      
       const hash = await writeContractAsync({
         chainId: base.id,
         address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as `0x${string}`,
         abi: USDC_ABI,
         functionName: 'transfer',
         args: [destination as `0x${string}`, parseUnits(selectedPackage.price.toString(), 6)],
-        gas: BigInt(85000), 
       });
 
       toast.loading("Syncing with Signal Registry...", { id: toastId });
@@ -94,6 +85,7 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       });
 
       if (!res.ok) throw new Error("Database sync failed.");
+      
       toast.success("🚀 Base Ascension Complete!", { id: toastId });
       onSuccess?.(await res.json());
       onClose();
@@ -104,34 +96,34 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
   };
 
   const handleSolanaPay = async () => {
-    // 🛡️ 1. HARD HANDSHAKE: Validate Phantom injection
     const provider = (window as any)?.solana;
-    if (!provider?.isPhantom) return toast.error("Phantom wallet not detected or inactive.");
+    if (!provider?.isPhantom) return toast.error("Phantom wallet not detected.");
 
     const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_SOLANA;
+    
+    const solanaRpc = process.env.NEXT_PUBLIC_ALCHEMY_RPC_SOLANA || "https://api.mainnet-beta.solana.com";
+
     if (!destination) return toast.error("Solana config missing.");
 
     setLoading(true);
     const toastId = toast.loading("Waking Solana Oracle...");
 
     try {
-      // 🛡️ 2. FORCE RE-ESTABLISH PORT: Fixes "Receiving end does not exist"
       const resp = await provider.connect();
-      
-      const connection = new Connection("https://solana-mainnet.g.allthatnode.com", "confirmed");
+      const connection = new Connection(solanaRpc, "confirmed");
       
       const priceRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
       const priceData = await priceRes.json();
       const solAmount = selectedPackage.price / priceData.solana.usd;
       const lamports = Math.floor(solAmount * LAMPORTS_PER_SOL);
 
-      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
+      
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized');
       
       const transaction = new Transaction({
         recentBlockhash: blockhash,
         feePayer: resp.publicKey
       }).add(
-        // 🛡️ 3. HIGH PRIORITY: Prevents extension drop-outs during network load
         ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 15000 }),
         SystemProgram.transfer({
           fromPubkey: resp.publicKey,
@@ -152,15 +144,13 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       });
 
       if (!res.ok) throw new Error("Database sync failed.");
+      
       toast.success("🔥 Solana Ascension Complete!", { id: toastId });
       onSuccess?.(await res.json());
       onClose();
     } catch (err: any) {
       console.error("Guardian Solana Log:", err);
-      const errorMsg = err.message?.includes("Could not establish connection") 
-        ? "Phantom connection lost. Please click again to retry."
-        : "Solana busy. Re-initiating protocol...";
-      toast.error(errorMsg, { id: toastId });
+      toast.error("Handshake Failed. Check your SOL balance for fees.", { id: toastId });
     } finally { setLoading(false); }
   };
 
@@ -178,7 +168,7 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
               </div>
               <div>
                 <h3 className="text-lg font-black text-white uppercase italic leading-none">Ascension</h3>
-                <p className="text-[9px] text-zinc-500 font-bold uppercase mt-1 tracking-widest">Signal Terminal v23.1.78</p>
+                <p className="text-[9px] text-zinc-500 font-bold uppercase mt-1 tracking-widest">Signal Terminal v23.2.02</p>
               </div>
             </div>
             <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors"><HiOutlineXMark className="w-5 h-5 text-zinc-600" /></button>
