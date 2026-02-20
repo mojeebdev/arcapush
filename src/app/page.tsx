@@ -1,19 +1,10 @@
-/**
- * WHATE ENGINE VERSION: 23.2.10
- * PERSONA: GUARDIAN
- * LOG: 
- * - [v23.2.10] Simplified Hero section by removing header badges.
- * - [v23.2.10] Relocated "VibeStream Live" status below primary CTA buttons.
- * - [v23.2.10] Optimized whitespace for high-signal engineering aesthetic.
- */
-
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { HeroPin } from "@/components/HeroPin";
 import { DiscoveryTicker } from "@/components/DiscoveryTicker";
 import { AdminConfig } from "@/lib/adminConfig";
 
-export const revalidate = 30;
+export const revalidate = 0; 
 
 async function getPinnedStartups() {
   const now = new Date();
@@ -25,20 +16,10 @@ async function getPinnedStartups() {
     },
     orderBy: { pinnedAt: "desc" },
     select: {
-      id: true,
-      name: true,
-      tagline: true,
-      problemStatement: true,
-      bannerUrl: true,
-      logoUrl: true,
-      category: true,
-      website: true,
-      twitter: true,
-      tier: true,
-      pinnedAt: true,
-      pinnedUntil: true,
-      viewCount: true,
-      createdAt: true,
+      id: true, name: true, tagline: true, problemStatement: true,
+      bannerUrl: true, logoUrl: true, category: true, website: true,
+      twitter: true, tier: true, pinnedAt: true, pinnedUntil: true,
+      viewCount: true, createdAt: true,
     },
   });
 }
@@ -58,18 +39,9 @@ async function getFreeStartups() {
     orderBy: { createdAt: "desc" },
     take: 50,
     select: {
-      id: true,
-      name: true,
-      tagline: true,
-      problemStatement: true,
-      bannerUrl: true,
-      logoUrl: true,
-      category: true,
-      website: true,
-      twitter: true,
-      tier: true,
-      viewCount: true,
-      createdAt: true,
+      id: true, name: true, tagline: true, problemStatement: true,
+      bannerUrl: true, logoUrl: true, category: true, website: true,
+      twitter: true, tier: true, viewCount: true, createdAt: true,
     },
   });
 }
@@ -84,16 +56,16 @@ async function getStartupCount() {
 export default async function HomePage() {
   const [pinnedStartups, freeStartups, totalCount] = await Promise.all([
     getPinnedStartups(),
-    getPinnedStartups(), 
+    getFreeStartups(),
     getStartupCount(),
   ]);
 
   return (
     <main className="min-h-screen bg-black">
-      <section className="relative pt-40 pb-16 overflow-hidden">
+      <section className="relative pt-16 pb-16 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
           
-          {/* Simplified Hero Section */}
+          {/* Hero Section */}
           <div className="text-center mb-24">
             <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-10 leading-[0.85] uppercase">
               Vibes for <br />
@@ -110,15 +82,14 @@ export default async function HomePage() {
               {AdminConfig.SITE_DESCRIPTION}
             </p>
             
-            {/* CTA Buttons */}
+            {/* CTA Buttons & Status Indicator */}
             <div className="flex flex-col items-center gap-8 mt-12">
               <div className="flex items-center justify-center gap-6">
                 <Link 
                   href="/submit" 
-                  className="bg-white text-black px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-[#4E24CF] hover:text-white transition-all duration-500 shadow-2xl shadow-white/5 group flex items-center gap-2"
+                  className="bg-white text-black px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-[#4E24CF] hover:text-white transition-all duration-500 shadow-2xl shadow-white/5"
                 >
-                  Get Started
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  Get Started →
                 </Link>
                 <Link 
                   href="/docs" 
@@ -128,13 +99,13 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              {/* Status Indicator moved here */}
-              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-white/5 bg-zinc-900/20 backdrop-blur-md hover:border-[#D4AF37]/30 transition-colors duration-500">
-                <span className="relative flex h-1.5 w-1.5">
+              {/* Live Status — Relocated & Integrated */}
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-white/5 bg-zinc-900/40 backdrop-blur-md">
+                <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#D4AF37]"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]"></span>
                 </span>
-                <span className="text-[9px] font-black tracking-[0.3em] text-white/50 uppercase">
+                <span className="text-[10px] font-black tracking-[0.3em] text-white/70 uppercase">
                   VibeStream Live — <span className="text-[#D4AF37]">{totalCount}</span> Initialized
                 </span>
               </div>
