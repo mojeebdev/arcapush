@@ -63,80 +63,80 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen bg-black">
       
-      <section className="relative pt-32 pb-16 overflow-hidden min-h-[95vh] flex flex-col justify-start">
+      <section className="relative pt-24 md:pt-32 pb-16 overflow-hidden min-h-[90vh] md:min-h-[95vh] flex flex-col justify-start">
         
         
         <div 
-          className="absolute inset-0 z-0 bg-no-repeat bg-[center_top] bg-cover opacity-65 brightness-90 contrast-110 animate-vibe-hero"
+          className="absolute inset-0 z-0 bg-no-repeat bg-[center_top] md:bg-[center_top_15%] bg-cover opacity-60 md:opacity-65 brightness-90 contrast-110 animate-vibe-hero"
           style={{ 
             backgroundImage: "url('/hero-signal-bg.jpg')",
           }}
         />
 
-        
-        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/40 via-transparent to-black" />
-        <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-transparent via-black/20 to-black/80" />
+        {/* 🛡️ Protection Overlays */}
+        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/60 via-transparent to-black" />
+        <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-transparent via-black/10 to-black/90" />
 
         <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
           
-          
-          <div className="text-center mb-24 pt-10">
-            <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-10 leading-[0.85] uppercase drop-shadow-2xl">
+          {/* Hero Content */}
+          <div className="text-center mb-16 md:mb-24 pt-8 md:pt-10">
+            <h1 className="text-5xl sm:text-7xl md:text-9xl font-black tracking-tighter mb-8 md:mb-10 leading-[0.9] md:leading-[0.85] uppercase drop-shadow-2xl">
               Vibes for <br />
               <span className="bg-gradient-to-r from-white via-zinc-200 to-[#4E24CF] bg-clip-text text-transparent">Developers</span>
             </h1>
             
-            <div className="max-w-3xl mx-auto mb-12">
-              <p className="text-2xl md:text-3xl text-zinc-100 font-serif italic leading-relaxed drop-shadow-md" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <div className="max-w-3xl mx-auto mb-10 md:mb-12">
+              <p className="text-xl md:text-3xl text-zinc-100 font-serif italic leading-relaxed drop-shadow-md px-4 md:px-0" style={{ fontFamily: "'Playfair Display', serif" }}>
                 VibeStream is the premier destination for high-signal engineering and visionary capital.
               </p>
             </div>
 
-            <p className="text-zinc-400 text-sm md:text-base max-w-xl mx-auto font-bold uppercase tracking-[0.2em] mb-12 opacity-80">
+            <p className="text-zinc-500 text-[10px] md:text-base max-w-xl mx-auto font-bold uppercase tracking-[0.2em] mb-12 opacity-80 px-4">
               {AdminConfig.SITE_DESCRIPTION}
             </p>
             
-            
-            <div className="flex flex-col items-center gap-8 mt-12">
-              <div className="flex items-center justify-center gap-6">
+            {/* CTA Buttons - Mobile Optimized Stack */}
+            <div className="flex flex-col items-center gap-6 md:gap-8 mt-8">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 w-full">
                 <Link 
                   href="/submit" 
-                  className="bg-white text-black px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-[#4E24CF] hover:text-white transition-all duration-500 shadow-[0_0_30px_rgba(255,255,255,0.1)] active:scale-95"
+                  className="w-full md:w-auto bg-white text-black px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-[#4E24CF] hover:text-white transition-all duration-500 shadow-[0_0_30px_rgba(255,255,255,0.1)] active:scale-95 text-center"
                 >
                   Get Started →
                 </Link>
                 <Link 
                   href="/docs" 
-                  className="text-zinc-300 font-bold hover:text-white transition-colors tracking-[0.3em] uppercase text-[10px] px-6 py-4 border border-white/10 rounded-2xl bg-black/40 backdrop-blur-md"
+                  className="w-full md:w-auto text-zinc-300 font-bold hover:text-white transition-colors tracking-[0.3em] uppercase text-[10px] px-8 py-5 border border-white/10 rounded-2xl bg-black/40 backdrop-blur-md text-center"
                 >
                   Documentation
                 </Link>
               </div>
 
-              
+              {/* Status Badge */}
               <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#D4AF37]/30 bg-black/60 backdrop-blur-xl shadow-lg shadow-[#D4AF37]/5">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]"></span>
                 </span>
-                <span className="text-[10px] font-black tracking-[0.4em] text-white/90 uppercase">
+                <span className="text-[9px] md:text-[10px] font-black tracking-[0.3em] md:tracking-[0.4em] text-white/90 uppercase">
                   VibeStream Live — <span className="text-[#D4AF37]">{totalCount}</span> Initialized
                 </span>
               </div>
             </div>
           </div>
 
-          
+          {/* 💎 Featured Tier */}
           {pinnedStartups.length > 0 && (
-            <div className="mb-32 relative">
+            <div className="mb-20 md:mb-32 relative">
               <div className="absolute -inset-10 bg-[#4E24CF]/10 blur-[100px] rounded-full -z-10" />
               <HeroPin startups={pinnedStartups} />
             </div>
           )}
 
-          
-          <div className="mt-20">
-            <div className="flex items-center justify-between mb-10 border-b border-white/10 pb-6">
+          {/* 🌊 Recent Signals */}
+          <div className="mt-16 md:mt-20">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 md:mb-10 border-b border-white/10 pb-6 gap-4">
               <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-500">
                 Recent <span className="text-[#4E24CF]">Signals</span>
               </h2>
