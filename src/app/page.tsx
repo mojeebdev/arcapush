@@ -63,48 +63,48 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen bg-black">
       
-      <section className="relative pt-32 pb-16 overflow-hidden min-h-[90vh] flex flex-col justify-start">
+      
+      <section className="relative pt-20 md:pt-24 pb-12 overflow-hidden min-h-[85vh] flex flex-col justify-start">
         
         
         <div
-          className="absolute inset-0 z-0 pointer-events-none opacity-60"
+          className="absolute inset-0 z-0 pointer-events-none opacity-70"
           style={{
-            backgroundImage: "url('/hero-signal-bg.jpg')", 
-            backgroundSize: "cover",
-            backgroundPosition: "center 40%",
+            backgroundImage: "url('/hero-signal-bg.jpg')",
+            backgroundSize: "140% auto", 
+            backgroundPosition: "center -10%", 
             backgroundRepeat: "no-repeat",
           }}
         />
 
         
-        <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-b from-black via-transparent to-black opacity-90" />
-        <div className="absolute inset-0 z-[2] pointer-events-none bg-[radial-gradient(circle_at_center,_transparent_20%,_black_80%)]" />
+        <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-b from-black via-transparent to-black" />
 
         <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full">
 
-          <div className="text-center mb-20 md:mb-28 pt-10">
+          <div className="text-center mb-12 md:mb-16 pt-8">
             
-            <h1 className="text-5xl sm:text-7xl md:text-9xl font-black tracking-tighter mb-10 leading-[0.9] md:leading-[0.85] uppercase drop-shadow-[0_0_30px_rgba(78,36,207,0.4)]">
+            <h1 className="text-5xl sm:text-7xl md:text-9xl font-black tracking-tighter mb-6 leading-[0.9] md:leading-[0.85] uppercase text-white drop-shadow-[0_0_40px_rgba(0,0,0,0.7)]">
               Vibes for <br />
               <span className="bg-gradient-to-r from-white via-zinc-200 to-[#4E24CF] bg-clip-text text-transparent">Developers</span>
             </h1>
 
-            <div className="max-w-3xl mx-auto mb-12">
-              <p className="text-xl md:text-3xl text-zinc-100 font-serif italic leading-relaxed px-4 drop-shadow-md" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <div className="max-w-3xl mx-auto mb-8">
+              <p className="text-xl md:text-3xl text-zinc-100 font-serif italic leading-relaxed px-4 drop-shadow-lg" style={{ fontFamily: "'Playfair Display', serif" }}>
                 VibeStream is the premier destination for high-signal engineering and visionary capital.
               </p>
             </div>
 
-            <p className="text-zinc-500 text-[10px] md:text-xs max-w-xl mx-auto font-bold uppercase tracking-[0.4em] mb-12 opacity-80">
+            <p className="text-zinc-500 text-[10px] md:text-xs max-w-xl mx-auto font-bold uppercase tracking-[0.4em] mb-10 opacity-90">
               A CRYPTO-POWERED STARTUP DISCOVERY HUB. <br />
               PREMIUM ACCESS. CURATED FOUNDERS.
             </p>
             
-            <div className="flex flex-col items-center gap-8 mt-12">
+            <div className="flex flex-col items-center gap-6 mt-8">
               <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 w-full">
                 <Link 
                   href="/submit" 
-                  className="w-full md:w-auto bg-white text-black px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-[#4E24CF] hover:text-white transition-all duration-500 active:scale-95 text-center shadow-[0_0_40px_rgba(255,255,255,0.1)]"
+                  className="w-full md:w-auto bg-white text-black px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-[#4E24CF] hover:text-white transition-all duration-500 active:scale-95 text-center shadow-2xl"
                 >
                   Get Started →
                 </Link>
@@ -116,26 +116,27 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#D4AF37]/20 bg-black/40 backdrop-blur-xl">
+              {/* Status Badge */}
+              <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#D4AF37]/20 bg-black/60 backdrop-blur-xl shadow-inner">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4AF37]"></span>
                 </span>
-                <span className="text-[9px] md:text-[10px] font-black tracking-[0.4em] text-white/80 uppercase">
+                <span className="text-[9px] md:text-[10px] font-black tracking-[0.4em] text-white/90 uppercase">
                   VibeStream Live — <span className="text-[#D4AF37]">{totalCount}</span> Initialized
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Featured Sections */}
+          
           {pinnedStartups.length > 0 && (
-            <div className="mb-24 md:mb-32 relative">
+            <div className="mb-20 md:mb-24 relative">
               <HeroPin startups={pinnedStartups} />
             </div>
           )}
 
-          <div className="mt-16 md:mt-20">
+          <div className="mt-12 md:mt-16">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 md:mb-10 border-b border-white/5 pb-6 gap-4">
               <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-600">
                 Recent <span className="text-[#4E24CF]">Signals</span>
