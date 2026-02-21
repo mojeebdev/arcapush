@@ -85,7 +85,7 @@ export async function POST(request: Request) {
               </div>
               <div style="border-top: 1px solid #222; padding-top: 20px;">
                 <p style="font-size: 9px; color: #444; margin: 2px 0;">TX HASH: ${txHash}</p>
-                <p style="font-size: 9px; color: #D4AF37; font-weight: bold; margin: 2px 0;">WHATE ENGINE v23.2.04</p>
+                <p style="font-size: 9px; color: #D4AF37; font-weight: bold; margin: 2px 0;">VIBE STREAM v23.2.04</p>
               </div>
             </div>
           `

@@ -17,7 +17,7 @@ const sections = [
   {
     title: "The Vibe Code Protocol",
     icon: <HiOutlineSparkles className="w-6 h-6 text-[#D4AF37]" />,
-    content: "VibeStream is a curated encyclopedia of high-signal startups. We categorize 'food items' (projects) based on technical brilliance and market potential using the proprietary Whate Engine logic.",
+    content: "VibeStream is a curated encyclopedia of high-signal startups. We categorize 'food items' (projects) based on technical brilliance and market potential using the proprietary VibeStream Engine logic.",
     linkText: "VIEW ENCYCLOPEDIA",
     href: "/"
   },

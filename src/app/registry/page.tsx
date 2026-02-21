@@ -1,11 +1,3 @@
-/**
- * WHATE ENGINE VERSION: 23.2.86
- * PERSONA: GUARDIAN
- * LOG: 
- * - [v23.2.86] Force-disabled Data Cache on RegistryPage to ensure instant project visibility.
- * - [v23.2.86] Verified 'approved: true' filter is the primary gatekeeper.
- */
-
 import { Suspense } from 'react';
 import { prisma } from "@/lib/prisma";
 import { RegistrySearchHandler } from "./RegistrySearchHandler";
