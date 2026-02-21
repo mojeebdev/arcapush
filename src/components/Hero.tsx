@@ -10,9 +10,9 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
       
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
         <motion.div
-         
+          
           initial={{ y: "40%", opacity: 0 }}
-          animate={{ y: "-10%", opacity: 0.7 }}
+          animate={{ y: "-10%", opacity: 0.6 }} 
           transition={{ 
             y: { duration: 2, ease: [0.16, 1, 0.3, 1] },
             opacity: { duration: 1.5 }
@@ -21,11 +21,14 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
         >
           
           <motion.div
-            animate={{ rotate: 360 }}
+            animate={{ 
+              y: [0, -20, 0],       
+              scale: [1, 1.03, 1],  
+            }}
             transition={{ 
-              duration: 80, 
+              duration: 8,           
               repeat: Infinity, 
-              ease: "linear" 
+              ease: "easeInOut" 
             }}
             className="w-full h-full"
             style={{
@@ -33,15 +36,15 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
               backgroundSize: "contain",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
-              filter: "contrast(1.1) brightness(0.9)",
+              filter: "contrast(1.1) brightness(0.8) blur(2px)", 
             }}
           />
         </motion.div>
       </div>
 
-      
+      {/* 🛡️ GRADIENT SHIELDS */}
       <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-b from-black via-transparent to-black" />
-      <div className="absolute inset-0 z-[2] pointer-events-none bg-[radial-gradient(circle_at_center,_transparent_20%,_black_85%)]" />
+      <div className="absolute inset-0 z-[2] pointer-events-none bg-[radial-gradient(circle_at_center,_transparent_10%,_black_90%)]" />
 
       {/* Content Layer */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full text-center">
