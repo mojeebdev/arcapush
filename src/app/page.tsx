@@ -67,7 +67,7 @@ export default async function HomePage() {
         
         
         <div 
-          className="absolute inset-0 z-0 bg-no-repeat bg-[center_top_15%] bg-cover opacity-65 brightness-90 contrast-110 animate-vibe-hero"
+          className="absolute inset-0 z-0 bg-no-repeat bg-[center_top_5%] bg-cover opacity-65 brightness-90 contrast-110 animate-vibe-hero"
           style={{ 
             backgroundImage: "url('/hero-signal-bg.jpg')",
           }}
