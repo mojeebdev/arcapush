@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import { AdminConfig } from "@/lib/adminConfig";
 import { Navbar } from "@/components/Navbar";
@@ -49,17 +48,27 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className="min-h-screen bg-black text-white selection:bg-[#D4AF37]/30 selection:text-[#D4AF37] overflow-x-hidden antialiased">
         
-       
         <Web3Provider>
-          {/* 🌌 Background Ambience (Purple/Gold Guardian Theme) */}
+          
           <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-            {/* Top Purple Glow */}
+            
+            
+            <div 
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.2] brightness-50 mix-blend-screen"
+              style={{ backgroundImage: "url('/hero-signal-bg.jpg')" }}
+            />
+
+            
             <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[1000px] h-[700px] bg-[#4E24CF]/10 rounded-full blur-[140px] opacity-70" />
-            {/* Bottom Gold Glow */}
+            
+            
             <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#D4AF37]/5 rounded-full blur-[120px]" />
+            
+            
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
           </div>
 
-          {/* 🛡️ Main Layout Container */}
+          
           <div className="relative z-10 flex flex-col min-h-screen">
             <Navbar />
             
