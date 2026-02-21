@@ -1,9 +1,10 @@
 "use client";
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import confetti from 'canvas-confetti'; 
-import { track } from '@vercel/analytics';
+import { track } from '@vercel-analytics';
 
 const CATEGORIES = [
   "Select Category", 
@@ -22,7 +23,7 @@ export default function SubmitStartup() {
     website: "",
     twitter: "",
     bannerUrl: "",
-    logoUrl: "",
+    logoUrl: "", 
     pitchDeckUrl: "",
     founderName: "",
     founderEmail: "",
@@ -43,7 +44,6 @@ export default function SubmitStartup() {
     setLoading(true);
 
     try {
-      
       const res = await fetch('/api/startups', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -67,7 +67,6 @@ export default function SubmitStartup() {
 
         track('Vibe Code Submitted'); 
         
-        
         confetti({ 
           particleCount: 150, 
           spread: 70, 
@@ -77,7 +76,6 @@ export default function SubmitStartup() {
 
         toast.success("Vibe Code Received. Guardian notified for fast-track verification.");
         console.log("🚀 Milestone: New Signal Registered in Encyclopedia!");
-        
         
         setTimeout(() => router.push('/success'), 3000); 
       } else {
@@ -96,6 +94,7 @@ export default function SubmitStartup() {
     <div className="min-h-screen bg-black pt-32 pb-20 px-6 overflow-x-hidden">
       <Toaster toastOptions={{ style: { background: '#09090b', color: '#fff', border: '1px solid #27272a' } }} />
       
+      {/* Background Ambient Glow */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#4E24CF]/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-4xl mx-auto relative z-10">
@@ -166,6 +165,12 @@ export default function SubmitStartup() {
                 className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
                 value={formData.twitter}
                 onChange={(e) => setFormData({...formData, twitter: e.target.value})}
+              />
+              <input 
+                type="url" placeholder="Logo URL (Square recommended)" 
+                className="w-full bg-white/5 border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                value={formData.logoUrl}
+                onChange={(e) => setFormData({...formData, logoUrl: e.target.value})}
               />
               <input 
                 type="url" placeholder="Banner Image URL" 

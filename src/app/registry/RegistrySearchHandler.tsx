@@ -1,9 +1,4 @@
-/**
- * WHATE ENGINE VERSION: 23.2.43
- * PART: RegistrySearchHandler (Client Component)
- */
-
-"use client"; // <--- MUST BE LINE 1
+"use client"; 
 
 import { useSearchParams } from 'next/navigation';
 import { useState, useMemo, useEffect } from 'react';

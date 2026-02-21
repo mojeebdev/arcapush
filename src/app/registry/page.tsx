@@ -1,12 +1,23 @@
+/**
+ * WHATE ENGINE VERSION: 23.2.86
+ * PERSONA: GUARDIAN
+ * LOG: 
+ * - [v23.2.86] Force-disabled Data Cache on RegistryPage to ensure instant project visibility.
+ * - [v23.2.86] Verified 'approved: true' filter is the primary gatekeeper.
+ */
+
 import { Suspense } from 'react';
 import { prisma } from "@/lib/prisma";
 import { RegistrySearchHandler } from "./RegistrySearchHandler";
 
 
+export const revalidate = 0; 
+
 export default async function RegistryPage() {
   
   const startups = await prisma.startup.findMany({
-    where: { approved: true },
+    
+    where: { approved: true }, 
     orderBy: { createdAt: 'desc' },
   });
 
@@ -20,7 +31,6 @@ export default async function RegistryPage() {
           </h1>
         </div>
 
-        
         <Suspense fallback={<div className="text-zinc-500 font-black text-[10px] uppercase animate-pulse">Scanning Frequencies...</div>}>
           <RegistrySearchHandler initialStartups={startups} />
         </Suspense>
