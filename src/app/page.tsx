@@ -62,10 +62,24 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen bg-black">
-      <section className="relative pt-16 pb-16 overflow-hidden">
+      
+      <section className="relative pt-24 pb-16 overflow-hidden min-h-[85vh] flex flex-col justify-center">
+        
+        
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 brightness-[0.6] contrast-110"
+          style={{ backgroundImage: "url('/hero-signal-bg.jpg')" }}
+        />
+
+        
+        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black via-black/20 to-black" />
+
+        
+        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-[#4E24CF]/10 rounded-full blur-[120px] z-[2]" />
+
         <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
           
-          {/* Hero Section */}
+          
           <div className="text-center mb-24">
             <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-10 leading-[0.85] uppercase">
               Vibes for <br />
@@ -98,8 +112,6 @@ export default async function HomePage() {
                   Documentation
                 </Link>
               </div>
-
-              {/* Live Status — Relocated & Integrated */}
               <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-white/5 bg-zinc-900/40 backdrop-blur-md">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>

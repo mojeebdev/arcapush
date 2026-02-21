@@ -49,22 +49,11 @@ export default function RootLayout({
       <body className="min-h-screen bg-black text-white selection:bg-[#D4AF37]/30 selection:text-[#D4AF37] antialiased">
         
         <Web3Provider>
-         
-          <div className="fixed inset-0 z-[-1] overflow-hidden">
-            
-            <div 
-              className="absolute inset-0 bg-no-repeat bg-center bg-cover opacity-60"
-              style={{ 
-                backgroundImage: "url('/hero-signal-bg.jpg')",
-                backgroundColor: "black" 
-              }}
-            />
-            
-            {/* 🛡️ Simple Gradient Overlay for text protection */}
-            <div className="absolute inset-0 bg-black/40" />
-            
-            {/* Glows */}
+          {/* 🌌 Atmospheric Glow Layer (Original Guardian Vibe) */}
+          <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-black">
+            {/* Top Purple Glow */}
             <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[#4E24CF]/20 rounded-full blur-[120px]" />
+            {/* Bottom Gold Glow */}
             <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] bg-[#D4AF37]/10 rounded-full blur-[100px]" />
           </div>
 
@@ -80,6 +69,7 @@ export default function RootLayout({
           </div>
         </Web3Provider>
 
+        {/* Vercel Monitoring */}
         <Analytics />
         <SpeedInsights />
       </body>
