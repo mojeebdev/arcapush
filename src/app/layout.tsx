@@ -50,22 +50,22 @@ export default function RootLayout({
         
         <Web3Provider>
           
-          <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+          <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-black">
             
             
             <div 
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.2] brightness-50 mix-blend-screen"
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50 brightness-[0.6] contrast-125"
               style={{ backgroundImage: "url('/hero-signal-bg.jpg')" }}
             />
 
             
-            <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[1000px] h-[700px] bg-[#4E24CF]/10 rounded-full blur-[140px] opacity-70" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/20 to-black/90" />
+
+            
+            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1200px] h-[800px] bg-[#4E24CF]/15 rounded-full blur-[150px] opacity-80" />
             
             
-            <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-[#D4AF37]/5 rounded-full blur-[120px]" />
-            
-            
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20" />
+            <div className="absolute bottom-[-15%] right-[-10%] w-[600px] h-[600px] bg-[#D4AF37]/10 rounded-full blur-[130px]" />
           </div>
 
           
