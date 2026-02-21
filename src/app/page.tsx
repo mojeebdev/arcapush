@@ -1,12 +1,3 @@
-/**
- * WHATE ENGINE VERSION: 23.2.61
- * PERSONA: GUARDIAN
- * LOG: 
- * - [v23.2.61] Adjusted background position to center sphere under headline.
- * - [v23.2.61] Increased image opacity to 0.65 for "Premium" visibility.
- * - [v23.2.61] Added subtle 'breathing' scale animation for high-signal depth.
- */
-
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { HeroPin } from "@/components/HeroPin";
@@ -73,8 +64,10 @@ export default async function HomePage() {
     <main className="min-h-screen bg-black">
       
       <section className="relative pt-32 pb-16 overflow-hidden min-h-[95vh] flex flex-col justify-start">
+        
+        
         <div 
-          className="absolute inset-0 z-0 bg-no-repeat bg-[center_top_15%] bg-cover opacity-65 brightness-90 contrast-110 animate-pulse-slow"
+          className="absolute inset-0 z-0 bg-no-repeat bg-[center_top_15%] bg-cover opacity-65 brightness-90 contrast-110 animate-vibe-hero"
           style={{ 
             backgroundImage: "url('/hero-signal-bg.jpg')",
           }}
@@ -82,11 +75,11 @@ export default async function HomePage() {
 
         
         <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/40 via-transparent to-black" />
-        <div className="absolute inset-0 z-[1] bg-radial-gradient from-transparent via-black/20 to-black/80" />
+        <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-transparent via-black/20 to-black/80" />
 
         <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
           
-          {/* Hero Content */}
+          
           <div className="text-center mb-24 pt-10">
             <h1 className="text-7xl md:text-9xl font-black tracking-tighter mb-10 leading-[0.85] uppercase drop-shadow-2xl">
               Vibes for <br />
@@ -103,7 +96,7 @@ export default async function HomePage() {
               {AdminConfig.SITE_DESCRIPTION}
             </p>
             
-            {/* CTA Buttons & Status Indicator */}
+            
             <div className="flex flex-col items-center gap-8 mt-12">
               <div className="flex items-center justify-center gap-6">
                 <Link 
@@ -120,7 +113,7 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              {/* Live Status — Glow Integrated */}
+              
               <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#D4AF37]/30 bg-black/60 backdrop-blur-xl shadow-lg shadow-[#D4AF37]/5">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
@@ -133,7 +126,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* 💎 Featured Tier */}
+          
           {pinnedStartups.length > 0 && (
             <div className="mb-32 relative">
               <div className="absolute -inset-10 bg-[#4E24CF]/10 blur-[100px] rounded-full -z-10" />
@@ -141,7 +134,7 @@ export default async function HomePage() {
             </div>
           )}
 
-          {/* 🌊 Recent Signals */}
+          
           <div className="mt-20">
             <div className="flex items-center justify-between mb-10 border-b border-white/10 pb-6">
               <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-500">
@@ -155,17 +148,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      
-      <style jsx global>{`
-        @keyframes pulse-slow {
-          0%, 100% { transform: scale(1); filter: brightness(0.9); }
-          50% { transform: scale(1.03); filter: brightness(1.1); }
-        }
-        .animate-pulse-slow {
-          animation: pulse-slow 12s ease-in-out infinite;
-        }
-      `}</style>
     </main>
   );
 }
