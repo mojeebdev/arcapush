@@ -19,7 +19,7 @@ export interface PinPackage {
 export const AdminConfig = {
   
   VIBE_STREAM_VERSION: "23.2.29",
-  LAST_PROTOCOL_UPDATE: "2026-02-20",
+  LAST_PROTOCOL_UPDATE: "2026-02-21",
 
   PIN_PACKAGES: [
     { label: "30 Mins", value: "30m", price: 25.00, minutes: 30, description: "Quick snack" },
