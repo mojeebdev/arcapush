@@ -6,52 +6,34 @@ import Link from "next/link";
 export const Hero = ({ totalCount }: { totalCount: string }) => {
   return (
     <section className="relative pt-24 pb-20 overflow-hidden min-h-[90vh] flex flex-col justify-center items-center bg-black">
-      
-      
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
         <motion.div
-          
           initial={{ y: "40%", opacity: 0 }}
-          animate={{ y: "-10%", opacity: 0.6 }} 
+          animate={{ y: "-10%", opacity: 0.7 }}
           transition={{ 
-            y: { duration: 2, ease: [0.16, 1, 0.3, 1] },
-            opacity: { duration: 1.5 }
+            duration: 1.8, 
+            ease: [0.16, 1, 0.3, 1] 
           }}
           className="relative w-[180%] h-[180%] md:w-[130%] md:h-[130%] flex items-center justify-center"
-        >
-          
-          <motion.div
-            animate={{ 
-              y: [0, -20, 0],       
-              scale: [1, 1.03, 1],  
-            }}
-            transition={{ 
-              duration: 8,           
-              repeat: Infinity, 
-              ease: "easeInOut" 
-            }}
-            className="w-full h-full"
-            style={{
-              backgroundImage: "url('/hero-signal-bg.jpg')",
-              backgroundSize: "contain",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              filter: "contrast(1.1) brightness(0.8) blur(2px)", 
-            }}
-          />
-        </motion.div>
+          style={{
+            backgroundImage: "url('/hero-signal-bg.jpg')",
+            backgroundSize: "contain",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
       </div>
 
       {/* 🛡️ GRADIENT SHIELDS */}
       <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-b from-black via-transparent to-black" />
-      <div className="absolute inset-0 z-[2] pointer-events-none bg-[radial-gradient(circle_at_center,_transparent_10%,_black_90%)]" />
+      <div className="absolute inset-0 z-[2] pointer-events-none bg-[radial-gradient(circle_at_center,_transparent_20%,_black_90%)]" />
 
       {/* Content Layer */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full text-center">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1.2 }}
+          transition={{ duration: 1, delay: 0.8 }}
         >
           <h1 className="text-5xl sm:text-7xl md:text-9xl font-black tracking-tighter mb-8 leading-[0.9] md:leading-[0.85] uppercase text-white drop-shadow-[0_0_50px_rgba(0,0,0,0.8)]">
             Vibes for <br />
@@ -73,7 +55,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
             <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 w-full">
               <Link 
                 href="/submit" 
-                className="w-full md:w-auto bg-white text-black px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-[#4E24CF] hover:text-white transition-all duration-500 active:scale-95 text-center shadow-[0_0_40px_rgba(255,255,255,0.1)]"
+                className="w-full md:w-auto bg-white text-black px-12 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-[#4E24CF] hover:text-white transition-all duration-500 active:scale-95 text-center"
               >
                 Get Started →
               </Link>
