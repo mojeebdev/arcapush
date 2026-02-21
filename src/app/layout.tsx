@@ -46,30 +46,30 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="min-h-screen bg-black text-white selection:bg-[#D4AF37]/30 selection:text-[#D4AF37] overflow-x-hidden antialiased">
+      <body className="min-h-screen bg-black text-white selection:bg-[#D4AF37]/30 selection:text-[#D4AF37] antialiased">
         
         <Web3Provider>
-          
-          <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-black">
-            
+         
+          <div className="fixed inset-0 z-[-1] overflow-hidden">
             
             <div 
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50 brightness-[0.6] contrast-125"
-              style={{ backgroundImage: "url('/hero-signal-bg.jpg')" }}
+              className="absolute inset-0 bg-no-repeat bg-center bg-cover opacity-60"
+              style={{ 
+                backgroundImage: "url('/hero-signal-bg.jpg')",
+                backgroundColor: "black" 
+              }}
             />
-
             
-            <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/20 to-black/90" />
-
+            {/* 🛡️ Simple Gradient Overlay for text protection */}
+            <div className="absolute inset-0 bg-black/40" />
             
-            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1200px] h-[800px] bg-[#4E24CF]/15 rounded-full blur-[150px] opacity-80" />
-            
-            
-            <div className="absolute bottom-[-15%] right-[-10%] w-[600px] h-[600px] bg-[#D4AF37]/10 rounded-full blur-[130px]" />
+            {/* Glows */}
+            <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[#4E24CF]/20 rounded-full blur-[120px]" />
+            <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] bg-[#D4AF37]/10 rounded-full blur-[100px]" />
           </div>
 
-          
-          <div className="relative z-10 flex flex-col min-h-screen">
+          {/* 🛡️ Content Layer */}
+          <div className="relative flex flex-col min-h-screen bg-transparent">
             <Navbar />
             
             <main className="flex-grow pt-20">
@@ -80,7 +80,6 @@ export default function RootLayout({
           </div>
         </Web3Provider>
 
-        {/* Vercel Monitoring */}
         <Analytics />
         <SpeedInsights />
       </body>
