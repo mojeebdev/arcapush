@@ -9,7 +9,7 @@ import {
   HiOutlineMagnifyingGlass,
   HiOutlineShieldCheck 
 } from "react-icons/hi2";
-import { useWriteContract, useAccount, useSwitchChain, usePublicClient } from 'wagmi'; 
+import { useWriteContract, useAccount, useSwitchChain } from 'wagmi'; 
 import { parseUnits } from 'viem';
 import { base } from 'wagmi/chains';
 import { AdminConfig } from "@/lib/adminConfig";
@@ -107,13 +107,13 @@ export default function PricingPage() {
     if (!window.solana) return toast.error("Solana wallet not found.");
 
     const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_SOLANA || AdminConfig.PAYMENT_WALLET_SOLANA;
-    const solanaRpc = process.env.NEXT_PUBLIC_ALCHEMY_RPC_SOLANA || "https://api.mainnet-beta.solana.com";
+    const solanaRpc = process.env.NEXT_PUBLIC_ALCHEMY_RPC_SOLANA || "[https://api.mainnet-beta.solana.com](https://api.mainnet-beta.solana.com)";
 
     setIsProcessing(true);
     const toastId = toast.loading("Connecting to Solana...");
 
     try {
-      const priceRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
+      const priceRes = await fetch("[https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd](https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd)");
       const priceData = await priceRes.json();
       const solAmount = plan.price / priceData.solana.usd;
       const lamports = Math.floor(solAmount * LAMPORTS_PER_SOL);
@@ -148,7 +148,6 @@ export default function PricingPage() {
         }),
       });
 
-      
       if (window.solana?.disconnect) await window.solana.disconnect();
       
       toast.success("🔥 Signal Locked on Solana!", { id: toastId });
@@ -190,6 +189,8 @@ export default function PricingPage() {
             className={`relative rounded-[3rem] p-10 bg-zinc-950 border ${plan.featured ? 'border-[#4E24CF]' : 'border-white/5'} flex flex-col transition-all duration-500`}
           >
             <h3 className="text-2xl font-black text-white uppercase italic mb-2">{plan.label}</h3>
+            
+            {/* RESTORED PRICE SECTION */}
             <div className="flex items-baseline gap-2 mb-10">
               <span className="text-5xl font-black text-white tracking-tighter">${plan.price}</span>
               <span className="text-zinc-700 text-[9px] font-black uppercase">USD</span>
@@ -218,7 +219,7 @@ export default function PricingPage() {
       <div className="mt-20 text-center">
         <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-zinc-900/50 border border-white/5">
           <HiOutlineShieldCheck className="w-4 h-4 text-[#D4AF37]" />
-          <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Guardian Protocol Verified</span>
+          <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Vibestream Protocol Verified</span>
         </div>
       </div>
     </main>
