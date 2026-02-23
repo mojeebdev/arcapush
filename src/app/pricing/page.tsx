@@ -108,7 +108,7 @@ export default function PricingPage() {
       <Toaster position="bottom-right" />
       <section className="mb-12 max-w-xl mx-auto">
         <select value={selectedStartupId} onChange={(e) => setSelectedStartupId(e.target.value)} className="w-full bg-zinc-950 border border-white/10 rounded-2xl px-5 py-4 text-[11px] font-black text-white uppercase tracking-widest outline-none">
-          <option value="">Choose Food Item...</option>
+          <option value="">Choose a Startup...</option>
           {approvedStartups.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
       </section>
