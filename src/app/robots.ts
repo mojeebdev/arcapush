@@ -12,20 +12,21 @@ export default function robots(): MetadataRoute.Robots {
           '/about', 
           '/submit', 
           '/pricing',
-          '/registry'
+          '/registry',
+          '/startup' 
         ],
         disallow: [
           '/api/',      
           '/admin/',    
           '/verify/',
-          '/request/', 
-          '/startup/'
+          '/request/',
+          '/success' 
         ],
       },
       {
         
         userAgent: ['GPTBot', 'PerplexityBot', 'anthropic-ai', 'CCBot'],
-        allow: ['/', '/docs', '/startup/'],
+        allow: ['/', '/docs', '/startup', '/registry'],
         disallow: ['/admin/', '/api/'],
       }
     ],
