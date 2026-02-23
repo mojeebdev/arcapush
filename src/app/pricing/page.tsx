@@ -3,223 +3,139 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
-import { 
-  HiOutlineGlobeAlt, 
-  HiOutlineBolt, 
-  HiOutlineMagnifyingGlass,
-  HiOutlineShieldCheck 
-} from "react-icons/hi2";
-import { useWriteContract, useAccount, useSwitchChain, usePublicClient } from 'wagmi'; 
+import { HiOutlineGlobeAlt, HiOutlineBolt, HiOutlineMagnifyingGlass, HiOutlineShieldCheck } from "react-icons/hi2";
+import { useWriteContract, useAccount, useSwitchChain } from 'wagmi'; 
 import { parseUnits } from 'viem';
 import { base } from 'wagmi/chains';
 import { AdminConfig } from "@/lib/adminConfig";
-import { 
-  Connection, 
-  PublicKey, 
-  Transaction, 
-  SystemProgram, 
-  LAMPORTS_PER_SOL,
-  ComputeBudgetProgram 
-} from "@solana/web3.js";
+import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, ComputeBudgetProgram } from "@solana/web3.js";
+
+const PIN_PACKAGES = [
+  { 
+    label: "30 Mins", price: "25", value: 30, rotations: "90", 
+    description: "Instant momentum. Perpetual archive.",
+    perks: ["90 Rotations (20s each)", "Permanent Encyclopedia Entry", "Search Engine Indexed"],
+    accent: "zinc-500"
+  },
+  { 
+    label: "1 Day", price: "150", value: 1440, rotations: "4,320", 
+    description: "The 'X-Factor' package with Social Push.",
+    perks: ["4,320 Rotations", "Thoughtful X Storytelling Post", "Permanent Presence", "Discovery Feed Priority"],
+    accent: "[#4E24CF]", featured: true 
+  },
+  { 
+    label: "3 Days", price: "350", value: 4320, rotations: "12,960", 
+    description: "Extended exposure for maximum resonance.",
+    perks: ["12,960 Rotations", "X Storytelling Post", "Priority Support", "Featured Startup Badge"],
+    accent: "blue-500" 
+  },
+  { 
+    label: "1 Week", price: "600", value: 10080, rotations: "30,240", 
+    description: "Full market immersion and strategy alignment.",
+    perks: ["30,240 Rotations", "X Storytelling Post", "1-on-1 Marketing Call", "Verified Vibe Badge"],
+    accent: "[#D4AF37]" 
+  },
+  { 
+    label: "2 Weeks", price: "1,100", value: 20160, rotations: "60,480", 
+    description: "Sustained dominance across the ecosystem.",
+    perks: ["60,480 Rotations", "2x X Storytelling Posts", "Strategy Retainer", "Partner Network Intro"],
+    accent: "purple-500" 
+  },
+  { 
+    label: "1 Month", price: "1,800", value: 43200, rotations: "129,600", 
+    description: "Total Encyclopedia domination and partnership.",
+    perks: ["129,600 Rotations", "Lifetime Encyclopedia Entry", "VC Access Channel", "Founder Strategy Retainer"],
+    accent: "white" 
+  }
+];
 
 const USDC_ABI = [
-  {
-    name: 'transfer',
-    type: 'function',
-    stateMutability: 'nonpayable',
-    inputs: [
-      { name: 'recipient', type: 'address' },
-      { name: 'amount', type: 'uint256' },
-    ],
-    outputs: [{ name: '', type: 'bool' }],
-  },
+  { name: 'transfer', type: 'function', stateMutability: 'nonpayable', inputs: [{ name: 'recipient', type: 'address' }, { name: 'amount', type: 'uint256' }], outputs: [{ name: '', type: 'bool' }] }
 ] as const;
 
 export default function PricingPage() {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [selectedStartupId, setSelectedStartupId] = useState<string>("");
+  const [selectedStartupId, setSelectedStartupId] = useState("");
   const [approvedStartups, setApprovedStartups] = useState<any[]>([]);
-  
   const { isConnected, chainId } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const { writeContractAsync } = useWriteContract();
 
   useEffect(() => {
-    const fetchApproved = async () => {
-      try {
-        const res = await fetch('/api/startups?status=APPROVED');
-        if (!res.ok) return;
-        const data = await res.json();
-        setApprovedStartups(data.startups || []);
-      } catch (err) {
-        console.log("Guardian: Initial fetch standby.");
-      }
-    };
-    fetchApproved();
+    fetch('/api/startups?status=APPROVED').then(res => res.json()).then(data => setApprovedStartups(data.startups || []));
   }, []);
 
   const handleBasePayment = async (plan: any) => {
-    if (!selectedStartupId) return toast.error("Please select a target to boost.");
-    if (!isConnected) return toast.error("Wallet connection required.");
-    
-    const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_BASE || AdminConfig.PAYMENT_WALLET_BASE;
-    const usdcContract = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"; 
-
+    if (!selectedStartupId) return toast.error("Select a target.");
+    if (!isConnected) return toast.error("Connect Wallet.");
+    const destination = AdminConfig.PAYMENT_WALLET_BASE;
     setIsProcessing(true);
-    const toastId = toast.loading("Preparing Base Handshake...");
-    
+    const toastId = toast.loading("Processing Base USDC...");
     try {
-      if (chainId !== base.id) {
-        await switchChainAsync({ chainId: base.id });
-      }
-
+      if (chainId !== base.id) await switchChainAsync({ chainId: base.id });
       const hash = await writeContractAsync({
-        address: usdcContract as `0x${string}`,
+        address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
         abi: USDC_ABI,
         functionName: 'transfer',
-        args: [
-          destination as `0x${string}`,
-          parseUnits(plan.price.toString(), 6) 
-        ],
-        gas: 100000n, 
+        args: [destination as `0x${string}`, parseUnits(plan.price.replace(',',''), 6)],
       });
-
-      toast.loading("Verifying Signal...", { id: toastId });
-      await fetch("/api/pin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          startupId: selectedStartupId, 
-          chain: "base", 
-          txHash: hash, 
-          packageValue: plan.value 
-        }),
-      });
-
-      toast.success("🚀 Ascension Complete!", { id: toastId });
-    } catch (err: any) {
-      toast.error("Handshake interrupted. Please check your balance.", { id: toastId });
-    } finally { setIsProcessing(false); }
+      await fetch("/api/pin", { method: "POST", body: JSON.stringify({ startupId: selectedStartupId, chain: "base", txHash: hash, packageValue: plan.value })});
+      toast.success("🚀 Boost Active!", { id: toastId });
+    } catch (err) { toast.error("Failed.", { id: toastId }); } finally { setIsProcessing(false); }
   };
 
   const handleSolanaPayment = async (plan: any) => {
-    if (!selectedStartupId) return toast.error("Select a target first.");
-    if (!window.solana) return toast.error("Solana wallet not found.");
-
-    const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_SOLANA || AdminConfig.PAYMENT_WALLET_SOLANA;
-    const solanaRpc = process.env.NEXT_PUBLIC_ALCHEMY_RPC_SOLANA || "https://api.mainnet-beta.solana.com";
-
+    if (!selectedStartupId || !window.solana) return toast.error("Check selection/wallet.");
     setIsProcessing(true);
-    const toastId = toast.loading("Connecting to Solana...");
-
+    const toastId = toast.loading("Processing SOL...");
     try {
       const priceRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
       const priceData = await priceRes.json();
-      const solAmount = plan.price / priceData.solana.usd;
-      const lamports = Math.floor(solAmount * LAMPORTS_PER_SOL);
-
+      const lamports = Math.floor((Number(plan.price.replace(',','')) / priceData.solana.usd) * LAMPORTS_PER_SOL);
       const resp = await window.solana.connect();
-      const connection = new Connection(solanaRpc, "confirmed");
-      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
-      
-      const transaction = new Transaction({
-        recentBlockhash: blockhash,
-        feePayer: resp.publicKey
-      }).add(
-        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 25000 }),
-        SystemProgram.transfer({
-          fromPubkey: resp.publicKey,
-          toPubkey: new PublicKey(destination!),
-          lamports: lamports,
-        })
-      );
-
+      const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
+      const { blockhash } = await connection.getLatestBlockhash();
+      const transaction = new Transaction({ recentBlockhash: blockhash, feePayer: resp.publicKey })
+        .add(ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 25000 }), SystemProgram.transfer({ fromPubkey: resp.publicKey, toPubkey: new PublicKey(AdminConfig.PAYMENT_WALLET_SOLANA), lamports }));
       const { signature } = await window.solana.signAndSendTransaction(transaction);
-      await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
-
-      await fetch("/api/pin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          startupId: selectedStartupId, 
-          chain: "solana", 
-          txHash: signature, 
-          packageValue: plan.value 
-        }),
-      });
-
-      
-      if (window.solana?.disconnect) await window.solana.disconnect();
-      
-      toast.success("🔥 Signal Locked on Solana!", { id: toastId });
-    } catch (err: any) {
-      toast.error("Transaction standby. Ensure SOL is available for fees.", { id: toastId });
-    } finally { setIsProcessing(false); }
+      await fetch("/api/pin", { method: "POST", body: JSON.stringify({ startupId: selectedStartupId, chain: "solana", txHash: signature, packageValue: plan.value })});
+      toast.success("🔥 SOL Boost Active!", { id: toastId });
+    } catch (err) { toast.error("Failed."); } finally { setIsProcessing(false); }
   };
 
   return (
     <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto min-h-screen bg-black text-white">
       <Toaster position="bottom-right" />
-      
-      {/* Target Selector */}
       <section className="mb-12 max-w-xl mx-auto">
-        <div className="p-8 rounded-[2.5rem] bg-zinc-950 border border-white/5 backdrop-blur-xl text-center shadow-2xl relative">
-          <label className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.3em] mb-4 block italic">Target Selection</label>
-          <div className="relative">
-             <select 
-               value={selectedStartupId} 
-               onChange={(e) => setSelectedStartupId(e.target.value)} 
-               className="w-full bg-black border border-white/10 rounded-2xl px-5 py-4 text-[11px] font-black text-white outline-none cursor-pointer hover:border-white/20 transition-colors uppercase tracking-widest"
-             >
-                <option value="">Choose Food Item...</option>
-                {approvedStartups.map(s => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
-                ))}
-             </select>
-             <HiOutlineMagnifyingGlass className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
-          </div>
-        </div>
+        <select value={selectedStartupId} onChange={(e) => setSelectedStartupId(e.target.value)} className="w-full bg-zinc-950 border border-white/10 rounded-2xl px-5 py-4 text-[11px] font-black text-white uppercase tracking-widest outline-none">
+          <option value="">Choose Food Item...</option>
+          {approvedStartups.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+        </select>
       </section>
 
-      {/* Pricing Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {AdminConfig.PIN_PACKAGES.map((plan) => (
-          <motion.div 
-            key={plan.label} 
-            whileHover={{ y: -8 }}
-            className={`relative rounded-[3rem] p-10 bg-zinc-950 border ${plan.featured ? 'border-[#4E24CF]' : 'border-white/5'} flex flex-col transition-all duration-500`}
-          >
-            <h3 className="text-2xl font-black text-white uppercase italic mb-2">{plan.label}</h3>
-            <div className="flex items-baseline gap-2 mb-10">
-              <span className="text-5xl font-black text-white tracking-tighter">${plan.price}</span>
-              <span className="text-zinc-700 text-[9px] font-black uppercase">USD</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {PIN_PACKAGES.map((plan) => (
+          <motion.div key={plan.label} whileHover={{ y: -8 }} className={`relative rounded-[3rem] p-10 bg-zinc-950 border ${plan.featured ? 'border-[#4E24CF]' : 'border-white/5'} flex flex-col`}>
+            {plan.featured && <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#4E24CF] px-4 py-1 rounded-full text-[10px] font-black uppercase italic">Recommended</span>}
+            <h3 className="text-2xl font-black uppercase italic mb-1">{plan.label}</h3>
+            <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-6">{plan.description}</p>
+            <div className="flex items-baseline gap-2 mb-8">
+              <span className="text-5xl font-black">${plan.price}</span>
+              <span className="text-zinc-700 text-[10px] font-black">USD</span>
             </div>
-            
+            <ul className="space-y-4 mb-10">
+              {plan.perks.map((perk, i) => (
+                <li key={i} className="flex items-center gap-3 text-[10px] font-black uppercase text-zinc-400">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" /> {perk}
+                </li>
+              ))}
+            </ul>
             <div className="space-y-3 mt-auto">
-              <button 
-                onClick={() => handleBasePayment(plan)} 
-                disabled={isProcessing || !selectedStartupId} 
-                className="w-full py-4 rounded-2xl font-black text-[10px] bg-blue-600/10 border border-blue-600/20 text-blue-500 hover:bg-blue-600 hover:text-white flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-10"
-              >
-                <HiOutlineGlobeAlt className="w-5 h-5" /> Base USDC
-              </button>
-              <button 
-                onClick={() => handleSolanaPayment(plan)} 
-                disabled={isProcessing || !selectedStartupId} 
-                className="w-full py-4 rounded-2xl font-black text-[10px] bg-white text-black hover:bg-[#D4AF37] hover:text-white flex items-center justify-center gap-2 uppercase tracking-widest transition-all disabled:opacity-10"
-              >
-                <HiOutlineBolt className="w-5 h-5" /> Solana SOL
-              </button>
+              <button onClick={() => handleBasePayment(plan)} disabled={isProcessing || !selectedStartupId} className="w-full py-4 rounded-2xl font-black text-[10px] bg-blue-600/10 border border-blue-600/20 text-blue-500 hover:bg-blue-600 hover:text-white transition-all uppercase tracking-widest">Base USDC</button>
+              <button onClick={() => handleSolanaPayment(plan)} disabled={isProcessing || !selectedStartupId} className="w-full py-4 rounded-2xl font-black text-[10px] bg-white text-black hover:bg-[#D4AF37] hover:text-white transition-all uppercase tracking-widest">Solana SOL</button>
             </div>
           </motion.div>
         ))}
-      </div>
-
-      <div className="mt-20 text-center">
-        <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-zinc-900/50 border border-white/5">
-          <HiOutlineShieldCheck className="w-4 h-4 text-[#D4AF37]" />
-          <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">Guardian Protocol Verified</span>
-        </div>
       </div>
     </main>
   );
