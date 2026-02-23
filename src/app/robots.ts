@@ -11,14 +11,15 @@ export default function robots(): MetadataRoute.Robots {
           '/docs', 
           '/about', 
           '/submit', 
-          '/pricing', 
-          '/startup/' 
+          '/pricing',
+          '/registry'
         ],
         disallow: [
           '/api/',      
           '/admin/',    
           '/verify/',
           '/request/', 
+          '/startup/'
         ],
       },
       {

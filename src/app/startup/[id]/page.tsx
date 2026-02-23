@@ -1,16 +1,43 @@
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { Metadata } from 'next'; 
 import { 
   HiOutlineGlobeAlt, 
   HiOutlineLink, 
   HiOutlineShieldCheck,
-  HiOutlineArrowUpRight 
+  HiOutlineArrowUpRight,
+  HiOutlineShare 
 } from "react-icons/hi2";
 import { ClientDetails } from './ClientDetails';
 
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const startup = await prisma.startup.findUnique({ where: { id } });
+
+  if (!startup) return { title: "Signal Lost | VibeStream" };
+
+  return {
+    title: `${startup.name} | VibeStream Encyclopedia`,
+    description: startup.tagline,
+    openGraph: {
+      title: `${startup.name} - Verified on VibeStream`,
+      description: startup.tagline,
+      images: [startup.bannerUrl || '/og-image.png'],
+      url: `https://vibestream.cc/startup/${id}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: startup.name,
+      description: startup.tagline,
+      images: [startup.bannerUrl || '/og-image.png'],
+    }
+  };
 }
 
 export default async function StartupDetailsPage({ params }: PageProps) {
@@ -26,8 +53,24 @@ export default async function StartupDetailsPage({ params }: PageProps) {
 
   if (!startup) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": startup.name,
+    "description": startup.tagline,
+    "applicationCategory": startup.category,
+    "url": startup.website,
+    "image": startup.logoUrl
+  };
+
   return (
     <ClientDetails startup={startup}>
+      {/* 🛡️ Inject Search Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <div className="min-h-screen bg-black text-white pt-32 pb-20 px-6">
         <div className="max-w-6xl mx-auto relative">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#4E24CF]/5 blur-[120px] rounded-full pointer-events-none" />
@@ -80,6 +123,27 @@ export default async function StartupDetailsPage({ params }: PageProps) {
                 <p className="text-2xl text-zinc-300 leading-relaxed font-medium">
                   {startup.problemStatement}
                 </p>
+
+                {/* 🛡️ 3. AUTOMATIC SHARE FUNCTIONALITY */}
+                <div className="flex gap-6 mt-12 border-t border-white/5 pt-8">
+                  <p className="text-zinc-600 text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
+                    <HiOutlineShare /> Broadcast Signal:
+                  </p>
+                  <a 
+                    href={`https://twitter.com/intent/tweet?text=Analyzing ${startup.name} on @Vibestream_cc. No Marketing. Just Code.&url=https://vibestream.cc/startup/${id}`}
+                    target="_blank"
+                    className="text-[9px] font-black uppercase tracking-[0.2em] text-[#4E24CF] hover:text-white transition-colors"
+                  >
+                    Share on X
+                  </a>
+                  <a 
+                    href={`https://www.linkedin.com/sharing/share-offsite/?url=https://vibestream.cc/startup/${id}`}
+                    target="_blank"
+                    className="text-[9px] font-black uppercase tracking-[0.2em] text-[#D4AF37] hover:text-white transition-colors"
+                  >
+                    LinkedIn
+                  </a>
+                </div>
               </section>
             </div>
 
@@ -96,7 +160,6 @@ export default async function StartupDetailsPage({ params }: PageProps) {
                 </a>
               </div>
 
-              
               <Link 
                 href={`/request?startupId=${startup.id}&startupName=${encodeURIComponent(startup.name)}`}
                 className="w-full py-6 rounded-[2rem] bg-white text-black font-black uppercase tracking-[0.3em] text-[11px] hover:bg-[#D4AF37] transition-all shadow-xl shadow-white/5 flex items-center justify-center gap-2"
