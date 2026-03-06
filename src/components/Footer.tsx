@@ -47,12 +47,12 @@ export function Footer() {
             <div className="flex items-center gap-2">
               <span className="text-[9px] font-bold text-zinc-700 uppercase tracking-widest">Innovation by</span>
               <a 
-                href="https://labs.mojeeb.xyz" 
+                href="https://blindspotlab.xyz" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-[9px] font-black text-zinc-400 hover:text-[#D4AF37] transition-all duration-300 uppercase tracking-[0.3em] relative group/link"
               >
-                BlindspotLabs
+                BlindspotLab
                 <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#D4AF37] transition-all duration-500 group-hover/link:w-full" />
               </a>
             </div>
