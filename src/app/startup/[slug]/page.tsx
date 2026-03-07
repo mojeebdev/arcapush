@@ -1,71 +1,111 @@
 import { prisma } from '@/lib/prisma';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Metadata } from 'next'; 
-import { 
-  HiOutlineGlobeAlt, 
-  HiOutlineLink, 
+import { Metadata } from 'next';
+import {
+  HiOutlineGlobeAlt,
+  HiOutlineLink,
   HiOutlineShieldCheck,
   HiOutlineArrowUpRight,
-  HiOutlineShare 
+  HiOutlineShare
 } from "react-icons/hi2";
 import { ClientDetails } from './ClientDetails';
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
+}
+
+
+async function getStartup(slugOrId: string) {
+  return prisma.startup.findFirst({
+    where: {
+      OR: [
+        { slug: slugOrId },
+        { id: slugOrId }, 
+      ],
+    },
+    include: {
+      _count: { select: { accessRequests: true } },
+    },
+  });
 }
 
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { id } = await params;
-  const startup = await prisma.startup.findUnique({ where: { id } });
+  const { slug } = await params;
+  const startup = await getStartup(slug);
 
   if (!startup) return { title: "Signal Lost | VibeStream" };
 
+ 
+  const canonicalPath = startup.slug ?? startup.id;
+  const canonicalUrl = `https://vibestream.cc/startup/${canonicalPath}`;
+
   return {
-    title: `${startup.name} | VibeStream Encyclopedia`,
-    description: startup.tagline,
+    title: startup.metaTitle || `${startup.name} | VibeStream Encyclopedia`,
+    description: startup.metaDescription || startup.tagline,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
-      title: `${startup.name} - Verified on VibeStream`,
-      description: startup.tagline,
-      images: [startup.bannerUrl || '/og-image.png'],
-      url: `https://vibestream.cc/startup/${id}`,
+      title: `${startup.name} — Verified on VibeStream`,
+      description: startup.metaDescription || startup.tagline,
+      images: [{ url: startup.bannerUrl || '/og-image.png', width: 1200, height: 630 }],
+      url: canonicalUrl,
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
       title: startup.name,
-      description: startup.tagline,
+      description: startup.metaDescription || startup.tagline,
       images: [startup.bannerUrl || '/og-image.png'],
-    }
+    },
   };
 }
 
+
 export default async function StartupDetailsPage({ params }: PageProps) {
-  const { id } = await params;
-  const startup = await prisma.startup.findUnique({
-    where: { id },
-    include: {
-      _count: {
-        select: { accessRequests: true }
-      }
-    }
-  });
+  const { slug } = await params;
+  const startup = await getStartup(slug);
 
   if (!startup) notFound();
 
+  
+  if (startup.slug && slug !== startup.slug) {
+    redirect(`/startup/${startup.slug}`);
+  }
+
+  const canonicalPath = startup.slug ?? startup.id;
+  const canonicalUrl = `https://vibestream.cc/startup/${canonicalPath}`;
+
+  
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": startup.name,
-    "description": startup.tagline,
+    "description": startup.metaDescription || startup.tagline,
     "applicationCategory": startup.category,
     "url": startup.website,
-    "image": startup.logoUrl
+    "image": startup.logoUrl || startup.bannerUrl,
+    "datePublished": startup.createdAt.toISOString(),
+    "dateModified": startup.updatedAt.toISOString(),
+    "sameAs": [
+      startup.website,
+      startup.twitter,
+    ].filter(Boolean),
+    "author": {
+      "@type": "Person",
+      "name": startup.founderName,
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "VibeStream",
+      "url": "https://vibestream.cc",
+    },
   };
 
   return (
     <ClientDetails startup={startup}>
-      {/* 🛡️ Inject Search Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -75,7 +115,7 @@ export default async function StartupDetailsPage({ params }: PageProps) {
         <div className="max-w-6xl mx-auto relative">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#4E24CF]/5 blur-[120px] rounded-full pointer-events-none" />
 
-          {/* Header Section */}
+          {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start mb-16 gap-8 relative z-10">
             <div className="space-y-6">
               <div className="flex items-center gap-3">
@@ -105,14 +145,18 @@ export default async function StartupDetailsPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Visual Asset */}
+          {/* Banner */}
           {startup.bannerUrl && (
             <div className="w-full aspect-[21/9] rounded-[3rem] overflow-hidden border border-white/5 mb-16 shadow-2xl">
-              <img src={startup.bannerUrl} alt={startup.name} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+              <img
+                src={startup.bannerUrl}
+                alt={`${startup.name} banner`}
+                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+              />
             </div>
           )}
 
-          {/* Main Content Grid */}
+          {/* Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
             <div className="lg:col-span-2 space-y-12">
               <section className="p-10 border border-white/5 rounded-[3rem] bg-zinc-950/50 backdrop-blur-xl relative overflow-hidden group">
@@ -124,21 +168,23 @@ export default async function StartupDetailsPage({ params }: PageProps) {
                   {startup.problemStatement}
                 </p>
 
-                {/* 🛡️ 3. AUTOMATIC SHARE FUNCTIONALITY */}
+                {/* Share */}
                 <div className="flex gap-6 mt-12 border-t border-white/5 pt-8">
                   <p className="text-zinc-600 text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
                     <HiOutlineShare /> Broadcast Signal:
                   </p>
-                  <a 
-                    href={`https://twitter.com/intent/tweet?text=Analyzing ${startup.name} on @Vibestream_cc. No Marketing. Just Code.&url=https://vibestream.cc/startup/${id}`}
+                  <a
+                    href={`https://twitter.com/intent/tweet?text=Analyzing ${encodeURIComponent(startup.name)} on @Vibestream_cc. No Marketing. Just Code.&url=${canonicalUrl}`}
                     target="_blank"
+                    rel="noopener noreferrer"
                     className="text-[9px] font-black uppercase tracking-[0.2em] text-[#4E24CF] hover:text-white transition-colors"
                   >
                     Share on X
                   </a>
-                  <a 
-                    href={`https://www.linkedin.com/sharing/share-offsite/?url=https://vibestream.cc/startup/${id}`}
+                  <a
+                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${canonicalUrl}`}
                     target="_blank"
+                    rel="noopener noreferrer"
                     className="text-[9px] font-black uppercase tracking-[0.2em] text-[#D4AF37] hover:text-white transition-colors"
                   >
                     LinkedIn
@@ -150,25 +196,26 @@ export default async function StartupDetailsPage({ params }: PageProps) {
             <aside className="space-y-8">
               <div className="p-8 border border-white/5 rounded-[3rem] bg-zinc-950 space-y-4">
                 <h3 className="text-zinc-600 text-[10px] font-black uppercase tracking-[0.4em] mb-6">Signals</h3>
-                <a href={startup.website || "#"} target="_blank" className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-[#4E24CF]/50 hover:bg-[#4E24CF]/5 transition-all group">
+                <a href={startup.website || "#"} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-[#4E24CF]/50 hover:bg-[#4E24CF]/5 transition-all group">
                   <span className="text-[10px] font-black uppercase tracking-widest text-white">Platform</span>
                   <HiOutlineGlobeAlt className="w-4 h-4 text-zinc-500 group-hover:text-white" />
                 </a>
-                <a href={startup.founderTwitter || "#"} target="_blank" className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-[#4E24CF]/50 hover:bg-[#4E24CF]/5 transition-all group">
+                <a href={startup.founderTwitter || "#"} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-[#4E24CF]/50 hover:bg-[#4E24CF]/5 transition-all group">
                   <span className="text-[10px] font-black uppercase tracking-widest text-white">Founder</span>
                   <HiOutlineLink className="w-4 h-4 text-zinc-500 group-hover:text-white" />
                 </a>
               </div>
 
-              <Link 
-                href={`/request?startupId=${startup.id}&startupName=${encodeURIComponent(startup.name)}`}
+              <Link
+                href={`/request?startupId=${startup.id}&name=${encodeURIComponent(startup.name)}`}
                 className="w-full py-6 rounded-[2rem] bg-white text-black font-black uppercase tracking-[0.3em] text-[11px] hover:bg-[#D4AF37] transition-all shadow-xl shadow-white/5 flex items-center justify-center gap-2"
               >
                 Request Pitch Access <HiOutlineArrowUpRight className="w-4 h-4" />
               </Link>
-              
+
+              {/* Show slug as VIBE-ID if available, otherwise truncated id */}
               <p className="text-[9px] text-zinc-700 font-black text-center uppercase tracking-[0.5em]">
-                VIBE-ID: {id.slice(0, 8)}
+                VIBE-ID: {startup.slug ?? startup.id.slice(0, 8)}
               </p>
             </aside>
           </div>

@@ -1,14 +1,13 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Confetti from "react-confetti";
-import { 
-  HiOutlineRocketLaunch, 
-  HiOutlineShare, 
-  HiOutlineClock, 
-  HiOutlineShieldCheck 
+import {
+  HiOutlineRocketLaunch,
+  HiOutlineShare,
+  HiOutlineClock,
+  HiOutlineShieldCheck
 } from "react-icons/hi2";
 
 interface SuccessProps {
@@ -16,16 +15,26 @@ interface SuccessProps {
   expiresAt: Date;
   txHash: string;
   duration: string;
-  onClose?: () => void; 
-} 
+  startupSlug?: string | null;  
+  startupId?: string;           
+  onClose?: () => void;
+}
 
-export function AscensionSuccess({ startupName, expiresAt, txHash, duration, onClose }: SuccessProps) {
+export function AscensionSuccess({
+  startupName,
+  expiresAt,
+  txHash,
+  duration,
+  startupSlug,
+  startupId,
+  onClose,
+}: SuccessProps) {
   const [timeLeft, setTimeLeft] = useState("");
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-    
+
     const timer = setInterval(() => {
       const now = new Date().getTime();
       const distance = new Date(expiresAt).getTime() - now;
@@ -44,23 +53,37 @@ export function AscensionSuccess({ startupName, expiresAt, txHash, duration, onC
     return () => clearInterval(timer);
   }, [expiresAt]);
 
+  
+  const startupPath = startupSlug ?? startupId;
+  const startupUrl = startupPath
+    ? `https://vibestream.cc/startup/${startupPath}`
+    : "https://vibestream.cc/registry";
+
   const shareOnX = () => {
-    const text = `🚀 Just ascended to PINNED status on VibeStream! \n\nCheck out ${startupName} in the Encyclopedia. \n\n#VibeStream #BuildInPublic`;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
+    const text = `🚀 Just pinned ${startupName} to the top of @vibestreamcc!\n\nDiscover it in the Encyclopedia 👇\n${startupUrl}\n\n#VibeStream #VibeCoding #BuildInPublic`;
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
+      "_blank"
+    );
   };
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black p-6 overflow-hidden">
-      <Confetti width={windowSize.width} height={windowSize.height} recycle={false} colors={['#4E24CF', '#D4AF37', '#ffffff']} />
-      
-      <motion.div 
+      <Confetti
+        width={windowSize.width}
+        height={windowSize.height}
+        recycle={false}
+        colors={['#4E24CF', '#D4AF37', '#ffffff']}
+      />
+
+      <motion.div
         initial={{ opacity: 0, scale: 0.8, y: 40 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="max-w-xl w-full text-center"
       >
         <div className="mb-8 flex justify-center">
           <div className="relative">
-            <motion.div 
+            <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
               className="absolute inset-0 rounded-full border-2 border-dashed border-[#D4AF37]/30"
@@ -92,14 +115,14 @@ export function AscensionSuccess({ startupName, expiresAt, txHash, duration, onC
         </div>
 
         <div className="space-y-4">
-          <button 
+          <button
             onClick={shareOnX}
             className="w-full py-5 rounded-2xl bg-white text-black font-black uppercase text-xs tracking-[0.3em] flex items-center justify-center gap-3 hover:bg-[#D4AF37] transition-colors"
           >
             <HiOutlineShare className="w-5 h-5" /> Blast to X
           </button>
-          
-          <button 
+
+          <button
             onClick={onClose || (() => window.location.href = '/')}
             className="w-full py-5 rounded-2xl bg-zinc-900 text-zinc-400 font-black uppercase text-[10px] tracking-[0.3em] hover:text-white transition-colors"
           >

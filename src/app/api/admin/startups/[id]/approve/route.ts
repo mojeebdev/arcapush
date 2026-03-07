@@ -1,33 +1,51 @@
 import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Resend } from 'resend';
+import { generateUniqueSlug } from "@/lib/slug";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> } 
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params; 
+    const { id } = await params;
     const body = await req.json();
-    const pin = req.headers.get("x-guardian-pin");
 
+    const pin = req.headers.get("x-guardian-pin");
     if (!pin || pin !== process.env.ADMIN_PIN) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    
+   
+    let slugData: { slug?: string } = {};
+
+    if (body.approved === true) {
+      const existing = await prisma.startup.findUnique({
+        where: { id },
+        select: { slug: true, name: true },
+      });
+
+
+      if (existing && !existing.slug) {
+        const slug = await generateUniqueSlug(existing.name, id);
+        slugData = { slug };
+      }
+    }
+
     const updatedStartup = await prisma.startup.update({
       where: { id },
       data: {
         approved: body.approved,
+        ...slugData,
       },
     });
 
-    
+ 
     if (body.approved === true) {
-      const startupUrl = `https://vibestream.cc/startup/${id}`;
+      const canonicalPath = updatedStartup.slug ?? updatedStartup.id;
+      const startupUrl = `https://vibestream.cc/startup/${canonicalPath}`;
 
       await resend.emails.send({
         from: 'Guardian <system@vibestream.cc>',
@@ -44,7 +62,8 @@ export async function PATCH(
           </div>
         `
       });
-      console.log(`🚀 Milestone: ${updatedStartup.name} is now live and founder notified.`);
+
+      console.log(`🚀 Milestone: ${updatedStartup.name} is live at ${startupUrl}`);
     }
 
     return NextResponse.json({
@@ -52,7 +71,7 @@ export async function PATCH(
       message: body.approved ? "Vibe Code Live & Founder Notified" : "Vibe Code Status Updated",
       startup: updatedStartup,
     });
-    
+
   } catch (error: any) {
     console.error("Guardian Switch Error:", error);
     return NextResponse.json(

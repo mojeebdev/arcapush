@@ -1,5 +1,4 @@
-"use client"; 
-
+"use client";
 import { useSearchParams } from 'next/navigation';
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
@@ -7,30 +6,48 @@ import Link from 'next/link';
 export function RegistrySearchHandler({ initialStartups }: { initialStartups: any[] }) {
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeCategory, setActiveCategory] = useState("");
 
+  
   useEffect(() => {
-    const query = searchParams.get('search');
-    setSearchTerm(query || "");
+    setSearchTerm(searchParams.get('search') || "");
+    setActiveCategory(searchParams.get('category') || "");
   }, [searchParams]);
 
   const filteredStartups = useMemo(() => {
     return initialStartups.filter((item) => {
-      const searchStr = searchTerm.toLowerCase();
-      return (
-        item.name.toLowerCase().includes(searchStr) ||
-        item.category.toLowerCase().includes(searchStr) ||
-        item.tagline.toLowerCase().includes(searchStr)
+      const matchesSearch = !searchTerm || (
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.tagline.toLowerCase().includes(searchTerm.toLowerCase())
       );
+      const matchesCategory = !activeCategory ||
+        item.category.toLowerCase() === activeCategory.toLowerCase();
+
+      return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, initialStartups]);
+  }, [searchTerm, activeCategory, initialStartups]);
+
+  const clearFilters = () => {
+    window.history.replaceState(null, '', '/registry');
+    setSearchTerm("");
+    setActiveCategory("");
+  };
+
+  const hasFilters = searchTerm || activeCategory;
 
   return (
     <div className="space-y-8">
-      {searchTerm && (
+      {hasFilters && (
         <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">
-          <span>Results for: <span className="text-[#D4AF37]">{searchTerm}</span></span>
-          <button 
-            onClick={() => window.history.replaceState(null, '', '/registry')} 
+          {searchTerm && (
+            <span>Results for: <span className="text-[#D4AF37]">{searchTerm}</span></span>
+          )}
+          {activeCategory && (
+            <span>Category: <span className="text-[#4E24CF]">{activeCategory}</span></span>
+          )}
+          <button
+            onClick={clearFilters}
             className="text-white hover:text-[#4E24CF] transition-colors underline underline-offset-4"
           >
             [ Clear ]
@@ -41,9 +58,10 @@ export function RegistrySearchHandler({ initialStartups }: { initialStartups: an
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredStartups.length > 0 ? (
           filteredStartups.map((startup) => (
-            <Link 
-              href={`/startup/${startup.id}`} 
-              key={startup.id} 
+            
+            <Link
+              href={`/startup/${startup.slug ?? startup.id}`}
+              key={startup.id}
               className="bg-zinc-950/50 border border-white/5 p-8 rounded-[2.5rem] hover:bg-zinc-900 transition-all group"
             >
               <div className="flex justify-between items-start mb-4">

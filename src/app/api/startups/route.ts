@@ -1,18 +1,20 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { StartupTier } from "@prisma/client";
-
+import { generateUniqueSlug } from "@/lib/slug";
 
 export async function GET(req: Request) {
   try {
-    const { searchParams } = new URL(req.url);
     const pin = req.headers.get('x-guardian-pin');
     const isAdmin = pin === process.env.ADMIN_PIN;
 
-    
     const startups = await prisma.startup.findMany({
-      where: isAdmin ? {} : { approved: true }, 
-      orderBy: { createdAt: 'desc' },
+      where: isAdmin ? {} : { approved: true },
+      orderBy: [
+        { tier: 'desc' },
+        { pinnedAt: 'desc' },
+        { createdAt: 'desc' },
+      ],
     });
 
     return NextResponse.json({ startups });
@@ -25,8 +27,12 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
+    
+    const slug = await generateUniqueSlug(body.name);
+
     const startup = await prisma.startup.create({
       data: {
+        slug,
         name: body.name,
         tagline: body.tagline,
         problemStatement: body.problemStatement,
@@ -40,7 +46,7 @@ export async function POST(req: Request) {
         founderEmail: body.founderEmail,
         founderTwitter: body.founderTwitter,
         tier: StartupTier.FREE,
-        approved: false, 
+        approved: false,
       },
     });
 

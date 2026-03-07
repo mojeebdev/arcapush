@@ -33,7 +33,7 @@ export async function POST(
 
       if (startup && updatedRequest.startupId && updatedRequest.startupId !== 'general_access') {
         
-        const pitchLink = startup.pitchDeckUrl || `https://vibestream.cc/pitch/${startup.id}`;
+       const pitchLink = startup.pitchDeckUrl || `https://vibestream.cc/startup/${startup.slug ?? startup.id}`;
         
         await resend.emails.send({
           from: 'Guardian <system@vibestream.cc>',

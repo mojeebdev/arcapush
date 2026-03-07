@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { PaymentModal } from "@/components/PaymentModal";
 import { AscensionSuccess } from "@/components/AscensionSuccess";
@@ -14,7 +13,6 @@ export function ClientDetails({ startup, children }: { startup: any, children: R
     setSuccessData(data);
   };
 
-  
   const handleCloseSuccess = () => {
     setSuccessData(null);
   };
@@ -23,9 +21,8 @@ export function ClientDetails({ startup, children }: { startup: any, children: R
     <>
       {children}
 
-      
       {!successData && (
-        <button 
+        <button
           onClick={() => setIsModalOpen(true)}
           className="fixed bottom-10 right-10 z-[60] flex items-center gap-3 px-8 py-4 bg-[#D4AF37] text-black font-black uppercase italic tracking-tighter rounded-full shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:scale-110 transition-transform active:scale-95 group"
         >
@@ -34,25 +31,23 @@ export function ClientDetails({ startup, children }: { startup: any, children: R
         </button>
       )}
 
-      {/* 💳 Payment Modal Terminal */}
+      {/* PaymentModal always uses internal id for payment processing */}
       {isModalOpen && (
-        <PaymentModal 
-          startupId={startup.id} 
+        <PaymentModal
+          startupId={startup.id}
           status={startup.status}
-          onClose={() => setIsModalOpen(false)} 
-          onSuccess={handleSuccess} 
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={handleSuccess}
         />
       )}
 
-      
       {successData && (
-        <AscensionSuccess 
+        <AscensionSuccess
           startupName={successData.startupName || startup.name}
           expiresAt={successData.expiresAt}
           txHash={successData.txHash}
           duration={successData.duration}
-          
-          onClose={handleCloseSuccess} 
+          onClose={handleCloseSuccess}
         />
       )}
     </>

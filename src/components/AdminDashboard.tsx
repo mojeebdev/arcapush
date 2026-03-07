@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import Link from "next/link";
 import {
   HiOutlineXCircle,
   HiOutlineClock,
   HiOutlineBuildingOffice2,
   HiOutlineArrowPath,
-  HiOutlineCheckBadge, 
-  HiOutlineUser,
-  HiOutlineEnvelope
+  HiOutlineArrowUpRight,
 } from "react-icons/hi2";
 
 export interface AdminDashboardProps {
@@ -18,6 +17,7 @@ export interface AdminDashboardProps {
 
 interface StartupSubmission {
   id: string;
+  slug?: string;       
   name: string;
   tagline: string;
   founderName: string;
@@ -34,7 +34,7 @@ interface AccessRequest {
   requesterFirm: string;
   requesterRole: string;
   status: string;
-  startup?: { name: string };
+  startup?: { name: string; id: string; slug?: string };
 }
 
 export default function AdminDashboardView({ guardianPin }: AdminDashboardProps) {
@@ -47,7 +47,6 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
   const fetchData = async () => {
     setLoading(true);
     try {
-      
       const [startupRes, requestRes] = await Promise.all([
         fetch(`/api/startups`, { headers: { "x-guardian-pin": guardianPin } }),
         fetch(`/api/access-request`, { headers: { "x-guardian-pin": guardianPin } })
@@ -69,7 +68,6 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
     fetchData();
   }, [guardianPin]);
 
-  
   const handleApproveStartup = async (id: string) => {
     try {
       const res = await fetch(`/api/admin/startups/${id}/approve`, {
@@ -81,43 +79,38 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
         toast.success("Food Item Authorized for Feed");
         fetchData();
       }
-    } catch (err) {
+    } catch {
       toast.error("Approval failed.");
     }
   };
 
-  
   const handleApproveInvestor = async (id: string, action: "APPROVED" | "REJECTED") => {
     try {
       const res = await fetch(`/api/access-request/${id}/approve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          status: action, 
-          adminSecret: guardianPin 
-        }),
+        body: JSON.stringify({ status: action, adminSecret: guardianPin }),
       });
       if (res.ok) {
         toast.success(action === "APPROVED" ? "Investor Authorized" : "Signal Silenced");
         fetchData();
       }
-    } catch (err) {
+    } catch {
       toast.error("Handshake failed.");
     }
   };
 
-  
-  const filteredStartups = startups.filter(s => 
+  const filteredStartups = startups.filter(s =>
     filter === "ALL" ? true : filter === "APPROVED" ? s.approved : !s.approved
   );
 
-  const filteredRequests = requests.filter(r => 
+  const filteredRequests = requests.filter(r =>
     filter === "ALL" ? true : filter === "APPROVED" ? r.status === "APPROVED" : r.status === "PENDING"
   );
 
   return (
     <div className="space-y-8">
-      {/* 🛡️ Primary View Toggle */}
+      {/* View Toggle */}
       <div className="flex bg-zinc-900/50 p-1 rounded-3xl border border-white/5 w-fit">
         {(["SUBMISSIONS", "SIGNALS"] as const).map((v) => (
           <button
@@ -132,6 +125,7 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
         ))}
       </div>
 
+      {/* Filter */}
       <div className="flex items-center gap-2">
         {(["PENDING", "APPROVED", "ALL"] as const).map((s) => (
           <button
@@ -151,12 +145,13 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
 
       {loading ? (
         <div className="grid gap-4">
-          {[1, 2].map((i) => <div key={i} className="h-40 bg-zinc-900/40 rounded-[2.5rem] animate-pulse border border-white/5" />)}
+          {[1, 2].map((i) => (
+            <div key={i} className="h-40 bg-zinc-900/40 rounded-[2.5rem] animate-pulse border border-white/5" />
+          ))}
         </div>
       ) : (
         <div className="grid gap-6">
           {view === "SUBMISSIONS" ? (
-            // --- STARTUP VIEW ---
             filteredStartups.length === 0 ? (
               <EmptyState message="No Submissions Found" />
             ) : (
@@ -165,29 +160,51 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                     <div className="space-y-3">
                       <div className="flex items-center gap-4">
-                        <span className={`px-3 py-1 rounded-full border text-[8px] font-black uppercase ${startup.approved ? 'text-emerald-400 border-emerald-400/20' : 'text-[#D4AF37] border-[#D4AF37]/20'}`}>
+                        <span className={`px-3 py-1 rounded-full border text-[8px] font-black uppercase ${
+                          startup.approved ? 'text-emerald-400 border-emerald-400/20' : 'text-[#D4AF37] border-[#D4AF37]/20'
+                        }`}>
                           {startup.approved ? "LIVE" : "UNAUTHORIZED"}
                         </span>
-                        <span className="text-[9px] font-black text-[#4E24CF] uppercase tracking-widest">{startup.category}</span>
+                        <span className="text-[9px] font-black text-[#4E24CF] uppercase tracking-widest">
+                          {startup.category}
+                        </span>
                       </div>
-                      <h4 className="text-3xl font-black text-white italic tracking-tighter uppercase">{startup.name}</h4>
+                      <h4 className="text-3xl font-black text-white italic tracking-tighter uppercase">
+                        {startup.name}
+                      </h4>
                       <p className="text-zinc-500 text-sm italic">{startup.tagline}</p>
                       <div className="flex items-center gap-4 text-[10px] text-zinc-600 font-bold uppercase pt-2">
                         <span className="text-white">Founder: {startup.founderName}</span>
                         <span>{startup.founderEmail}</span>
                       </div>
                     </div>
-                    {!startup.approved && (
-                      <button onClick={() => handleApproveStartup(startup.id)} className="px-10 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase hover:bg-[#D4AF37] transition-all">
-                        Authorize Entry
-                      </button>
-                    )}
+
+                    <div className="flex items-center gap-3">
+                      
+                      {startup.approved && (
+                        <Link
+                          href={`/startup/${startup.slug ?? startup.id}`}
+                          target="_blank"
+                          className="p-4 bg-zinc-900 border border-white/5 rounded-2xl text-zinc-400 hover:text-white hover:border-[#4E24CF]/50 transition-all"
+                          title="View Live Entry"
+                        >
+                          <HiOutlineArrowUpRight className="w-5 h-5" />
+                        </Link>
+                      )}
+                      {!startup.approved && (
+                        <button
+                          onClick={() => handleApproveStartup(startup.id)}
+                          className="px-10 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase hover:bg-[#D4AF37] transition-all"
+                        >
+                          Authorize Entry
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))
             )
           ) : (
-            // --- INVESTOR SIGNALS VIEW ---
             filteredRequests.length === 0 ? (
               <EmptyState message="No Investor Signals" />
             ) : (
@@ -196,23 +213,48 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                     <div className="space-y-3">
                       <div className="flex items-center gap-4">
-                        <span className={`px-3 py-1 rounded-full border text-[8px] font-black uppercase ${req.status === 'APPROVED' ? 'text-emerald-400 border-emerald-400/20' : 'text-[#D4AF37] border-[#D4AF37]/20'}`}>
+                        <span className={`px-3 py-1 rounded-full border text-[8px] font-black uppercase ${
+                          req.status === 'APPROVED' ? 'text-emerald-400 border-emerald-400/20' : 'text-[#D4AF37] border-[#D4AF37]/20'
+                        }`}>
                           {req.status}
                         </span>
-                        <span className="text-[9px] font-black text-[#D4AF37] uppercase tracking-widest">Signal Request</span>
+                        <span className="text-[9px] font-black text-[#D4AF37] uppercase tracking-widest">
+                          Signal Request
+                        </span>
                       </div>
-                      <h4 className="text-3xl font-black text-white italic tracking-tighter uppercase">{req.requesterName} @ {req.requesterFirm}</h4>
+                      <h4 className="text-3xl font-black text-white italic tracking-tighter uppercase">
+                        {req.requesterName} @ {req.requesterFirm}
+                      </h4>
                       <div className="flex items-center gap-2 text-zinc-500 text-[10px] font-bold uppercase italic">
                         <HiOutlineBuildingOffice2 className="w-4 h-4 text-[#4E24CF]" />
-                        Target: <span className="text-white">{req.startup?.name || "General Terminal Access"}</span>
+                        Target:{" "}
+                        {req.startup ? (
+                          <Link
+                            href={`/startup/${req.startup.slug ?? req.startup.id}`}
+                            target="_blank"
+                            className="text-white hover:text-[#D4AF37] transition-colors flex items-center gap-1"
+                          >
+                            {req.startup.name}
+                            <HiOutlineArrowUpRight className="w-3 h-3" />
+                          </Link>
+                        ) : (
+                          <span className="text-white">General Terminal Access</span>
+                        )}
                       </div>
                     </div>
+
                     {req.status === "PENDING" && (
                       <div className="flex gap-3">
-                        <button onClick={() => handleApproveInvestor(req.id, "APPROVED")} className="px-8 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase hover:bg-emerald-400 transition-all">
+                        <button
+                          onClick={() => handleApproveInvestor(req.id, "APPROVED")}
+                          className="px-8 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase hover:bg-emerald-400 transition-all"
+                        >
                           Grant Access
                         </button>
-                        <button onClick={() => handleApproveInvestor(req.id, "REJECTED")} className="p-4 bg-zinc-900 text-zinc-600 hover:text-red-500 rounded-2xl transition-colors">
+                        <button
+                          onClick={() => handleApproveInvestor(req.id, "REJECTED")}
+                          className="p-4 bg-zinc-900 text-zinc-600 hover:text-red-500 rounded-2xl transition-colors"
+                        >
                           <HiOutlineXCircle className="w-6 h-6" />
                         </button>
                       </div>

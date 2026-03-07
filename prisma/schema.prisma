@@ -19,6 +19,7 @@ enum RequestStatus {
 
 model User {
   id            String   @id @default(cuid())
+
   walletAddress String?  @unique
   email         String?  @unique
   name          String?
@@ -33,7 +34,13 @@ model User {
 model Startup {
   id                String   @id @default(cuid())
 
-  // Public fields (always visible)
+  // ── SEO / AEO ────────────────────────────────────────────────────
+  slug              String?  @unique           // SEO-friendly URL: /startup/lovable
+  metaTitle         String?                    // Custom <title> tag (falls back to name)
+  metaDescription   String?  @db.Text          // Custom <meta name="description"> (falls back to tagline)
+  canonicalUrl      String?                    // Override canonical if needed (rare)
+
+  // ── Public fields (always visible) ───────────────────────────────
   name              String
   tagline           String
   problemStatement  String   @db.Text
@@ -43,34 +50,39 @@ model Startup {
   website           String?
   twitter           String?
 
-  // Private fields (behind access gate)
+  // ── Private fields (behind access gate) ──────────────────────────
   founderName       String
   founderEmail      String
   founderLinkedIn   String?
   founderTwitter    String?
   pitchDeckUrl      String?
 
-  
-  approved          Boolean  @default(false) 
-  // Tier & Pinning
+  // ── Status ───────────────────────────────────────────────────────
+  approved          Boolean     @default(false)
+
+  // ── Tier & Pinning ───────────────────────────────────────────────
   tier              StartupTier @default(FREE)
   pinnedAt          DateTime?
   pinnedUntil       DateTime?
   pinTxHash         String?
-  pinChain          String?      // "base" | "solana"
+  pinChain          String?     // "base" | "solana"
 
-  // Relations
-  founderId         String?      // Already optional (?) - Good for Guest mode!
+  // ── Relations ────────────────────────────────────────────────────
+  founderId         String?
   founder           User?        @relation(fields: [founderId], references: [id])
   accessRequests    AccessRequest[]
 
-  // Metadata
+  // ── Metadata ─────────────────────────────────────────────────────
   viewCount         Int          @default(0)
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
 
+  // ── Indexes ──────────────────────────────────────────────────────
   @@index([tier, pinnedUntil])
   @@index([createdAt])
+  @@index([approved, createdAt])   // Fast approved-startups query for sitemap
+  @@index([slug])                  // Fast slug lookups for page routing
+  @@index([category, approved])    // Fast category filter pages
 }
 
 model AccessRequest {
