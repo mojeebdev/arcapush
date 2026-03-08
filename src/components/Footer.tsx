@@ -16,7 +16,7 @@ const FOOTER_LINKS = {
     { href: "/pricing",   label: "Pricing"         },
   ],
   Intelligence: [
-    { href: "/blog/what-is-vibe-coding",                label: "What is Vibe Coding?"         },
+    { href: "/blog/What-is-vibe-coding",                label: "What is Vibe Coding?"         },
     { href: "/blog/andrej-karpathy-vibe-coding",        label: "Origin of Vibe Coding"        },
     { href: "/blog/vc-backed-vibe-coding-startups",     label: "VC-Backed Startups"           },
     { href: "/blog/best-vibe-coding-tools-2026",        label: "Best Tools 2026"              },
@@ -112,7 +112,7 @@ export function Footer() {
               {/* Solana */}
               <div className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
                 <img
-                  src="https://cryptologos.cc/logos/solana-sol-logo.png?v=024"
+                  src="/solana-sol-logo.png"
                   alt="Solana"
                   className="h-4 w-4 object-contain"
                   style={{ filter: "none" }}

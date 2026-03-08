@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { prisma } from "@/lib/prisma";
+import { getAllPosts } from "@/lib/blog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://vibestream.cc';
@@ -17,13 +18,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
 
   const startupEntries: MetadataRoute.Sitemap = startups.map((startup) => ({
-    url: `${baseUrl}/startup/${startup.slug ?? startup.id}`,  
+    url: `${baseUrl}/startup/${startup.slug ?? startup.id}`,
     lastModified: startup.updatedAt,
     changeFrequency: 'daily',
-    priority: startup.pinnedAt ? 0.95 : 0.85,  
+    priority: startup.pinnedAt ? 0.95 : 0.85,
   }));
 
-  // ── Dynamic: Category index pages ─────────────────────────────────
+  
   const categories = [
     ...new Set(startups.map((s) => s.category).filter(Boolean)),
   ];
@@ -35,7 +36,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  // ── Static: Core pages ────────────────────────────────────────────
+  
+  const posts = getAllPosts();
+
+  const blogEntries: MetadataRoute.Sitemap = posts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: 'weekly',
+    priority: post.featured ? 0.9 : 0.8,
+  }));
+
+  
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
@@ -48,6 +59,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'hourly',
       priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/submit`,
@@ -77,6 +94,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticRoutes,
+    ...blogEntries,
     ...startupEntries,
     ...categoryEntries,
   ];
