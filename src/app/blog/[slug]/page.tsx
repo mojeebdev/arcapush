@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
-import { Footer } from "@/components/Footer";
+
 import { AdminConfig } from "@/lib/adminConfig";
 import { getPostBySlug, getAllSlugs } from "@/lib/blog";
 
@@ -268,7 +268,7 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </main>
 
-      <Footer />
+      
     </div>
   );
 }
