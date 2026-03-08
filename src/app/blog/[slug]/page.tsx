@@ -6,6 +6,8 @@ import ReactMarkdown from "react-markdown";
 import { Footer } from "@/components/Footer";
 import { AdminConfig } from "@/lib/adminConfig";
 import { getPostBySlug, getAllSlugs } from "@/lib/blog";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 interface Props {
   params: { slug: string };
