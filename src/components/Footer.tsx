@@ -13,7 +13,6 @@ const FOOTER_LINKS = {
   Founders: [
     { href: "/submit",    label: "Submit Startup"  },
     { href: "/request",   label: "Request Access"  },
-    { href: "/success",   label: "Success Stories" },
     { href: "/pricing",   label: "Pricing"         },
   ],
   Intelligence: [
