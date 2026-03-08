@@ -6,6 +6,8 @@ import ReactMarkdown from "react-markdown";
 import { Footer } from "@/components/Footer";
 import { AdminConfig } from "@/lib/adminConfig";
 import { getPostBySlug, getAllSlugs } from "@/lib/blog";
+
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -130,7 +132,6 @@ export default function BlogPostPage({ params }: Props) {
             {post.description}
           </p>
 
-          {/* Author Row */}
           <div className="flex items-center gap-4">
             <div className="w-9 h-9 rounded-full bg-[#4E24CF] flex items-center justify-center text-[10px] font-black text-white">
               M
@@ -235,7 +236,7 @@ export default function BlogPostPage({ params }: Props) {
           </ReactMarkdown>
         </article>
 
-        {/* CTA Footer */}
+        {/* CTA */}
         <div className="px-6 max-w-3xl mx-auto pb-20">
           <div className="bg-zinc-950 border border-[#4E24CF]/20 rounded-[2rem] p-10 text-center">
             <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#D4AF37] mb-3">
