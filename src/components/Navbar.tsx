@@ -68,7 +68,7 @@ export function Navbar() {
               width={180} height={45}
               priority
               className="h-10 w-auto object-contain"
-              style={{ filter: "invert(1) brightness(1.2)" }}
+              style={{ filter: "invert(1)" }}
             />
           </Link>
 

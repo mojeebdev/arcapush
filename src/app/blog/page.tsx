@@ -84,7 +84,8 @@ export default function BlogPage() {
                           <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${CATEGORY_COLORS[featured.category] ?? CATEGORY_COLORS["Insights"]}`}>
                             {featured.category}
                           </span>
-                          <span className="text-gray-500 text-[9px] font-black uppercase tracking-widest\">\n                            {featured.readTime}
+                          <span className="text-gray-300 text-[9px] font-black uppercase tracking-widest">
+                            {featured.readTime}
                           </span>
                         </div>
                         <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-white group-hover:text-[#4E24CF] transition-colors mb-4 leading-tight">
@@ -105,7 +106,7 @@ export default function BlogPage() {
                             )}
                             <div>
                               <p className="text-[10px] font-black text-white uppercase tracking-widest\">{featured.author}</p>
-                              <p className="text-[9px] text-gray-500 uppercase tracking-widest\">
+                              <p className="text-[9px] text-gray-400 uppercase tracking-widest\">
                                 {new Date(featured.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                               </p>
                             </div>
@@ -152,11 +153,11 @@ export default function BlogPage() {
                                   {post.author.charAt(0).toUpperCase()}
                                 </div>
                               )}
-                              <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest">
+                              <p className="text-[9px] text-gray-400 font-black uppercase tracking-widest\">
                                 {new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                               </p>
                             </div>
-                            <span className="text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-[#4E24CF] transition-colors">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 group-hover:text-[#4E24CF] transition-colors\">
                               Read &rarr;
                             </span>
                           </div>
