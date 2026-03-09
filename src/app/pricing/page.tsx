@@ -1,8 +1,3 @@
-// ============================================================
-// FILE PATH: src/app/pricing/page.tsx
-// ORIGINAL — dark theme (black background)
-// ============================================================
-
 "use client";
 
 import { useState, useEffect } from "react";

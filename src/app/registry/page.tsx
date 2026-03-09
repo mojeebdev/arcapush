@@ -1,14 +1,10 @@
-// ============================================================
-// FILE PATH: src/app/registry/page.tsx
-// ORIGINAL — dark theme (black background)
-// ============================================================
-
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { prisma } from "@/lib/prisma";
 import { RegistrySearchHandler } from "./RegistrySearchHandler";
 
 export const revalidate = 0;
+
 
 export const metadata: Metadata = {
   title: 'Verified Signals — Startup Registry | VibeStream Encyclopedia',
@@ -29,6 +25,7 @@ export const metadata: Metadata = {
     images: ['/og-image.png'],
   },
 };
+
 
 function RegistryJsonLd({ count }: { count: number }) {
   const jsonLd = {
@@ -53,17 +50,18 @@ function RegistryJsonLd({ count }: { count: number }) {
   );
 }
 
+
 export default async function RegistryPage() {
   const startups = await prisma.startup.findMany({
     where: { approved: true },
     orderBy: [
-      { tier: 'desc' },
-      { pinnedAt: 'desc' },
-      { createdAt: 'desc' },
+      { tier: 'desc' },       
+      { pinnedAt: 'desc' },  
+      { createdAt: 'desc' },  
     ],
     select: {
       id: true,
-      slug: true,
+      slug: true,             
       name: true,
       tagline: true,
       category: true,

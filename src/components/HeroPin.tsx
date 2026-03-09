@@ -1,8 +1,3 @@
-// ============================================================
-// FILE PATH: src/components/HeroPin.tsx
-// ORIGINAL — dark theme (black background)
-// ============================================================
-
 "use client";
 
 import { useState } from "react";
@@ -109,7 +104,7 @@ export function HeroPin({ startups }: HeroPinProps) {
             
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
 
-            {/* Badge Array */}
+            {/* 🎖️ Badge Array -*/}
             <div className="absolute top-8 left-8 z-20 flex gap-3">
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#D4AF37] text-black shadow-lg">
                 <HiOutlineFire className="w-4 h-4" />
@@ -123,6 +118,7 @@ export function HeroPin({ startups }: HeroPinProps) {
             {/* Information Layer */}
             <div className="absolute bottom-0 left-0 right-0 p-8 sm:p-12 z-20">
               <div className="max-w-3xl">
+                {/* Typography */}
                 <h2 className="text-5xl sm:text-7xl lg:text-8xl font-black text-white mb-6 tracking-tighter uppercase leading-[0.9]">
                   {currentItem.name}
                 </h2>
@@ -139,6 +135,7 @@ export function HeroPin({ startups }: HeroPinProps) {
                     <HiOutlineArrowRight className="w-4 h-4 inline ml-2" />
                   </Link>
                   
+                  {/* Share Button */}
                   <ShareButton startup={currentItem} /> 
 
                   {currentItem.website && (
@@ -156,7 +153,7 @@ export function HeroPin({ startups }: HeroPinProps) {
             </div>
           </div>
 
-          {/* Navigation Controls */}
+          {/* 🕹️ Navigation Controls*/}
           {total > 1 && (
             <>
               <button onClick={prev} className="absolute left-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-xl border border-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-[#4E24CF] text-white">

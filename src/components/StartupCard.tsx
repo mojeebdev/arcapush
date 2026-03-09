@@ -1,8 +1,3 @@
-// ============================================================
-// FILE PATH: src/components/StartupCard.tsx
-// ORIGINAL — dark theme (black background)
-// ============================================================
-
 "use client";
 
 import Image from "next/image";
@@ -14,7 +9,7 @@ import { HiOutlineArrowUpRight, HiOutlineEye } from "react-icons/hi2";
 interface StartupCardProps {
   startup: {
     id: string;
-    slug?: string | null;
+    slug?: string | null;     // SEO slug — falls back to id if not set
     name: string;
     tagline: string;
     problemStatement: string;
@@ -29,6 +24,7 @@ interface StartupCardProps {
 }
 
 export function StartupCard({ startup, variant }: StartupCardProps) {
+  // Slug-first URL — falls back to id for any startup without a slug yet
   const startupUrl = `/startup/${startup.slug ?? startup.id}`;
 
   if (variant === "ticker") {
