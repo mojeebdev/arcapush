@@ -1,3 +1,8 @@
+// ============================================================
+// FILE PATH: src/app/blog/page.tsx
+// ORIGINAL — dark theme (black background)
+// ============================================================
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -6,7 +11,8 @@ import { getAllPosts } from "@/lib/blog";
 
 export const metadata: Metadata = {
   title: `Blog · ${AdminConfig.SITE_NAME}`,
-  description: "Insights, data, and strategy from the definitive encyclopedia for VC-backed Vibe Coders.",
+  description:
+    "Insights, data, and strategy from the definitive encyclopedia for VC-backed Vibe Coders. Vibe coding, AI startups, funding rounds, and the future of building.",
   metadataBase: new URL(AdminConfig.SITE_URL),
   alternates: { canonical: `${AdminConfig.SITE_URL}/blog` },
   openGraph: {
@@ -27,12 +33,12 @@ export const metadata: Metadata = {
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  "Deep Dive":    "text-[#4E24CF] border-[#4E24CF]/30 bg-[#4E24CF]/8",
-  "Data":         "text-[#D4AF37] border-[#D4AF37]/30 bg-[#D4AF37]/8",
-  "Strategy":     "text-blue-600 border-blue-400/30 bg-blue-400/8",
-  "Founder":      "text-emerald-600 border-emerald-400/30 bg-emerald-400/8",
-  "Founder Story":"text-emerald-600 border-emerald-400/30 bg-emerald-400/8",
-  "Insights":     "text-gray-300 border-gray-600 bg-[#1a1a21]",
+  "Deep Dive":    "text-[#4E24CF] border-[#4E24CF]/30 bg-[#4E24CF]/10",
+  "Data":         "text-[#D4AF37] border-[#D4AF37]/30 bg-[#D4AF37]/10",
+  "Strategy":     "text-blue-400 border-blue-400/30 bg-blue-400/10",
+  "Founder":      "text-emerald-400 border-emerald-400/30 bg-emerald-400/10",
+  "Founder Story":"text-emerald-400 border-emerald-400/30 bg-emerald-400/10",
+  "Insights":     "text-zinc-400 border-zinc-400/30 bg-zinc-400/10",
 };
 
 export default function BlogPage() {
@@ -41,18 +47,18 @@ export default function BlogPage() {
   const rest = posts.filter((p) => !p.featured);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#0f0f12" }}>
+    <div className="min-h-screen bg-black text-white flex flex-col">
       <main className="flex-grow">
 
         {/* Header */}
-        <div className="pt-32 pb-16 px-6 max-w-5xl mx-auto border-b border-white/8">
+        <div className="pt-32 pb-16 px-6 max-w-5xl mx-auto border-b border-white/5">
           <span className="text-[#D4AF37] text-[10px] font-black uppercase tracking-[0.4em]">
             Vibestream Intelligence
           </span>
           <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mt-2 text-white">
             The <span className="text-[#4E24CF]">Signal.</span>
           </h1>
-          <p className="text-gray-400 text-sm mt-4 font-bold uppercase tracking-widest max-w-xl">
+          <p className="text-zinc-500 text-sm mt-4 font-bold uppercase tracking-widest max-w-xl">
             Data, strategy, and insights from the vibe coding encyclopedia.
           </p>
         </div>
@@ -60,7 +66,7 @@ export default function BlogPage() {
         <div className="px-6 max-w-5xl mx-auto py-16">
           {posts.length === 0 ? (
             <div className="text-center py-32">
-              <p className="text-gray-300 font-black uppercase tracking-widest text-[10px]">
+              <p className="text-zinc-600 font-black uppercase tracking-widest text-[10px]">
                 First transmission incoming.
               </p>
             </div>
@@ -69,45 +75,58 @@ export default function BlogPage() {
               {/* Featured Post */}
               {featured && (
                 <div className="mb-16">
-                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#D4AF37] mb-4">Featured</p>
+                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#D4AF37] mb-4">
+                    Featured
+                  </p>
                   <Link href={`/blog/${featured.slug}`}>
-                    <div className="group bg-[#16161b] border border-[#4E24CF]/20 rounded-[2.5rem] overflow-hidden hover:border-[#4E24CF] transition-all shadow-card">
+                    <div className="group bg-zinc-950 border border-[#4E24CF]/30 rounded-[2.5rem] overflow-hidden hover:border-[#4E24CF] transition-all">
                       <div className="relative h-[260px] w-full overflow-hidden">
                         <Image
-                          src={featured.image} alt={featured.title} fill
-                          className="object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
+                          src={featured.image}
+                          alt={featured.title}
+                          fill
+                          className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#16161b] via-[#16161b]/30 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
                       </div>
                       <div className="p-10">
                         <div className="flex items-center gap-3 mb-6">
                           <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${CATEGORY_COLORS[featured.category] ?? CATEGORY_COLORS["Insights"]}`}>
                             {featured.category}
                           </span>
-                          <span className="text-gray-300 text-[9px] font-black uppercase tracking-widest">
+                          <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest">
                             {featured.readTime}
                           </span>
                         </div>
                         <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-white group-hover:text-[#4E24CF] transition-colors mb-4 leading-tight">
                           {featured.title}
                         </h2>
-                        <p className="text-gray-300 text-sm leading-relaxed mb-6 max-w-2xl\">
+                        <p className="text-zinc-400 text-sm leading-relaxed mb-6 max-w-2xl">
                           {featured.description}
                         </p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             {featured.authorImage ? (
-                              <Image src={featured.authorImage} alt={featured.author} width={28} height={28}
-                                className="rounded-full object-cover ring-2 ring-[#4E24CF]/40 flex-shrink-0" />
+                              <Image
+                                src={featured.authorImage}
+                                alt={featured.author}
+                                width={28}
+                                height={28}
+                                className="rounded-full object-cover ring-2 ring-[#4E24CF]/40 flex-shrink-0"
+                              />
                             ) : (
                               <div className="w-7 h-7 rounded-full bg-[#4E24CF] flex items-center justify-center text-[9px] font-black text-white flex-shrink-0">
                                 {featured.author.charAt(0).toUpperCase()}
                               </div>
                             )}
                             <div>
-                              <p className="text-[10px] font-black text-white uppercase tracking-widest\">{featured.author}</p>
-                              <p className="text-[9px] text-gray-400 uppercase tracking-widest\">
-                                {new Date(featured.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                              <p className="text-[10px] font-black text-white uppercase tracking-widest">
+                                {featured.author}
+                              </p>
+                              <p className="text-[9px] text-zinc-600 uppercase tracking-widest">
+                                {new Date(featured.date).toLocaleDateString("en-US", {
+                                  month: "long", day: "numeric", year: "numeric",
+                                })}
                               </p>
                             </div>
                           </div>
@@ -126,11 +145,15 @@ export default function BlogPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {rest.map((post) => (
                     <Link key={post.slug} href={`/blog/${post.slug}`}>
-                      <div className="group bg-[#16161b] border border-white/8 rounded-[2rem] overflow-hidden hover:border-[#4E24CF]/30 transition-all h-full flex flex-col shadow-card">
+                      <div className="group bg-zinc-950 border border-white/5 rounded-[2rem] overflow-hidden hover:border-[#4E24CF]/40 transition-all h-full flex flex-col">
                         <div className="relative h-[160px] w-full overflow-hidden">
-                          <Image src={post.image} alt={post.title} fill
-                            className="object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#16161b] via-[#16161b]/20 to-transparent" />
+                          <Image
+                            src={post.image}
+                            alt={post.title}
+                            fill
+                            className="object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
                           <div className="absolute top-4 left-4">
                             <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${CATEGORY_COLORS[post.category] ?? CATEGORY_COLORS["Insights"]}`}>
                               {post.category}
@@ -138,26 +161,37 @@ export default function BlogPage() {
                           </div>
                         </div>
                         <div className="p-8 flex-grow flex flex-col">
-                          <span className="text-gray-300 text-[9px] font-black uppercase tracking-widest mb-3">{post.readTime}</span>
+                          <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest mb-3">
+                            {post.readTime}
+                          </span>
                           <h2 className="text-xl font-black uppercase tracking-tighter text-white group-hover:text-[#4E24CF] transition-colors mb-3 leading-tight flex-grow">
                             {post.title}
                           </h2>
-                          <p className="text-gray-400 text-xs leading-relaxed mb-6 line-clamp-2">{post.description}</p>
+                          <p className="text-zinc-500 text-xs leading-relaxed mb-6 line-clamp-2">
+                            {post.description}
+                          </p>
                           <div className="flex items-center justify-between mt-auto">
                             <div className="flex items-center gap-2">
                               {post.authorImage ? (
-                                <Image src={post.authorImage} alt={post.author} width={20} height={20}
-                                  className="rounded-full object-cover ring-1 ring-[#4E24CF]/30 flex-shrink-0" />
+                                <Image
+                                  src={post.authorImage}
+                                  alt={post.author}
+                                  width={20}
+                                  height={20}
+                                  className="rounded-full object-cover ring-1 ring-[#4E24CF]/30 flex-shrink-0"
+                                />
                               ) : (
                                 <div className="w-5 h-5 rounded-full bg-[#4E24CF] flex items-center justify-center text-[7px] font-black text-white flex-shrink-0">
                                   {post.author.charAt(0).toUpperCase()}
                                 </div>
                               )}
-                              <p className="text-[9px] text-gray-400 font-black uppercase tracking-widest\">
-                                {new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                              <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest">
+                                {new Date(post.date).toLocaleDateString("en-US", {
+                                  month: "short", day: "numeric", year: "numeric",
+                                })}
                               </p>
                             </div>
-                            <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 group-hover:text-[#4E24CF] transition-colors\">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-[#4E24CF] transition-colors">
                               Read &rarr;
                             </span>
                           </div>

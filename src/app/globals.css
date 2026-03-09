@@ -5,32 +5,20 @@
 @tailwind utilities;
 
 :root {
-  --bg:              #0f0f12;
-  --bg-card:         #16161b;
-  --bg-surface:      #1a1a21;
-  --royal-purple:    #4E24CF;
-  --guardian-gold:   #D4AF37;
-  --text-primary:    #ffffff;
-  --text-secondary:  #d4d4d8;
-  --text-muted:      #8b8b97;
-  --border:          rgba(255,255,255,0.08);
-  --border-strong:   rgba(255,255,255,0.12);
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+  
+  --royal-purple: #4E24CF;
+  --guardian-gold: #D4AF37;
 }
 
 @layer base {
   body {
-    @apply antialiased;
-    background-color: var(--bg);
-    color: var(--text-primary);
+    @apply bg-black text-white selection:bg-[#D4AF37]/30 selection:text-[#D4AF37];
     letter-spacing: -0.03em;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
-  }
-
-
-  ::selection {
-    background: rgba(212, 175, 55, 0.25);
-    color: #0F0F0F;
   }
 }
 
@@ -40,67 +28,82 @@
     font-style: italic;
   }
 
-
   .vibe-input {
-    @apply w-full bg-white border border-black/10 p-5 rounded-2xl text-zinc-900
-           placeholder:text-zinc-400 focus:outline-none focus:border-[#4E24CF]/50
-           transition-all duration-500 hover:border-black/20;
+    @apply w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-white 
+           placeholder:text-zinc-600 focus:outline-none focus:border-[#4E24CF]/50 
+           transition-all duration-500 hover:border-white/20;
   }
 
- 
   .guardian-glass {
-    @apply bg-white/70 backdrop-blur-3xl border border-black/8 rounded-[2.5rem];
+    @apply bg-zinc-900/40 backdrop-blur-3xl border border-white/5 rounded-[2.5rem];
   }
-
 
   .vibe-footer {
-    @apply relative border-t border-white/10 bg-zinc-900 py-16 overflow-hidden;
+    @apply relative border-t border-[#4E24CF]/10 bg-black py-16 overflow-hidden;
   }
 
   .royal-button {
-    @apply bg-[#4E24CF] text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest
-           hover:bg-[#6B3FE0] transition-all active:scale-95 border border-[#D4AF37]/30
-           hover:border-[#D4AF37];
+    @apply bg-white text-black px-8 py-4 rounded-2xl font-black uppercase tracking-widest 
+           hover:bg-[#4E24CF] hover:text-white transition-all active:scale-95 border border-transparent
+           hover:border-[#D4AF37]/50;
   }
 }
 
 
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb {
-  background: rgba(78, 36, 207, 0.20);
-  border-radius: 9999px;
+::-webkit-scrollbar {
+  width: 5px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.40);
+
+::-webkit-scrollbar-track {
+  @apply bg-black;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-[#4E24CF]/20 rounded-full hover:bg-[#D4AF37]/40 transition-colors;
 }
 
 
 .text-vibe-gradient {
-  @apply bg-clip-text text-transparent;
-  background-image: linear-gradient(to bottom, #0F0F0F 0%, #52525b 70%, rgba(78,36,207,0.6) 100%);
+  @apply bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-[#4E24CF]/50;
 }
-
 
 .labs-link {
-  @apply text-zinc-900 transition-all duration-300 relative;
+  @apply text-white transition-all duration-300 relative;
 }
+
 .labs-link::after {
   content: '';
   @apply absolute bottom-0 left-0 w-0 h-px bg-[#D4AF37] transition-all duration-300;
 }
-.labs-link:hover::after { @apply w-full; }
+
+.labs-link:hover::after {
+  @apply w-full;
+}
 
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  25%       { transform: translateX(-4px); }
-  75%       { transform: translateX(4px); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
 }
-.animate-shake { animation: shake 0.2s ease-in-out 0s 2; }
+
+.animate-shake {
+  animation: shake 0.2s ease-in-out 0s 2;
+}
+
 
 @keyframes pulse-slow {
-  0%, 100% { transform: scale(1);    filter: brightness(0.95); }
-  50%       { transform: scale(1.03); filter: brightness(1.05); }
+  0%, 100% { 
+    transform: scale(1); 
+    filter: brightness(0.9); 
+  }
+  50% { 
+    transform: scale(1.03); 
+    filter: brightness(1.1); 
+  }
 }
-.animate-vibe-hero { animation: pulse-slow 12s ease-in-out infinite; }
+
+.animate-vibe-hero {
+  animation: pulse-slow 12s ease-in-out infinite;
+}
+
