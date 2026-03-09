@@ -145,14 +145,14 @@ export default async function BlogPostPage({ params }: Props) {
               table: ({ children }) => (
                 <div className="overflow-x-auto my-8"><table className="w-full border-collapse">{children}</table></div>
               ),
-              thead: ({ children }) => <thead className="border-b border-black/10">{children}</thead>,
+              thead: ({ children }) => <thead className="border-b border-white/8">{children}</thead>,
               th: ({ children }) => (
-                <th className="text-left text-[9px] font-black uppercase tracking-widest text-zinc-500 py-3 pr-6">{children}</th>
+                <th className="text-left text-[9px] font-black uppercase tracking-widest text-gray-300 py-3 pr-6">{children}</th>
               ),
               td: ({ children }) => (
-                <td className="text-zinc-600 text-sm py-3 pr-6 border-b border-black/8">{children}</td>
+                <td className="text-gray-300 text-sm py-3 pr-6 border-b border-white/8">{children}</td>
               ),
-              hr: () => <hr className="border-t border-black/8 my-12" />,
+              hr: () => <hr className="border-t border-white/8 my-12" />,
             }}
           >
             {post.content}
@@ -160,26 +160,26 @@ export default async function BlogPostPage({ params }: Props) {
         </article>
 
         {/* Bottom Share Bar */}
-        <div className="px-6 max-w-3xl mx-auto pb-10 border-t border-black/8 pt-8">
-          <p className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-4">Found this useful? Pass it on.</p>
+        <div className="px-6 max-w-3xl mx-auto pb-10 border-t border-white/8 pt-8">
+          <p className="text-[9px] font-black uppercase tracking-[0.3em] text-gray-400 mb-4">Found this useful? Pass it on.</p>
           <ShareBar title={post.title} slug={post.slug} />
         </div>
 
         {/* CTA */}
         <div className="px-6 max-w-3xl mx-auto pb-20 pt-6">
-          <div className="bg-white border border-[#4E24CF]/15 rounded-[2rem] p-10 text-center shadow-card">
+          <div className="bg-[#16161b] border border-[#4E24CF]/15 rounded-[2rem] p-10 text-center shadow-card">
             <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#D4AF37] mb-3">Vibestream Encyclopedia</p>
-            <h3 className="text-2xl font-black uppercase tracking-tighter text-zinc-900 mb-4">Is your startup listed?</h3>
-            <p className="text-zinc-500 text-sm mb-8 max-w-md mx-auto">
+            <h3 className="text-2xl font-black uppercase tracking-tighter text-white mb-4">Is your startup listed?</h3>
+            <p className="text-gray-300 text-sm mb-8 max-w-md mx-auto">
               Get your vibe coding product permanently indexed in the encyclopedia.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/submit"
-                className="px-8 py-4 bg-zinc-900 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#4E24CF] transition-all">
+                className="px-8 py-4 bg-[#4E24CF] text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#6B3FE0] transition-all">
                 Submit Your Startup
               </Link>
               <Link href="/registry"
-                className="px-8 py-4 border border-black/10 text-zinc-600 rounded-xl font-black text-[10px] uppercase tracking-widest hover:text-zinc-900 hover:border-black/20 transition-all">
+                className="px-8 py-4 border border-white/10 text-gray-300 rounded-xl font-black text-[10px] uppercase tracking-widest hover:text-white hover:border-white/20 transition-all">
                 Browse Registry
               </Link>
             </div>

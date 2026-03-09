@@ -32,7 +32,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   "Strategy":     "text-blue-600 border-blue-400/30 bg-blue-400/8",
   "Founder":      "text-emerald-600 border-emerald-400/30 bg-emerald-400/8",
   "Founder Story":"text-emerald-600 border-emerald-400/30 bg-emerald-400/8",
-  "Insights":     "text-zinc-500 border-zinc-300 bg-zinc-100",
+  "Insights":     "text-gray-300 border-gray-600 bg-[#1a1a21]",
 };
 
 export default function BlogPage() {
@@ -60,7 +60,7 @@ export default function BlogPage() {
         <div className="px-6 max-w-5xl mx-auto py-16">
           {posts.length === 0 ? (
             <div className="text-center py-32">
-              <p className="text-zinc-400 font-black uppercase tracking-widest text-[10px]">
+              <p className="text-gray-300 font-black uppercase tracking-widest text-[10px]">
                 First transmission incoming.
               </p>
             </div>
@@ -138,7 +138,7 @@ export default function BlogPage() {
                           </div>
                         </div>
                         <div className="p-8 flex-grow flex flex-col">
-                          <span className="text-gray-500 text-[9px] font-black uppercase tracking-widest mb-3">{post.readTime}</span>
+                          <span className="text-gray-300 text-[9px] font-black uppercase tracking-widest mb-3">{post.readTime}</span>
                           <h2 className="text-xl font-black uppercase tracking-tighter text-white group-hover:text-[#4E24CF] transition-colors mb-3 leading-tight flex-grow">
                             {post.title}
                           </h2>
