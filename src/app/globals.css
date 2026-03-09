@@ -5,16 +5,16 @@
 @tailwind utilities;
 
 :root {
-  --bg:              #F5F0E8;
-  --bg-card:         #EDEADF;
-  --bg-surface:      #E8E3D8;
+  --bg:              #0f0f12;
+  --bg-card:         #16161b;
+  --bg-surface:      #1a1a21;
   --royal-purple:    #4E24CF;
   --guardian-gold:   #D4AF37;
-  --text-primary:    #0F0F0F;
-  --text-secondary:  #52525b;
-  --text-muted:      #a1a1aa;
-  --border:          rgba(0,0,0,0.08);
-  --border-strong:   rgba(0,0,0,0.14);
+  --text-primary:    #ffffff;
+  --text-secondary:  #d4d4d8;
+  --text-muted:      #8b8b97;
+  --border:          rgba(255,255,255,0.08);
+  --border-strong:   rgba(255,255,255,0.12);
 }
 
 @layer base {
@@ -58,9 +58,9 @@
   }
 
   .royal-button {
-    @apply bg-zinc-900 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest
-           hover:bg-[#4E24CF] transition-all active:scale-95 border border-transparent
-           hover:border-[#D4AF37]/50;
+    @apply bg-[#4E24CF] text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest
+           hover:bg-[#6B3FE0] transition-all active:scale-95 border border-[#D4AF37]/30
+           hover:border-[#D4AF37];
   }
 }
 

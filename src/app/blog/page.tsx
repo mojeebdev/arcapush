@@ -41,18 +41,18 @@ export default function BlogPage() {
   const rest = posts.filter((p) => !p.featured);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F0E8" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#0f0f12" }}>
       <main className="flex-grow">
 
         {/* Header */}
-        <div className="pt-32 pb-16 px-6 max-w-5xl mx-auto border-b border-black/8">
+        <div className="pt-32 pb-16 px-6 max-w-5xl mx-auto border-b border-white/8">
           <span className="text-[#D4AF37] text-[10px] font-black uppercase tracking-[0.4em]">
             Vibestream Intelligence
           </span>
-          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mt-2 text-zinc-900">
+          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mt-2 text-white">
             The <span className="text-[#4E24CF]">Signal.</span>
           </h1>
-          <p className="text-zinc-500 text-sm mt-4 font-bold uppercase tracking-widest max-w-xl">
+          <p className="text-gray-400 text-sm mt-4 font-bold uppercase tracking-widest max-w-xl">
             Data, strategy, and insights from the vibe coding encyclopedia.
           </p>
         </div>
@@ -71,13 +71,13 @@ export default function BlogPage() {
                 <div className="mb-16">
                   <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#D4AF37] mb-4">Featured</p>
                   <Link href={`/blog/${featured.slug}`}>
-                    <div className="group bg-white border border-[#4E24CF]/20 rounded-[2.5rem] overflow-hidden hover:border-[#4E24CF] transition-all shadow-card">
+                    <div className="group bg-[#16161b] border border-[#4E24CF]/20 rounded-[2.5rem] overflow-hidden hover:border-[#4E24CF] transition-all shadow-card">
                       <div className="relative h-[260px] w-full overflow-hidden">
                         <Image
                           src={featured.image} alt={featured.title} fill
-                          className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                          className="object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/30 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#16161b] via-[#16161b]/30 to-transparent" /></div>
                       </div>
                       <div className="p-10">
                         <div className="flex items-center gap-3 mb-6">

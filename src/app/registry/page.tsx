@@ -44,22 +44,22 @@ export default async function RegistryPage() {
   });
 
   return (
-    <main className="min-h-screen pt-32 pb-20 px-6" style={{ backgroundColor: "#F5F0E8" }}>
+    <main className="min-h-screen pt-32 pb-20 px-6" style={{ backgroundColor: "#0f0f12" }}>
       <RegistryJsonLd count={startups.length} />
 
       <div className="max-w-7xl mx-auto">
         <div className="mb-12">
           <span className="text-[#D4AF37] text-[10px] font-black uppercase tracking-[0.4em]">Encyclopedia</span>
-          <h1 className="text-4xl md:text-6xl font-black text-zinc-900 uppercase tracking-tighter mt-2">
+          <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mt-2">
             Verified <span className="text-[#4E24CF]">Signals.</span>
           </h1>
-          <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest mt-3">
+          <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-3">
             {startups.length} Vibe Code{startups.length !== 1 ? 's' : ''} Indexed
           </p>
         </div>
 
         <Suspense fallback={
-          <div className="text-zinc-400 font-black text-[10px] uppercase animate-pulse">
+          <div className="text-gray-500 font-black text-[10px] uppercase animate-pulse">
             Scanning Frequencies...
           </div>
         }>

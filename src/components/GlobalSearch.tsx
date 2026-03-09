@@ -31,7 +31,7 @@ export default function GlobalSearch() {
   return (
     <form onSubmit={handleSearch} className="relative group w-full max-w-md mx-auto md:mx-0">
       <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-        <HiOutlineMagnifyingGlass className="w-4 h-4 text-zinc-400 group-focus-within:text-[#4E24CF] transition-all duration-300" />
+        <HiOutlineMagnifyingGlass className="w-4 h-4 text-gray-500 group-focus-within:text-[#4E24CF] transition-all duration-300" />
       </div>
 
       <input
@@ -39,14 +39,14 @@ export default function GlobalSearch() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-white border border-black/10 py-2.5 pl-11 pr-16 rounded-full text-xs text-zinc-900 outline-none focus:border-[#4E24CF]/40 focus:ring-4 focus:ring-[#4E24CF]/8 transition-all placeholder:text-zinc-400 shadow-sm"
+        className="w-full bg-[#16161b] border border-white/10 py-2.5 pl-11 pr-16 rounded-full text-xs text-white outline-none focus:border-[#4E24CF]/40 focus:ring-4 focus:ring-[#4E24CF]/8 transition-all placeholder:text-gray-500 shadow-sm"
       />
 
       <div className="absolute right-2 inset-y-0 flex items-center">
         <button
           type="submit"
-          className="text-[7px] font-black text-zinc-400 border border-zinc-200 px-2 py-1 rounded uppercase tracking-tighter bg-zinc-50
-                     hover:border-[#4E24CF]/40 hover:text-[#4E24CF] hover:bg-white
+          className="text-[7px] font-black text-gray-500 border border-gray-700 px-2 py-1 rounded uppercase tracking-tighter bg-[#1a1a21]
+                     hover:border-[#4E24CF]/40 hover:text-[#4E24CF] hover:bg-[#16161b]
                      active:scale-90 transition-all cursor-pointer
                      group-focus-within:border-[#4E24CF]/30 group-focus-within:text-[#4E24CF]"
         >

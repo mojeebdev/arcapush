@@ -128,29 +128,29 @@ export default function PricingPage() {
   };
 
   return (
-    <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto min-h-screen" style={{ backgroundColor: "#F5F0E8" }}>
-      <Toaster position="bottom-right" toastOptions={{ style: { background: '#fff', color: '#09090b', border: '1px solid rgba(0,0,0,0.10)' } }} />
+    <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto min-h-screen" style={{ backgroundColor: "#0f0f12" }}>
+      <Toaster position="bottom-right" toastOptions={{ style: { background: '#16161b', color: '#ffffff', border: '1px solid rgba(255,255,255,0.10)' } }} />
 
       {/* Header */}
       <div className="text-center mb-16">
         <span className="text-[#D4AF37] text-[10px] font-black uppercase tracking-[0.4em]">Signal Boost</span>
-        <h1 className="text-4xl md:text-6xl font-black text-zinc-900 uppercase tracking-tighter mt-2">
+        <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mt-2">
           Amplify Your <span className="text-[#4E24CF]">Vibe Code.</span>
         </h1>
-        <p className="text-zinc-500 text-sm mt-4 font-bold uppercase tracking-widest">
+        <p className="text-gray-400 text-sm mt-4 font-bold uppercase tracking-widest">
           Early access pricing — locked in for life when you boost today.
         </p>
       </div>
 
       {/* Startup Selector */}
       <section className="mb-12 max-w-xl mx-auto">
-        <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2 mb-2 block">
+        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 mb-2 block\">
           Select Your Startup
         </label>
         <select
           value={selectedStartupId}
           onChange={(e) => setSelectedStartupId(e.target.value)}
-          className="w-full bg-white border border-black/10 rounded-2xl px-5 py-4 text-[11px] font-black text-zinc-900 uppercase tracking-widest outline-none focus:border-[#4E24CF]/50 transition-colors shadow-sm appearance-none cursor-pointer"
+          className="w-full bg-[#16161b] border border-white/10 rounded-2xl px-5 py-4 text-[11px] font-black text-white uppercase tracking-widest outline-none focus:border-[#4E24CF]/50 transition-colors shadow-sm appearance-none cursor-pointer"
         >
           <option value="">Choose a Startup...</option>
           {approvedStartups.map(s => (
@@ -158,7 +158,7 @@ export default function PricingPage() {
           ))}
         </select>
         {!selectedStartupId && (
-          <p className="text-zinc-400 text-[9px] font-black uppercase tracking-widest mt-2 ml-2">
+          <p className="text-gray-500 text-[9px] font-black uppercase tracking-widest mt-2 ml-2">
             Your startup must be approved before boosting.
           </p>
         )}
@@ -182,20 +182,20 @@ export default function PricingPage() {
               </span>
             )}
 
-            <h3 className="text-2xl font-black uppercase italic mb-1 text-zinc-900">{plan.label}</h3>
-            <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-6">{plan.description}</p>
+            <h3 className="text-2xl font-black uppercase italic mb-1 text-white">{plan.label}</h3>
+            <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-6">{plan.description}</p>
 
             <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-5xl font-black text-zinc-900">${plan.price}</span>
-              <span className="text-zinc-400 text-[10px] font-black">USD</span>
+              <span className="text-5xl font-black text-white">${plan.price}</span>
+              <span className="text-gray-500 text-[10px] font-black">USD</span>
             </div>
-            <p className="text-[9px] text-zinc-400 font-black uppercase tracking-widest mb-8">
+            <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest mb-8">
               {plan.rotations} rotations
             </p>
 
             <ul className="space-y-4 mb-10">
               {plan.perks.map((perk, i) => (
-                <li key={i} className="flex items-center gap-3 text-[10px] font-black uppercase text-zinc-500">
+                <li key={i} className="flex items-center gap-3 text-[10px] font-black uppercase text-gray-400">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] flex-shrink-0" />
                   {perk}
                 </li>
@@ -223,7 +223,7 @@ export default function PricingPage() {
       </div>
 
       {/* Trust Footer */}
-      <p className="text-center text-[9px] text-zinc-400 font-black uppercase tracking-[0.4em] mt-16">
+      <p className="text-center text-[9px] text-gray-500 font-black uppercase tracking-[0.4em] mt-16">
         On-chain verified · Permanent encyclopedia entry · Cancel anytime
       </p>
     </main>

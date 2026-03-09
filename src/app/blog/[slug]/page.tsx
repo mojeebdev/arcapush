@@ -48,25 +48,25 @@ export default async function BlogPostPage({ params }: Props) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F0E8" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#0f0f12" }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <main className="flex-grow">
         {/* Hero Image */}
         <div className="relative h-[360px] md:h-[480px] w-full overflow-hidden">
           <Image src={post.image} alt={post.title} fill priority className="object-cover" />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, #F5F0E8 0%, rgba(245,240,232,0.4) 40%, transparent 100%)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, #0f0f12 0%, rgba(15,15,18,0.4) 40%, transparent 100%)" }} />
         </div>
 
         {/* Back */}
         <div className="px-6 max-w-3xl mx-auto mt-10">
-          <Link href="/blog" className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-zinc-500 hover:text-zinc-900 transition-colors">
+          <Link href="/blog" className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-gray-400 hover:text-white transition-colors">
             &larr; Back to The Signal
           </Link>
         </div>
 
         {/* Post Header */}
-        <header className="pt-8 pb-12 px-6 max-w-3xl mx-auto border-b border-black/8">
+        <header className="pt-8 pb-12 px-6 max-w-3xl mx-auto border-b border-white/8">
           <div className="flex items-center gap-3 mb-6">
             <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-[#4E24CF]/30 bg-[#4E24CF]/8 text-[#4E24CF]">
               {post.category}
@@ -74,10 +74,10 @@ export default async function BlogPostPage({ params }: Props) {
             <span className="text-zinc-400 text-[9px] font-black uppercase tracking-widest">{post.readTime}</span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-zinc-900 leading-[0.9] mb-6">
+          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white leading-[0.9] mb-6">
             {post.title}
           </h1>
-          <p className="text-zinc-600 text-base leading-relaxed mb-8">{post.description}</p>
+          <p className="text-gray-300 text-base leading-relaxed mb-8">{post.description}</p>
 
           {/* Author + Share Row */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
@@ -92,10 +92,10 @@ export default async function BlogPostPage({ params }: Props) {
               )}
               <div>
                 <a href={post.authorUrl} target="_blank" rel="noopener noreferrer"
-                  className="text-[10px] font-black uppercase tracking-widest text-zinc-900 hover:text-[#D4AF37] transition-colors">
+                  className="text-[10px] font-black uppercase tracking-widest text-white hover:text-[#D4AF37] transition-colors">
                   {post.author}
                 </a>
-                <p className="text-[9px] text-zinc-400 uppercase tracking-widest">
+                <p className="text-[9px] text-gray-500 uppercase tracking-widest">
                   {new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                 </p>
               </div>

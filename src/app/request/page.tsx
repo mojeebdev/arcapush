@@ -62,18 +62,18 @@ function RequestForm() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-12">
+    <div className="max-w-2xl mx-auto py-12" style={{ backgroundColor: "#0f0f12" }}>
       <div className="text-center mb-16">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#D4AF37]/20 bg-[#D4AF37]/5 mb-6">
           <HiOutlineShieldCheck className="w-3 h-3 text-[#D4AF37]" />
           <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#D4AF37]">Identity Verification Required</span>
         </div>
         
-        <h1 className="text-5xl md:text-6xl font-black uppercase italic tracking-tighter mb-6">
+        <h1 className="text-5xl md:text-6xl font-black uppercase italic tracking-tighter mb-6 text-white">
           Venture <span className="text-[#4E24CF]">Access</span>
         </h1>
         
-        <p className="font-playfair text-xl text-zinc-400 mb-2">
+        <p className="font-playfair text-xl text-gray-400 mb-2">
           Requesting terminal clearance for:
         </p>
         <p className="text-[#D4AF37] font-black uppercase tracking-widest text-sm">

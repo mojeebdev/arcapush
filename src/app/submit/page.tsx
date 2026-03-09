@@ -14,7 +14,7 @@ const CATEGORIES = [
   "Privacy", "Developer Tools", "Other"
 ];
 
-const inputClass = "w-full bg-white border border-black/10 p-4 rounded-xl text-zinc-900 text-sm focus:border-[#4E24CF]/50 outline-none transition-all placeholder:text-zinc-400 shadow-sm";
+const inputClass = "w-full bg-[#16161b] border border-white/10 p-4 rounded-xl text-white text-sm focus:border-[#4E24CF]/50 outline-none transition-all placeholder:text-gray-500 shadow-sm";
 
 export default function SubmitStartup() {
   const [formData, setFormData] = useState({
@@ -61,18 +61,18 @@ export default function SubmitStartup() {
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-20 px-6 overflow-x-hidden" style={{ backgroundColor: "#F5F0E8" }}>
-      <Toaster toastOptions={{ style: { background: '#fff', color: '#09090b', border: '1px solid rgba(0,0,0,0.10)' } }} />
+    <div className="min-h-screen pt-32 pb-20 px-6 overflow-x-hidden" style={{ backgroundColor: "#0f0f12" }}>
+      <Toaster toastOptions={{ style: { background: '#16161b', color: '#ffffff', border: '1px solid rgba(255,255,255,0.10)' } }} />
 
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#4E24CF]/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-4xl mx-auto relative z-10">
         <div className="mb-12">
           <span className="text-[#D4AF37] text-[10px] font-black uppercase tracking-[0.4em]">Encyclopedia Entry</span>
-          <h1 className="text-4xl md:text-6xl font-black text-zinc-900 uppercase tracking-tighter mt-2">
+          <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mt-2">
             Register Your <span className="text-[#4E24CF]">Vibe Code.</span>
           </h1>
-          <p className="text-zinc-500 text-sm mt-4 font-bold uppercase tracking-widest">
+          <p className="text-gray-400 text-sm mt-4 font-bold uppercase tracking-widest">
             Guardian verification protocol: Active. Fast-track approvals enabled.
           </p>
         </div>

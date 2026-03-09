@@ -28,10 +28,10 @@ const config: Config = {
         },
         
         canvas: {
-          DEFAULT: "#F5F0E8",   
-          card:    "#EDEADF",   
-          surface: "#E8E3D8",  
-          inset:   "#E0DBD0",   
+          DEFAULT: "#0f0f12",   
+          card:    "#16161b",   
+          surface: "#1a1a21",  
+          inset:   "#1f1f26",   
         },
         
         surface: {
