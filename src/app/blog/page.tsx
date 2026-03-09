@@ -77,21 +77,20 @@ export default function BlogPage() {
                           src={featured.image} alt={featured.title} fill
                           className="object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#16161b] via-[#16161b]/30 to-transparent" /></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#16161b] via-[#16161b]/30 to-transparent" />
                       </div>
                       <div className="p-10">
                         <div className="flex items-center gap-3 mb-6">
                           <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${CATEGORY_COLORS[featured.category] ?? CATEGORY_COLORS["Insights"]}`}>
                             {featured.category}
                           </span>
-                          <span className="text-zinc-400 text-[9px] font-black uppercase tracking-widest">
-                            {featured.readTime}
+                          <span className="text-gray-500 text-[9px] font-black uppercase tracking-widest\">\n                            {featured.readTime}
                           </span>
                         </div>
-                        <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-zinc-900 group-hover:text-[#4E24CF] transition-colors mb-4 leading-tight">
+                        <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-white group-hover:text-[#4E24CF] transition-colors mb-4 leading-tight">
                           {featured.title}
                         </h2>
-                        <p className="text-zinc-600 text-sm leading-relaxed mb-6 max-w-2xl">
+                        <p className="text-gray-300 text-sm leading-relaxed mb-6 max-w-2xl\">
                           {featured.description}
                         </p>
                         <div className="flex items-center justify-between">
@@ -105,8 +104,8 @@ export default function BlogPage() {
                               </div>
                             )}
                             <div>
-                              <p className="text-[10px] font-black text-zinc-900 uppercase tracking-widest">{featured.author}</p>
-                              <p className="text-[9px] text-zinc-400 uppercase tracking-widest">
+                              <p className="text-[10px] font-black text-white uppercase tracking-widest\">{featured.author}</p>
+                              <p className="text-[9px] text-gray-500 uppercase tracking-widest\">
                                 {new Date(featured.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                               </p>
                             </div>
@@ -126,11 +125,11 @@ export default function BlogPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {rest.map((post) => (
                     <Link key={post.slug} href={`/blog/${post.slug}`}>
-                      <div className="group bg-white border border-black/8 rounded-[2rem] overflow-hidden hover:border-[#4E24CF]/30 transition-all h-full flex flex-col shadow-card">
+                      <div className="group bg-[#16161b] border border-white/8 rounded-[2rem] overflow-hidden hover:border-[#4E24CF]/30 transition-all h-full flex flex-col shadow-card">
                         <div className="relative h-[160px] w-full overflow-hidden">
                           <Image src={post.image} alt={post.title} fill
                             className="object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#16161b] via-[#16161b]/20 to-transparent" />
                           <div className="absolute top-4 left-4">
                             <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${CATEGORY_COLORS[post.category] ?? CATEGORY_COLORS["Insights"]}`}>
                               {post.category}
@@ -138,11 +137,11 @@ export default function BlogPage() {
                           </div>
                         </div>
                         <div className="p-8 flex-grow flex flex-col">
-                          <span className="text-zinc-400 text-[9px] font-black uppercase tracking-widest mb-3">{post.readTime}</span>
-                          <h2 className="text-xl font-black uppercase tracking-tighter text-zinc-900 group-hover:text-[#4E24CF] transition-colors mb-3 leading-tight flex-grow">
+                          <span className="text-gray-500 text-[9px] font-black uppercase tracking-widest mb-3">{post.readTime}</span>
+                          <h2 className="text-xl font-black uppercase tracking-tighter text-white group-hover:text-[#4E24CF] transition-colors mb-3 leading-tight flex-grow">
                             {post.title}
                           </h2>
-                          <p className="text-zinc-500 text-xs leading-relaxed mb-6 line-clamp-2">{post.description}</p>
+                          <p className="text-gray-400 text-xs leading-relaxed mb-6 line-clamp-2">{post.description}</p>
                           <div className="flex items-center justify-between mt-auto">
                             <div className="flex items-center gap-2">
                               {post.authorImage ? (
@@ -153,11 +152,11 @@ export default function BlogPage() {
                                   {post.author.charAt(0).toUpperCase()}
                                 </div>
                               )}
-                              <p className="text-[9px] text-zinc-400 font-black uppercase tracking-widest">
+                              <p className="text-[9px] text-gray-500 font-black uppercase tracking-widest">
                                 {new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                               </p>
                             </div>
-                            <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-[#4E24CF] transition-colors">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-[#4E24CF] transition-colors">
                               Read &rarr;
                             </span>
                           </div>
