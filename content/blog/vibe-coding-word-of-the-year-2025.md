@@ -4,6 +4,7 @@ description: "Collins English Dictionary named vibe coding their Word of the Yea
 date: "2026-03-03"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
+authorImage: "/authors/mojeeb.jpg"
 category: "Deep Dive"
 readTime: "5 min read"
 featured: false

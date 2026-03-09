@@ -4,6 +4,7 @@ description: "A direct comparison of the four dominant vibe coding tools. What e
 date: "2026-03-06"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
+authorImage: "/authors/mojeeb.jpg"
 category: "Strategy"
 readTime: "8 min read"
 featured: false

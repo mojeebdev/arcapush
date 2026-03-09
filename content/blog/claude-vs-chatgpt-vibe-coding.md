@@ -4,6 +4,7 @@ description: "A significant wave of developers and vibe coders are migrating fro
 date: "2026-03-02"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
+authorImage: "/authors/mojeeb.jpg"
 category: "Strategy"
 readTime: "7 min read"
 featured: false

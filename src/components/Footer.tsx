@@ -16,6 +16,7 @@ const FOOTER_LINKS = {
     { href: "/pricing",   label: "Pricing"         },
   ],
   Intelligence: [
+    { href: "/blog/vibestream-founder-story",           label: "Vibestream Founder Story"    },
     { href: "/blog/What-is-vibe-coding",                label: "What is Vibe Coding?"         },
     { href: "/blog/andrej-karpathy-vibe-coding",        label: "Origin of Vibe Coding"        },
     { href: "/blog/vc-backed-vibe-coding-startups",     label: "VC-Backed Startups"           },

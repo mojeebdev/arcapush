@@ -134,10 +134,21 @@ export default async function BlogPostPage({ params }: Props) {
             {post.description}
           </p>
 
+          
           <div className="flex items-center gap-4">
-            <div className="w-9 h-9 rounded-full bg-[#4E24CF] flex items-center justify-center text-[10px] font-black text-white">
-              M
-            </div>
+            {post.authorImage ? (
+              <Image
+                src={post.authorImage}
+                alt={post.author}
+                width={36}
+                height={36}
+                className="rounded-full object-cover ring-2 ring-[#4E24CF]/40"
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-[#4E24CF] flex items-center justify-center text-[10px] font-black text-white flex-shrink-0">
+                {post.author.charAt(0).toUpperCase()}
+              </div>
+            )}
             <div>
               <a
                 href={post.authorUrl}
@@ -268,7 +279,6 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </main>
 
-      
     </div>
   );
 }

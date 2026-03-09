@@ -4,6 +4,7 @@ description: "VCs are actively looking for vibe coding founders. Here is exactly
 date: "2026-03-05"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
+authorImage: "/authors/mojeeb.jpg"
 category: "Founder"
 readTime: "7 min read"
 featured: false

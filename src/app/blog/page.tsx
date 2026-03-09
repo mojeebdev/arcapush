@@ -28,11 +28,12 @@ export const metadata: Metadata = {
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  "Deep Dive": "text-[#4E24CF] border-[#4E24CF]/30 bg-[#4E24CF]/10",
-  "Data":      "text-[#D4AF37] border-[#D4AF37]/30 bg-[#D4AF37]/10",
-  "Strategy":  "text-blue-400 border-blue-400/30 bg-blue-400/10",
-  "Founder":   "text-emerald-400 border-emerald-400/30 bg-emerald-400/10",
-  "Insights":  "text-zinc-400 border-zinc-400/30 bg-zinc-400/10",
+  "Deep Dive":    "text-[#4E24CF] border-[#4E24CF]/30 bg-[#4E24CF]/10",
+  "Data":         "text-[#D4AF37] border-[#D4AF37]/30 bg-[#D4AF37]/10",
+  "Strategy":     "text-blue-400 border-blue-400/30 bg-blue-400/10",
+  "Founder":      "text-emerald-400 border-emerald-400/30 bg-emerald-400/10",
+  "Founder Story":"text-emerald-400 border-emerald-400/30 bg-emerald-400/10",
+  "Insights":     "text-zinc-400 border-zinc-400/30 bg-zinc-400/10",
 };
 
 export default function BlogPage() {
@@ -101,9 +102,19 @@ export default function BlogPage() {
                         </p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="w-7 h-7 rounded-full bg-[#4E24CF] flex items-center justify-center text-[9px] font-black text-white">
-                              M
-                            </div>
+                            {featured.authorImage ? (
+                              <Image
+                                src={featured.authorImage}
+                                alt={featured.author}
+                                width={28}
+                                height={28}
+                                className="rounded-full object-cover ring-2 ring-[#4E24CF]/40 flex-shrink-0"
+                              />
+                            ) : (
+                              <div className="w-7 h-7 rounded-full bg-[#4E24CF] flex items-center justify-center text-[9px] font-black text-white flex-shrink-0">
+                                {featured.author.charAt(0).toUpperCase()}
+                              </div>
+                            )}
                             <div>
                               <p className="text-[10px] font-black text-white uppercase tracking-widest">
                                 {featured.author}
@@ -157,11 +168,26 @@ export default function BlogPage() {
                             {post.description}
                           </p>
                           <div className="flex items-center justify-between mt-auto">
-                            <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest">
-                              {new Date(post.date).toLocaleDateString("en-US", {
-                                month: "short", day: "numeric", year: "numeric",
-                              })}
-                            </p>
+                            <div className="flex items-center gap-2">
+                              {post.authorImage ? (
+                                <Image
+                                  src={post.authorImage}
+                                  alt={post.author}
+                                  width={20}
+                                  height={20}
+                                  className="rounded-full object-cover ring-1 ring-[#4E24CF]/30 flex-shrink-0"
+                                />
+                              ) : (
+                                <div className="w-5 h-5 rounded-full bg-[#4E24CF] flex items-center justify-center text-[7px] font-black text-white flex-shrink-0">
+                                  {post.author.charAt(0).toUpperCase()}
+                                </div>
+                              )}
+                              <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest">
+                                {new Date(post.date).toLocaleDateString("en-US", {
+                                  month: "short", day: "numeric", year: "numeric",
+                                })}
+                              </p>
+                            </div>
                             <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-[#4E24CF] transition-colors">
                               Read &rarr;
                             </span>
@@ -177,7 +203,6 @@ export default function BlogPage() {
         </div>
       </main>
 
-      
     </div>
   );
 }

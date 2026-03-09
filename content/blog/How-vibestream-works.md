@@ -4,6 +4,7 @@ description: "Vibestream is the definitive encyclopedia for VC-backed Vibe Coder
 date: "2026-03-04"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
+authorImage: "/authors/mojeeb.jpg"
 category: "Insights"
 readTime: "5 min read"
 featured: false

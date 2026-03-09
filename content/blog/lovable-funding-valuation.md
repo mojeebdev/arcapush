@@ -4,6 +4,7 @@ description: "Lovable reached a $6.6B valuation faster than almost any developer
 date: "2026-03-05"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
+authorImage: "/authors/mojeeb.jpg"
 category: "Data"
 readTime: "6 min read"
 featured: false

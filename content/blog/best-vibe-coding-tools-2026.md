@@ -4,6 +4,7 @@ description: "The definitive ranked list of vibe coding tools in 2026. Tested, c
 date: "2026-03-06"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
+authorImage: "/authors/mojeeb.jpg"
 category: "Data"
 readTime: "8 min read"
 featured: false

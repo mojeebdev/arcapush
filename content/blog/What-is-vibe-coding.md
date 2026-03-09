@@ -4,6 +4,7 @@ description: "Vibe coding is reshaping how software gets built. Here's everythin
 date: "2026-03-08"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
+authorImage: "/authors/mojeeb.jpg"
 category: "Deep Dive"
 readTime: "7 min read"
 featured: true

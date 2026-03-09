@@ -4,6 +4,7 @@ description: "Cursor and GitHub Copilot both use AI to help you write code. But 
 date: "2026-03-04"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
+authorImage: "/authors/mojeeb.jpg"
 category: "Strategy"
 readTime: "7 min read"
 featured: false

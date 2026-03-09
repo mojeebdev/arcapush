@@ -4,6 +4,7 @@ description: "Andrej Karpathy coined 'vibe coding' in a single post in February 
 date: "2026-03-07"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
+authorImage: "/authors/mojeeb.jpg"
 category: "Deep Dive"
 readTime: "7 min read"
 featured: false

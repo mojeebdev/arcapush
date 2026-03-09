@@ -12,6 +12,7 @@ export interface BlogPost {
   date: string;
   author: string;
   authorUrl: string;
+  authorImage?: string;
   category: string;
   readTime: string;
   image: string;
@@ -49,6 +50,7 @@ export function getAllPosts(): Omit<BlogPost, "content">[] {
         date: data.date,
         author: data.author ?? "Mojeeb",
         authorUrl: data.authorUrl ?? "https://mojeeb.xyz",
+        authorImage: data.authorImage,
         category: data.category ?? "Insights",
         readTime: data.readTime ?? "5 min read",
         image: data.image ?? "/og-vibestream.png",
@@ -82,6 +84,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
     date: data.date,
     author: data.author ?? "Mojeeb",
     authorUrl: data.authorUrl ?? "https://mojeeb.xyz",
+    authorImage: data.authorImage,
     category: data.category ?? "Insights",
     readTime: data.readTime ?? "5 min read",
     image: data.image ?? "/og-vibestream.png",

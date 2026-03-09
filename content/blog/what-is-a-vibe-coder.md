@@ -4,6 +4,7 @@ description: "A vibe coder is not a traditional developer. They are a new kind o
 date: "2026-03-08"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
+authorImage: "/authors/mojeeb.jpg"
 category: "Deep Dive"
 readTime: "6 min read"
 featured: false

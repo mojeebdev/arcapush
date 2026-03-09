@@ -4,6 +4,7 @@ description: "The complete, sourced database of venture-backed vibe coding compa
 date: "2026-03-07"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
+authorImage: "/authors/mojeeb.jpg"
 category: "Data"
 readTime: "9 min read"
 featured: false
