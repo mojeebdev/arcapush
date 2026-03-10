@@ -123,7 +123,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3 }}
-          className="flex justify-center mb-10"
+          className="flex justify-center mb-6"
         >
           <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full border border-[#4E24CF]/35 bg-[#4E24CF]/8 backdrop-blur-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-[#4E24CF] animate-pulse" />
@@ -138,7 +138,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="text-[clamp(2rem,6vw,5rem)] font-black tracking-tighter leading-[0.9] uppercase mb-6"
+          className="text-[clamp(1.8rem,4.5vw,3.8rem)] font-black tracking-tighter leading-[0.92] uppercase mb-5"
         >
           <span className="block text-white">Where the Next</span>
           <span className="block bg-gradient-to-r from-white via-zinc-200 to-[#7B4FE8] bg-clip-text text-transparent">
@@ -154,7 +154,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           initial={{ scaleX: 0, opacity: 0 }}
           animate={{ scaleX: 1, opacity: 1 }}
           transition={{ duration: 0.9, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
-          className="w-20 h-px bg-gradient-to-r from-transparent via-[#4E24CF]/60 to-transparent mx-auto mb-8"
+          className="w-20 h-px bg-gradient-to-r from-transparent via-[#4E24CF]/60 to-transparent mx-auto mb-5"
           style={{ transformOrigin: "center" }}
         />
 
@@ -176,7 +176,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.1 }}
-          className="text-zinc-600 text-[9px] md:text-[10px] font-black uppercase tracking-[0.45em] mb-8"
+          className="text-zinc-600 text-[9px] md:text-[10px] font-black uppercase tracking-[0.45em] mb-6"
         >
           On-chain verified &nbsp;·&nbsp; Curated founders &nbsp;·&nbsp; VC discovery tooling
         </motion.p>
