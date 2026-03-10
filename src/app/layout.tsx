@@ -193,6 +193,7 @@ export default function RootLayout({
             dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
           />
         ))}
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="971aabbd-b44f-4acf-9f43-f4f3ad7fac64" />
       </head>
       <body className="min-h-screen bg-black text-white selection:bg-[#D4AF37]/30 selection:text-[#D4AF37] antialiased">
         <Web3Provider>
