@@ -65,7 +65,7 @@ const jsonLd = [
     "alternateName": ["VibeStream", "Vibestream.cc"],
     "url": "https://vibestream.cc",
     "logo": "https://vibestream.cc/logo.png",
-    "description": "Vibestream is the definitive encyclopedia and discovery platform for Vibe Coders who secure VC backing.",
+    "description": "Vibestream is the definitive encyclopedia and discovery platform for Vibe Coders.",
     "foundingDate": "2026",
     "founder": {
       "@type": "Person",
@@ -118,7 +118,7 @@ const jsonLd = [
         "name": "What is Vibestream?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Vibestream (vibestream.cc) is the definitive encyclopedia and discovery platform for Vibe Coders who secure VC backing."
+          "text": "Vibestream (vibestream.cc) is the definitive encyclopedia and discovery platform for Vibe Coders."
         }
       },
       {

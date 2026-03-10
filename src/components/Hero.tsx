@@ -138,7 +138,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="text-[clamp(1.8rem,4.5vw,3.8rem)] font-black tracking-tighter leading-[0.92] uppercase mb-5"
+          className="text-[clamp(2.5rem,7.5vw,6.5rem)] font-black tracking-tighter leading-[0.92] uppercase mb-5"
         >
           <span className="block text-white">Where the Next</span>
           <span className="block bg-gradient-to-r from-white via-zinc-200 to-[#7B4FE8] bg-clip-text text-transparent">
@@ -166,8 +166,8 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           className="text-base md:text-lg max-w-2xl mx-auto text-zinc-400 leading-relaxed mb-3 font-light"
           style={{ fontFamily: "'Georgia', serif" }}
         >
-          The definitive encyclopedia for VC-backed Vibe Coders.{" "}
-          <em>Building is hard. Marketing too.</em>{" "}
+          The definitive encyclopedia for Vibe Coding Products.{" "}
+          <em>Building is hard and Marketing too.</em>{" "}
           <span className="text-white font-semibold not-italic">You don't have to do both.</span>
         </motion.p>
 
@@ -228,21 +228,23 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           </motion.div>
         </motion.div>
 
-        {/* Bottom scroll hint */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700">Scroll</span>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
-            className="w-px h-6 bg-gradient-to-b from-zinc-700 to-transparent"
-          />
-        </motion.div>
       </div>
+
+      
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
+      >
+        <span className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-700">Scroll</span>
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
+          className="w-px h-6 bg-gradient-to-b from-zinc-700 to-transparent"
+        />
+      </motion.div>
+
     </section>
   );
 };
