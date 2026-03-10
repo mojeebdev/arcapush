@@ -138,7 +138,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="text-[clamp(3rem,10vw,7.5rem)] font-black tracking-tighter leading-[0.88] uppercase mb-8"
+          className="text-[clamp(2rem,6vw,5rem)] font-black tracking-tighter leading-[0.9] uppercase mb-6"
         >
           <span className="block text-white">Where the Next</span>
           <span className="block bg-gradient-to-r from-white via-zinc-200 to-[#7B4FE8] bg-clip-text text-transparent">
@@ -163,7 +163,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.95 }}
-          className="text-lg md:text-xl max-w-2xl mx-auto text-zinc-400 leading-relaxed mb-4 font-light"
+          className="text-base md:text-lg max-w-2xl mx-auto text-zinc-400 leading-relaxed mb-3 font-light"
           style={{ fontFamily: "'Georgia', serif" }}
         >
           The definitive encyclopedia for VC-backed Vibe Coders.{" "}
@@ -176,7 +176,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.1 }}
-          className="text-zinc-600 text-[9px] md:text-[10px] font-black uppercase tracking-[0.45em] mb-12"
+          className="text-zinc-600 text-[9px] md:text-[10px] font-black uppercase tracking-[0.45em] mb-8"
         >
           On-chain verified &nbsp;·&nbsp; Curated founders &nbsp;·&nbsp; VC discovery tooling
         </motion.p>
