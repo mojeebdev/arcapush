@@ -22,6 +22,7 @@ const FOOTER_LINKS = {
     { href: "/blog/What-is-vibe-coding",            label: "What is Vibe Coding?" },
     { href: "/blog/andrej-karpathy-vibe-coding",    label: "Origin of Vibe Coding" },
     { href: "/blog/vc-backed-vibe-coding-startups", label: "VC-Backed Startups" },
+    { href: "/blog/prompt-to-pitch-deck",            label: "Prompt to Pitch Deck" },
     { href: "/blog/best-vibe-coding-tools-2026",    label: "Best Tools 2026" },
     { href: "/blog/claude-vs-chatgpt-vibe-coding",  label: "Claude vs ChatGPT" },
     { href: "/blog/cursor-vs-github-copilot",       label: "Cursor vs Copilot" },
