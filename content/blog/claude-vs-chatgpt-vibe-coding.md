@@ -94,4 +94,4 @@ The best vibe coders are not loyal to any single AI model. They use the tool tha
 
 ---
 
-Vibestream tracks every major AI tool and VC-backed vibe coding startup. [Browse the encyclopedia →](/registry) | [Submit your startup →](/submit)
+Vibestream tracks every major AI tool and vibe coding startup. [Browse the encyclopedia →](/registry) | [Submit your startup →](/submit)

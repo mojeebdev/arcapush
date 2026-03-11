@@ -74,7 +74,8 @@ That gap is where Vibestream was born.
 
 Let me be direct: **Vibestream is not a Product Hunt clone. It is not a BetaList clone.**
 
-Vibestream is an **encyclopedia** — a living, structured reference for vibe-coded products backed by VCs and notable angel investors. It's built for three audiences:
+Vibestream is an **encyclopedia** — a living, structured reference for vibe-coded products. 
+It's built for three audiences:
 
 1. **Vibe coders and founders** who want their product discovered without having to become full-time marketers
 2. **VCs and angel investors** actively looking for the next unicorn born from the AI-native development era

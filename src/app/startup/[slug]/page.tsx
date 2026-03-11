@@ -1,3 +1,8 @@
+// ============================================================
+// FILE PATH: src/app/startup/[slug]/page.tsx
+// CHANGE: Added ReviewSection at the bottom of the content grid
+// ============================================================
+
 import { prisma } from '@/lib/prisma';
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
@@ -10,18 +15,18 @@ import {
   HiOutlineShare
 } from "react-icons/hi2";
 import { ClientDetails } from './ClientDetails';
+import { ReviewSection } from '@/components/ReviewSection';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
-
 
 async function getStartup(slugOrId: string) {
   return prisma.startup.findFirst({
     where: {
       OR: [
         { slug: slugOrId },
-        { id: slugOrId }, 
+        { id: slugOrId },
       ],
     },
     include: {
@@ -30,23 +35,19 @@ async function getStartup(slugOrId: string) {
   });
 }
 
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const startup = await getStartup(slug);
 
   if (!startup) return { title: "Signal Lost | VibeStream" };
 
- 
   const canonicalPath = startup.slug ?? startup.id;
   const canonicalUrl = `https://vibestream.cc/startup/${canonicalPath}`;
 
   return {
     title: startup.metaTitle || `${startup.name} | VibeStream Encyclopedia`,
     description: startup.metaDescription || startup.tagline,
-    alternates: {
-      canonical: canonicalUrl,
-    },
+    alternates: { canonical: canonicalUrl },
     openGraph: {
       title: `${startup.name} — Verified on VibeStream`,
       description: startup.metaDescription || startup.tagline,
@@ -63,14 +64,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-
 export default async function StartupDetailsPage({ params }: PageProps) {
   const { slug } = await params;
   const startup = await getStartup(slug);
 
   if (!startup) notFound();
 
-  
   if (startup.slug && slug !== startup.slug) {
     redirect(`/startup/${startup.slug}`);
   }
@@ -78,7 +77,6 @@ export default async function StartupDetailsPage({ params }: PageProps) {
   const canonicalPath = startup.slug ?? startup.id;
   const canonicalUrl = `https://vibestream.cc/startup/${canonicalPath}`;
 
-  
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -89,10 +87,7 @@ export default async function StartupDetailsPage({ params }: PageProps) {
     "image": startup.logoUrl || startup.bannerUrl,
     "datePublished": startup.createdAt.toISOString(),
     "dateModified": startup.updatedAt.toISOString(),
-    "sameAs": [
-      startup.website,
-      startup.twitter,
-    ].filter(Boolean),
+    "sameAs": [startup.website, startup.twitter].filter(Boolean),
     "author": {
       "@type": "Person",
       "name": startup.founderName,
@@ -191,6 +186,12 @@ export default async function StartupDetailsPage({ params }: PageProps) {
                   </a>
                 </div>
               </section>
+
+              {/* ── REVIEW SECTION ── */}
+              <ReviewSection
+                startupId={startup.id}
+                startupName={startup.name}
+              />
             </div>
 
             <aside className="space-y-8">
@@ -213,7 +214,6 @@ export default async function StartupDetailsPage({ params }: PageProps) {
                 Request Pitch Access <HiOutlineArrowUpRight className="w-4 h-4" />
               </Link>
 
-              {/* Show slug as VIBE-ID if available, otherwise truncated id */}
               <p className="text-[9px] text-zinc-700 font-black text-center uppercase tracking-[0.5em]">
                 VIBE-ID: {startup.slug ?? startup.id.slice(0, 8)}
               </p>

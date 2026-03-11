@@ -91,4 +91,4 @@ And it started with one post on X.
 
 ---
 
-Every VC-backed vibe coding product that emerged from this ecosystem is documented in the Vibestream encyclopedia. Browse the full registry at [vibestream.cc/registry](/registry).
+Every  vibe coding product that emerged from this ecosystem is documented in the Vibestream encyclopedia. Browse the full registry at [vibestream.cc/registry](/registry).

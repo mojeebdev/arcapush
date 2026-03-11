@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Web3Provider } from "@/components/Web3Provider";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -215,6 +216,7 @@ export default function RootLayout({
 
         <Analytics />
         <SpeedInsights />
+        <Toaster position="bottom-center" toastOptions={{ style: { background: "#09090b", color: "#fff", border: "1px solid rgba(255,255,255,0.05)" } }} />
       </body>
     </html>
   );

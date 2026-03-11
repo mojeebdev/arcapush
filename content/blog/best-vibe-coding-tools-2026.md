@@ -128,4 +128,4 @@ The ecosystem is improving rapidly. These rankings will look different in twelve
 
 ---
 
-Every VC-backed company building vibe coding infrastructure is tracked in the Vibestream encyclopedia. [Browse the registry →](/registry)
+Every vibe coding infrastructure is tracked in the Vibestream encyclopedia. [Browse the registry →](/registry)

@@ -93,30 +93,19 @@ export default async function BlogPostPage({ params }: Props) {
       />
 
       <main className="flex-grow">
-        {/* Hero Image */}
-        <div className="relative h-[360px] md:h-[480px] w-full overflow-hidden">
-          <Image
-            src={post.image}
-            alt={post.title}
-            fill
-            priority
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20" />
-        </div>
 
-        {/* Back */}
-        <div className="px-6 max-w-3xl mx-auto mt-10">
+        
+        <header className="pt-32 pb-10 px-6 max-w-3xl mx-auto">
+
+          {/* Back */}
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-zinc-600 hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-zinc-600 hover:text-white transition-colors mb-10"
           >
             &larr; Back to The Signal
           </Link>
-        </div>
 
-        {/* Post Header */}
-        <header className="pt-8 pb-12 px-6 max-w-3xl mx-auto border-b border-white/5">
+          {/* Category + Read Time */}
           <div className="flex items-center gap-3 mb-6">
             <span className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-[#4E24CF]/30 bg-[#4E24CF]/10 text-[#4E24CF]">
               {post.category}
@@ -126,27 +115,29 @@ export default async function BlogPostPage({ params }: Props) {
             </span>
           </div>
 
+          {/* Title */}
           <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white leading-[0.9] mb-6">
             {post.title}
           </h1>
 
-          <p className="text-zinc-400 text-base leading-relaxed mb-8">
+          {/* Subtitle / Description */}
+          <p className="text-zinc-400 text-xl leading-relaxed mb-10">
             {post.description}
           </p>
 
           {/* Author + Share Row */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 pb-10 border-b border-white/5">
             <div className="flex items-center gap-4">
               {post.authorImage ? (
                 <Image
                   src={post.authorImage}
                   alt={post.author}
-                  width={36}
-                  height={36}
+                  width={40}
+                  height={40}
                   className="rounded-full object-cover ring-2 ring-[#4E24CF]/40"
                 />
               ) : (
-                <div className="w-9 h-9 rounded-full bg-[#4E24CF] flex items-center justify-center text-[10px] font-black text-white flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-[#4E24CF] flex items-center justify-center text-[10px] font-black text-white flex-shrink-0">
                   {post.author.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -159,20 +150,32 @@ export default async function BlogPostPage({ params }: Props) {
                 >
                   {post.author}
                 </a>
-                <p className="text-[9px] text-zinc-600 uppercase tracking-widest">
+                <p className="text-[9px] text-zinc-600 uppercase tracking-widest mt-0.5">
                   {new Date(post.date).toLocaleDateString("en-US", {
                     month: "long", day: "numeric", year: "numeric",
                   })}
                 </p>
               </div>
             </div>
-
             <ShareBar title={post.title} slug={post.slug} />
           </div>
         </header>
 
+        {/* ── COVER IMAGE — after title, like Medium ── */}
+        <div className="px-6 max-w-3xl mx-auto mb-14">
+          <div className="relative w-full h-[320px] md:h-[460px] rounded-[2rem] overflow-hidden">
+            <Image
+              src={post.image}
+              alt={post.title}
+              fill
+              priority
+              className="object-cover"
+            />
+          </div>
+        </div>
+
         {/* Article Body */}
-        <article className="px-6 max-w-3xl mx-auto py-14">
+        <article className="px-6 max-w-3xl mx-auto pb-14">
           <ReactMarkdown
             components={{
               h2: ({ children }) => (
@@ -271,7 +274,7 @@ export default async function BlogPostPage({ params }: Props) {
               Is your startup listed?
             </h3>
             <p className="text-zinc-500 text-sm mb-8 max-w-md mx-auto">
-              Get your vibe coding product permanently indexed in the encyclopedia.
+              Submit your vibe coding product and get permanently indexed in the encyclopedia. Free for every founder.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -289,6 +292,7 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
           </div>
         </div>
+
       </main>
     </div>
   );

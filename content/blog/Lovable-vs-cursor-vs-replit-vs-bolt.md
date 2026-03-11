@@ -108,4 +108,4 @@ The best time to start building is now.
 
 ---
 
-Every major vibe coding product that secures VC funding gets documented in the Vibestream encyclopedia. Browse the full registry at [vibestream.cc/registry](/registry).
+Every major vibe coding product gets documented in the Vibestream encyclopedia. Browse the full registry at [vibestream.cc/registry](/registry).

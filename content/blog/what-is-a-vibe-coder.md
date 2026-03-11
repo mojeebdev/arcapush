@@ -92,6 +92,6 @@ There is no certification, no course, no formal path. The way to become a vibe c
 
 Pick one tool — Lovable if you have no coding background, Cursor if you do — and build something you actually want to exist. Ship it. Show people. Iterate.
 
-The community is at [vibestream.cc/registry](/registry) — every VC-backed vibe coding product documented in one place.
+The community is at [vibestream.cc/registry](/registry) — every vibe coding product documented in one place.
 
 If you build something worth funding, [submit it](/submit). That is what Vibestream is for.

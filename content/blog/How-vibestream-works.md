@@ -26,7 +26,7 @@ That is what Vibestream is for.
 
 ## What Vibestream Is
 
-Vibestream is the **definitive encyclopedia for VC-backed Vibe Coders** — a permanently indexed, curated database of vibe coding startups and AI-native products.
+Vibestream is the **definitive encyclopedia for Vibe Coders** — a permanently indexed, curated database of vibe coding startups and AI-native products.
 
 Think of it as the public record of the vibe coding era. Every startup that gets funded, every product that gets traction, every founder who ships — documented and discoverable.
 
