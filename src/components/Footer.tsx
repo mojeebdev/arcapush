@@ -8,15 +8,17 @@ const FOOTER_LINKS = {
     { href: "/blog",     label: "Blog" },
     { href: "/pricing",  label: "Signal Boost" },
     { href: "/about",    label: "About" },
-    { href: "/docs",     label: "Documentation" },
+    
   ],
   Founders: [
     { href: "/submit",  label: "Submit Startup" },
     { href: "/request", label: "Request Access" },
     { href: "/pricing", label: "Pricing" },
+    { href: "/docs",     label: "Documentation" },
   ],
   Intelligence: [
     { href: "/blog/vibestream-founder-story",       label: "Vibestream Founder Story" },
+    { href: "/blog/vibestream-vs-product-hunt",     label: "Vibestream vs Product Hunt" },
     { href: "/blog/What-is-vibe-coding",            label: "What is Vibe Coding?" },
     { href: "/blog/andrej-karpathy-vibe-coding",    label: "Origin of Vibe Coding" },
     { href: "/blog/vc-backed-vibe-coding-startups", label: "VC-Backed Startups" },
