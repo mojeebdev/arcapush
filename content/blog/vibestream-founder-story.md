@@ -9,12 +9,6 @@ category: "Founder Story"
 readTime: "7 min read"
 featured: true
 image: "/blog/why-i-built-vibestream.png"
-tags:
-  - "Vibestream"
-  - "Founder Story"
-  - "Mojeeb"
-  - "Building in Public"
-  - "Vibe Coding"
 ---
 # Why I Built Vibestream: The Gap Nobody Was Filling in the Vibe Coding Era
 
@@ -133,4 +127,4 @@ We're here to make sure they're found.
 
 ---
 
-**Tags:** `Vibe Coding` `Startups` `Founder Story` `Web3` `AI` `Product Hunt` `Nigeria Tech` `Entrepreneurship` `Encyclopedia` `Venture Capital`
+**Tags:** `Vibestream` `Founder Story` `Mojeeb` `Building in Public` `Vibe Coding`

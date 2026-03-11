@@ -9,12 +9,6 @@ category: "Deep Dive"
 readTime: "6 min read"
 featured: false
 image: "/blog/what-is-a-vibe-coder.jpg"
-tags:
-  - "Vibe Coder"
-  - "AI Founder"
-  - "New Builder"
-  - "Vibe Coding"
-  - "Startups"
 ---
 
 ## The New Builder
@@ -101,3 +95,5 @@ Pick one tool — Lovable if you have no coding background, Cursor if you do —
 The community is at [vibestream.cc/registry](/registry) — every vibe coding product documented in one place.
 
 If you build something worth funding, [submit it](/submit). That is what Vibestream is for.
+
+**Tags:** `Vibe Coder` `AI Founder` `New Builder` `Vibe Coding` `Startups`

@@ -9,12 +9,6 @@ category: "Founder"
 readTime: "7 min read"
 featured: false
 image: "/blog/how-to-get-vc-funding-vibe-coder.jpg"
-tags:
-  - "VC Funding"
-  - "Fundraising"
-  - "Vibe Coding"
-  - "Startups"
-  - "Founder Advice"
 ---
 
 ## The Opportunity Is Real
@@ -107,3 +101,5 @@ Getting funded is the start, not the end. The vibe coding products that become l
 The vibe coding era is creating a new generation of founders. The ones who move fastest, build most genuinely, and stay closest to their users will be the ones who build the next unicorns.
 
 [Submit your vibe coding startup to the Vibestream encyclopedia →](/submit)
+
+**Tags:** `VC Funding` `Fundraising` `Vibe Coding` `Startups` `Founder Advice`

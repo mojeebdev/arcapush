@@ -1,3 +1,8 @@
+// ============================================================
+// FILE PATH: src/app/blog/[slug]/page.tsx
+// CHANGE: Improved table rendering — tbody, tr, hover states, card style
+// ============================================================
+
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -94,7 +99,6 @@ export default async function BlogPostPage({ params }: Props) {
 
       <main className="flex-grow">
 
-        
         <header className="pt-32 pb-10 px-6 max-w-3xl mx-auto">
 
           {/* Back */}
@@ -161,7 +165,7 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </header>
 
-        {/* ── COVER IMAGE — after title, like Medium ── */}
+        {/* Cover Image */}
         <div className="px-6 max-w-3xl mx-auto mb-14">
           <div className="relative w-full h-[320px] md:h-[460px] rounded-[2rem] overflow-hidden">
             <Image
@@ -231,24 +235,34 @@ export default async function BlogPostPage({ params }: Props) {
                   {children}
                 </pre>
               ),
+
+              // ── TABLES ───────────────────────────────────────────
               table: ({ children }) => (
-                <div className="overflow-x-auto my-8">
-                  <table className="w-full border-collapse">{children}</table>
+                <div className="overflow-x-auto my-10 rounded-2xl border border-white/5">
+                  <table className="w-full border-collapse text-sm">{children}</table>
                 </div>
               ),
               thead: ({ children }) => (
-                <thead className="border-b border-white/10">{children}</thead>
+                <thead className="bg-zinc-900/80">{children}</thead>
+              ),
+              tbody: ({ children }) => (
+                <tbody className="divide-y divide-white/5">{children}</tbody>
+              ),
+              tr: ({ children }) => (
+                <tr className="hover:bg-white/[0.02] transition-colors">{children}</tr>
               ),
               th: ({ children }) => (
-                <th className="text-left text-[9px] font-black uppercase tracking-widest text-zinc-500 py-3 pr-6">
+                <th className="text-left text-[9px] font-black uppercase tracking-widest text-zinc-400 px-6 py-4 border-b border-white/10 whitespace-nowrap">
                   {children}
                 </th>
               ),
               td: ({ children }) => (
-                <td className="text-zinc-400 text-sm py-3 pr-6 border-b border-white/5">
+                <td className="text-zinc-300 text-sm px-6 py-4 align-middle">
                   {children}
                 </td>
               ),
+              // ─────────────────────────────────────────────────────
+
               hr: () => <hr className="border-t border-white/5 my-12" />,
             }}
           >

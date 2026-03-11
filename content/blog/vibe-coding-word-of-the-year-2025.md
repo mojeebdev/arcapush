@@ -9,12 +9,6 @@ category: "Deep Dive"
 readTime: "5 min read"
 featured: false
 image: "/blog/vibe-coding-word-of-the-year.jpg"
-tags:
-  - "Vibe Coding"
-  - "Collins Dictionary"
-  - "Word of the Year"
-  - "2025"
-  - "Culture"
 ---
 
 ## The Official Recognition
@@ -90,3 +84,5 @@ Vibestream exists precisely because the word needed a home: a place where the pr
 ---
 
 *Sources: Collins English Dictionary (collins.co.uk), Andrej Karpathy on X (@karpathy), February 2025.*
+
+**Tags:** `Vibe Coding` `Collins Dictionary` `Word of the Year` `2025` `Culture`

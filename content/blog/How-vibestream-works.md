@@ -10,12 +10,6 @@ readTime: "5 min read"
 featured: false
 image: "/blog/how-vibestream-works.jpg"
 
-tags:
-  - "Vibestream"
-  - "Encyclopedia"
-  - "Vibe Coders"
-  - "Discovery"
-  - "Platform"
 ---
 
 ## The Problem Vibestream Solves
@@ -117,3 +111,5 @@ Vibestream is free to submit. The review process is fast — most startups are a
 If you have already submitted and your startup has been approved, consider a [Signal Boost](/pricing) to get additional visibility during your launch window.
 
 Follow [@vibestreamcc](https://twitter.com/vibestreamcc) on X and [@mojeebeth](https://twitter.com/mojeebeth) for updates.
+
+**Tags:** `Vibestream` `Encyclopedia` `Vibe Coders` `Discovery` `Platform`

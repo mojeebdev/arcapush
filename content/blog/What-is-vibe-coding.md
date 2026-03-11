@@ -9,12 +9,6 @@ category: "Deep Dive"
 readTime: "7 min read"
 featured: true
 image: "/blog/what-is-vibe-coding.jpg"
-tags:
-  - "Vibe Coding"
-  - "AI Tools"
-  - "Complete Guide"
-  - "Definition"
-  - "VC Funding"
 ---
 
 ## The Definition
@@ -105,3 +99,5 @@ Vibestream is the definitive encyclopedia for VC-backed vibe coding startups. Ev
 If you have built a vibe coding product and secured funding, [submit your startup](/submit) for a permanent encyclopedia entry.
 
 The vibe coding era is just beginning. The founders building today are writing the first chapter.
+
+**Tags:** `Vibe Coding` `AI Tools` `Complete Guide` `Definition` `VC Funding`

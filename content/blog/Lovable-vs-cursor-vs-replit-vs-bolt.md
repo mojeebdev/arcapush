@@ -9,13 +9,6 @@ category: "Strategy"
 readTime: "8 min read"
 featured: false
 image: "/blog/lovable-vs-cursor-vs-replit-vs-bolt.jpg"
-tags:
-  - "Lovable"
-  - "Cursor"
-  - "Replit"
-  - "Bolt"
-  - "Comparison"
-  - "Vibe Coding Tools"
 ---
 
 ## The Problem With Most Comparisons
@@ -116,3 +109,5 @@ The best time to start building is now.
 ---
 
 Every major vibe coding product gets documented in the Vibestream encyclopedia. Browse the full registry at [vibestream.cc/registry](/registry).
+
+**Tags:** `Lovable` `Cursor` `Replit` `Bolt` `Comparison` `Vibe Coding Tools`

@@ -9,12 +9,6 @@ category: "Data"
 readTime: "6 min read"
 featured: false
 image: "/blog/lovable-funding-valuation.jpg"
-tags:
-  - "Lovable"
-  - "VC Funding"
-  - "Valuation"
-  - "Startup Funding"
-  - "Vibe Coding"
 ---
 
 ## The Numbers
@@ -93,3 +87,5 @@ Lovable occupies a distinct position: it is the only tool at scale specifically 
 ---
 
 Every major vibe coding funding round is tracked and documented in the Vibestream encyclopedia. [Browse the registry →](/registry) | [Submit your startup →](/submit)
+
+**Tags:** `Lovable` `VC Funding` `Valuation` `Startup Funding` `Vibe Coding`

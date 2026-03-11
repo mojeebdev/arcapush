@@ -9,12 +9,6 @@ category: "Data"
 readTime: "9 min read"
 featured: false
 image: "/blog/vc-backed-vibe-coding-startups.jpg"
-tags:
-  - "VC Funding"
-  - "Vibe Coding Startups"
-  - "Funding Rounds"
-  - "Valuations"
-  - "Database"
 ---
 
 ## Why This List Exists
@@ -112,3 +106,5 @@ We update this list as new rounds close. Follow [@vibestreamcc](https://twitter.
 If your vibe coding startup has closed a funding round and is not listed here, submit to the Vibestream encyclopedia. We verify and publish within 48 hours.
 
 [Submit Your Startup →](/submit)
+
+**Tags:** `VC Funding` `Vibe Coding Startups` `Funding Rounds` `Valuations` `Database`

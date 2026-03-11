@@ -9,12 +9,6 @@ category: "Deep Dive"
 featured: false
 readTime: "5 min read"
 image: "/blog/vibestream-vs-producthunt.png"
-tags:
-  - "Vibestream"
-  - "Product Hunt"
-  - "Startup Discovery"
-  - "Comparison"
-  - "Vibe Coding"
 ---
 
 Every time a founder discovers Vibestream, the same question comes up.
@@ -70,3 +64,5 @@ If you built something real with AI tools, your product deserves to be findable 
 Submit for free at [Vibestream.cc](/submit).
 
 ---
+
+**Tags:** `Vibestream` `Product Hunt` `Startup Discovery` `Comparison` `Vibe Coding`

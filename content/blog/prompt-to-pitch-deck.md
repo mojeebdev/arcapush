@@ -9,12 +9,6 @@ category: "Deep Dive"
 featured: false
 readTime: "7 min read"
 image: "/blog/prompt-to-pitch-deck.png"
-tags:
-  - "Pitch Deck"
-  - "Fundraising"
-  - "Vibe Coding"
-  - "Founder Playbook"
-  - "AI Startups"
 ---
 
 Most vibe coding founders are brilliant at the build. They ship in days, not months. They use Cursor, Lovable, Bolt, or Replit to turn a problem into a working product before most traditional developers have finished their architecture diagrams.
@@ -98,3 +92,5 @@ That is what the playbook is for. Build fast. Speak clearly. Get funded.
 Submit your vibe coding startup to the encyclopedia at [vibestream.cc](/submit).
 
 ---
+
+**Tags:** `Pitch Deck` `Fundraising` `Vibe Coding` `Founder Playbook` `AI Startups`
