@@ -34,13 +34,13 @@ model User {
 model Startup {
   id                String   @id @default(cuid())
 
-  // ── SEO / AEO ────────────────────────────────────────────────────
+
   slug              String?  @unique           // SEO-friendly URL: /startup/lovable
   metaTitle         String?                    // Custom <title> tag (falls back to name)
   metaDescription   String?  @db.Text          // Custom <meta name="description"> (falls back to tagline)
   canonicalUrl      String?                    // Override canonical if needed (rare)
 
-  // ── Public fields (always visible) ───────────────────────────────
+  
   name              String
   tagline           String
   problemStatement  String   @db.Text
@@ -50,39 +50,40 @@ model Startup {
   website           String?
   twitter           String?
 
-  // ── Private fields (behind access gate) ──────────────────────────
+
   founderName       String
   founderEmail      String
   founderLinkedIn   String?
   founderTwitter    String?
   pitchDeckUrl      String?
 
-  // ── Status ───────────────────────────────────────────────────────
+  
   approved          Boolean     @default(false)
 
-  // ── Tier & Pinning ───────────────────────────────────────────────
+
   tier              StartupTier @default(FREE)
   pinnedAt          DateTime?
   pinnedUntil       DateTime?
   pinTxHash         String?
   pinChain          String?     // "base" | "solana"
 
-  // ── Relations ────────────────────────────────────────────────────
+  
   founderId         String?
   founder           User?        @relation(fields: [founderId], references: [id])
   accessRequests    AccessRequest[]
+  reviews           Review[]                    // ← NEW
 
-  // ── Metadata ─────────────────────────────────────────────────────
+  
   viewCount         Int          @default(0)
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
 
-  // ── Indexes ──────────────────────────────────────────────────────
+
   @@index([tier, pinnedUntil])
   @@index([createdAt])
-  @@index([approved, createdAt])   // Fast approved-startups query for sitemap
-  @@index([slug])                  // Fast slug lookups for page routing
-  @@index([category, approved])    // Fast category filter pages
+  @@index([approved, createdAt])
+  @@index([slug])
+  @@index([category, approved])
 }
 
 model AccessRequest {
@@ -124,5 +125,29 @@ model Payment {
   confirmedAt DateTime?
   createdAt   DateTime  @default(now())
 
+  @@index([startupId])
+}
+
+
+model Review {
+  id          String   @id @default(cuid())
+
+  // Who left it
+  name        String                  // shown publicly
+  email       String                  // stored only, never shown publicly
+
+  // The review
+  rating      Int                     // 1 to 5
+  comment     String   @db.Text
+
+  // Which startup
+  startupId   String
+  startup     Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+
+  // One review per email per startup
+  @@unique([email, startupId])
   @@index([startupId])
 }
