@@ -1,6 +1,6 @@
 ---
 title: "Lovable vs Cursor vs Replit vs Bolt: Which Vibe Coding Tool is Right for You?"
-description: "A direct comparison of the four dominant vibe coding tools. What each one builds, who it's for, where it breaks down — and how to choose based on your actual situation."
+description: "A direct comparison of the four dominant vibe coding tools. What each one builds, who it's for, where it breaks down, and how to choose based on your actual situation."
 date: "2026-03-06"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
@@ -9,6 +9,13 @@ category: "Strategy"
 readTime: "8 min read"
 featured: false
 image: "/blog/lovable-vs-cursor-vs-replit-vs-bolt.jpg"
+tags:
+  - "Lovable"
+  - "Cursor"
+  - "Replit"
+  - "Bolt"
+  - "Comparison"
+  - "Vibe Coding Tools"
 ---
 
 ## The Problem With Most Comparisons

@@ -9,6 +9,13 @@ category: "Strategy"
 readTime: "7 min read"
 featured: false
 image: "/blog/claude-vs-chatgpt-vibe-coding.jpg"
+tags:
+  - "Claude"
+  - "ChatGPT"
+  - "AI Models"
+  - "Vibe Coding"
+  - "Code Generation"
+  - "Comparison"
 ---
 
 ## The Migration Is Real

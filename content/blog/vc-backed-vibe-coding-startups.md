@@ -9,6 +9,12 @@ category: "Data"
 readTime: "9 min read"
 featured: false
 image: "/blog/vc-backed-vibe-coding-startups.jpg"
+tags:
+  - "VC Funding"
+  - "Vibe Coding Startups"
+  - "Funding Rounds"
+  - "Valuations"
+  - "Database"
 ---
 
 ## Why This List Exists

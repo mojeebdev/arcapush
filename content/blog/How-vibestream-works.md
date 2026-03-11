@@ -10,6 +10,12 @@ readTime: "5 min read"
 featured: false
 image: "/blog/how-vibestream-works.jpg"
 
+tags:
+  - "Vibestream"
+  - "Encyclopedia"
+  - "Vibe Coders"
+  - "Discovery"
+  - "Platform"
 ---
 
 ## The Problem Vibestream Solves

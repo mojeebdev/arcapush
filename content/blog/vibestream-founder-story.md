@@ -9,6 +9,12 @@ category: "Founder Story"
 readTime: "7 min read"
 featured: true
 image: "/blog/why-i-built-vibestream.png"
+tags:
+  - "Vibestream"
+  - "Founder Story"
+  - "Mojeeb"
+  - "Building in Public"
+  - "Vibe Coding"
 ---
 # Why I Built Vibestream: The Gap Nobody Was Filling in the Vibe Coding Era
 

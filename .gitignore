@@ -48,3 +48,5 @@ yarn-error.log*
 *.ntvs*
 
 *.njsproj
+
+add_tags.py

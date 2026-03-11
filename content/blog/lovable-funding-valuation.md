@@ -9,6 +9,12 @@ category: "Data"
 readTime: "6 min read"
 featured: false
 image: "/blog/lovable-funding-valuation.jpg"
+tags:
+  - "Lovable"
+  - "VC Funding"
+  - "Valuation"
+  - "Startup Funding"
+  - "Vibe Coding"
 ---
 
 ## The Numbers

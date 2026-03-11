@@ -9,6 +9,12 @@ category: "Deep Dive"
 readTime: "6 min read"
 featured: false
 image: "/blog/what-is-a-vibe-coder.jpg"
+tags:
+  - "Vibe Coder"
+  - "AI Founder"
+  - "New Builder"
+  - "Vibe Coding"
+  - "Startups"
 ---
 
 ## The New Builder

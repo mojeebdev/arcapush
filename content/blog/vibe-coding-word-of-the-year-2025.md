@@ -9,6 +9,12 @@ category: "Deep Dive"
 readTime: "5 min read"
 featured: false
 image: "/blog/vibe-coding-word-of-the-year.jpg"
+tags:
+  - "Vibe Coding"
+  - "Collins Dictionary"
+  - "Word of the Year"
+  - "2025"
+  - "Culture"
 ---
 
 ## The Official Recognition

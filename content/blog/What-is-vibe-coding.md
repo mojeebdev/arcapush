@@ -9,6 +9,12 @@ category: "Deep Dive"
 readTime: "7 min read"
 featured: true
 image: "/blog/what-is-vibe-coding.jpg"
+tags:
+  - "Vibe Coding"
+  - "AI Tools"
+  - "Complete Guide"
+  - "Definition"
+  - "VC Funding"
 ---
 
 ## The Definition

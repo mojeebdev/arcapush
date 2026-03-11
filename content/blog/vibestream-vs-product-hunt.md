@@ -1,6 +1,6 @@
 ---
 title: "Vibestream Is Not the Next Product Hunt. That's the Point."
-description: "Every founder who discovers Vibestream asks the same question — how is this different from Product Hunt? Here's the answer, and why the misconception matters."
+description: "Every founder who discovers Vibestream asks the same question, how is this different from Product Hunt? Here's the answer, and why the misconception matters."
 date: "2026-03-11"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
@@ -9,6 +9,12 @@ category: "Deep Dive"
 featured: false
 readTime: "5 min read"
 image: "/blog/vibestream-vs-producthunt.png"
+tags:
+  - "Vibestream"
+  - "Product Hunt"
+  - "Startup Discovery"
+  - "Comparison"
+  - "Vibe Coding"
 ---
 
 Every time a founder discovers Vibestream, the same question comes up.

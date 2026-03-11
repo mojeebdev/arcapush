@@ -1,6 +1,6 @@
 ---
 title: "From Prompt to Pitch Deck: The Vibe Coding Founder Playbook"
-description: "You built something real with AI tools. Now comes the part nobody talks about — turning that product into a fundable startup. Here is the exact playbook."
+description: "You built something real with AI tools. Now comes the part nobody talks about, turning that product into a fundable startup. Here is the exact playbook."
 date: "2026-03-11"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
@@ -9,6 +9,12 @@ category: "Deep Dive"
 featured: false
 readTime: "7 min read"
 image: "/blog/prompt-to-pitch-deck.png"
+tags:
+  - "Pitch Deck"
+  - "Fundraising"
+  - "Vibe Coding"
+  - "Founder Playbook"
+  - "AI Startups"
 ---
 
 Most vibe coding founders are brilliant at the build. They ship in days, not months. They use Cursor, Lovable, Bolt, or Replit to turn a problem into a working product before most traditional developers have finished their architecture diagrams.

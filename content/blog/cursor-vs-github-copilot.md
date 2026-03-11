@@ -9,6 +9,12 @@ category: "Strategy"
 readTime: "7 min read"
 featured: false
 image: "/blog/cursor-vs-github-copilot.jpg"
+tags:
+  - "Cursor"
+  - "GitHub Copilot"
+  - "Vibe Coding Tools"
+  - "Comparison"
+  - "AI Coding"
 ---
 
 ## The Core Difference

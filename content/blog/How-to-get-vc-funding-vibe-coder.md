@@ -9,6 +9,12 @@ category: "Founder"
 readTime: "7 min read"
 featured: false
 image: "/blog/how-to-get-vc-funding-vibe-coder.jpg"
+tags:
+  - "VC Funding"
+  - "Fundraising"
+  - "Vibe Coding"
+  - "Startups"
+  - "Founder Advice"
 ---
 
 ## The Opportunity Is Real

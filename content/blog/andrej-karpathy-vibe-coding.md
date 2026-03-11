@@ -9,6 +9,12 @@ category: "Deep Dive"
 readTime: "7 min read"
 featured: false
 image: "/blog/andrej-karpathy-vibe-coding.jpg"
+tags:
+  - "Vibe Coding"
+  - "Andrej Karpathy"
+  - "AI History"
+  - "Origin Story"
+  - "Deep Dive"
 ---
 
 ## One Post That Changed Software
