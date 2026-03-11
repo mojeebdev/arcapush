@@ -29,6 +29,7 @@ const FOOTER_LINKS = {
   Connect: [
     { href: "https://twitter.com/vibestreamcc", label: "X / Twitter", external: true },
     { href: "https://mojeeb.xyz",               label: "Founder",     external: true },
+    { href: "https://mojeebhq.medium.com",     label: "Medium",      external: true },
   ],
 };
 
