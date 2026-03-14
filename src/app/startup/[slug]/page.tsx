@@ -22,98 +22,92 @@ async function getStartup(slugOrId: string) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const startup = await getStartup(slug);
+  const { slug }   = await params;
+  const startup    = await getStartup(slug);
   if (!startup) return { title: `Not Found | ${AdminConfig.SITE_NAME}` };
 
   const canonicalPath = startup.slug ?? startup.id;
-  const canonicalUrl = `${AdminConfig.SITE_URL}/startup/${canonicalPath}`;
+  const canonicalUrl  = `${AdminConfig.SITE_URL}/startup/${canonicalPath}`;
 
   return {
-    title: startup.metaTitle || `${startup.name} | ${AdminConfig.SITE_NAME}`,
+    title:       startup.metaTitle || `${startup.name} | ${AdminConfig.SITE_NAME}`,
     description: startup.metaDescription || startup.tagline,
-    alternates: { canonical: canonicalUrl },
+    alternates:  { canonical: canonicalUrl },
     openGraph: {
-      title: `${startup.name} — Listed on ${AdminConfig.SITE_NAME}`,
+      title:       `${startup.name} — Listed on ${AdminConfig.SITE_NAME}`,
       description: startup.metaDescription || startup.tagline,
-      images: [{ url: startup.bannerUrl || AdminConfig.SITE_OG_IMAGE, width: 1200, height: 630 }],
-      url: canonicalUrl,
-      type: "website",
+      images:      [{ url: startup.bannerUrl || AdminConfig.SITE_OG_IMAGE, width: 1200, height: 630 }],
+      url:         canonicalUrl,
+      type:        "website",
     },
     twitter: {
-      card: "summary_large_image",
-      site: AdminConfig.BRAND_TWITTER,
-      title: startup.name,
+      card:        "summary_large_image",
+      site:        AdminConfig.BRAND_TWITTER,
+      title:       startup.name,
       description: startup.metaDescription || startup.tagline,
-      images: [startup.bannerUrl || AdminConfig.SITE_OG_IMAGE],
+      images:      [startup.bannerUrl || AdminConfig.SITE_OG_IMAGE],
     },
   };
 }
 
 export default async function StartupDetailsPage({ params }: PageProps) {
   const { slug } = await params;
-  const startup = await getStartup(slug);
+  const startup  = await getStartup(slug);
 
   if (!startup) notFound();
   if (startup.slug && slug !== startup.slug) redirect(`/startup/${startup.slug}`);
 
   const canonicalPath = startup.slug ?? startup.id;
-  const canonicalUrl = `${AdminConfig.SITE_URL}/startup/${canonicalPath}`;
+  const canonicalUrl  = `${AdminConfig.SITE_URL}/startup/${canonicalPath}`;
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: startup.name,
+    "@type":    "SoftwareApplication",
+    name:        startup.name,
     description: startup.metaDescription || startup.tagline,
     applicationCategory: startup.category,
-    url: startup.website,
-    image: startup.logoUrl || startup.bannerUrl,
+    url:         startup.website,
+    image:       startup.logoUrl || startup.bannerUrl,
     datePublished: startup.createdAt.toISOString(),
-    dateModified: startup.updatedAt.toISOString(),
-    sameAs: [startup.website, startup.twitter].filter(Boolean),
-    author: { "@type": "Person", name: startup.founderName },
-    publisher: {
-      "@type": "Organization",
-      name: AdminConfig.SITE_NAME,
-      url: AdminConfig.SITE_URL,
-    },
+    dateModified:  startup.updatedAt.toISOString(),
+    sameAs:      [startup.website, startup.twitter].filter(Boolean),
+    author:      { "@type": "Person", name: startup.founderName },
+    publisher:   { "@type": "Organization", name: AdminConfig.SITE_NAME, url: AdminConfig.SITE_URL },
   };
 
   return (
     <ClientDetails startup={startup}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
-      <div className="min-h-screen pt-32 pb-20 px-6" style={{ background: "var(--bg)", color: "var(--text-primary)" }}>
+      <div
+        className="min-h-screen pt-32 pb-20 px-6"
+        style={{ background: "var(--bg)", color: "var(--text-primary)" }}
+      >
         <div className="max-w-6xl mx-auto relative">
 
           {/* Ambient glow */}
           <div
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full pointer-events-none blur-[120px]"
-            style={{ background: "rgba(232,255,71,0.03)" }}
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full pointer-events-none"
+            style={{ background: "rgba(91,43,255,0.03)", filter: "blur(120px)" }}
           />
 
-          {/* Header */}
+          {/* ── Header ──────────────────────────────────────────────────── */}
           <div className="flex flex-col md:flex-row justify-between items-start mb-16 gap-8 relative z-10">
             <div className="space-y-6">
               <div className="flex items-center gap-3 flex-wrap">
                 <span
                   className="text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest"
-                  style={{
-                    background: "var(--accent-dim)",
-                    border: "1px solid var(--accent-border)",
-                    color: "var(--accent)",
-                  }}
+                  style={{ background: "var(--accent-dim)", border: "1px solid var(--accent-border)", color: "var(--accent)" }}
                 >
                   {startup.category || "Vibe Code"}
                 </span>
                 {startup.tier === "PINNED" && (
                   <span
                     className="text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest flex items-center gap-2"
-                    style={{
-                      background: "var(--accent-dim)",
-                      border: "1px solid var(--accent-border)",
-                      color: "var(--accent)",
-                    }}
+                    style={{ background: "var(--accent-dim)", border: "1px solid var(--accent-border)", color: "var(--accent)" }}
                   >
                     <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--accent)" }} />
                     Boosted
@@ -127,27 +121,33 @@ export default async function StartupDetailsPage({ params }: PageProps) {
               >
                 {startup.name}
               </h1>
-              <p className="text-xl md:text-2xl font-medium max-w-2xl leading-tight" style={{ color: "var(--text-secondary)" }}>
+              <p
+                className="text-xl md:text-2xl font-medium max-w-2xl leading-tight"
+                style={{ color: "var(--text-secondary)" }}
+              >
                 {startup.tagline}
               </p>
             </div>
 
             {/* VC interest count */}
             <div
-              className="p-10 rounded-[3rem] text-center min-w-[200px] shadow-2xl"
+              className="p-10 rounded-[3rem] text-center min-w-[200px] shadow-sm"
               style={{ border: "1px solid var(--border)", background: "var(--bg-2)" }}
             >
               <p className="ap-label mb-2">VC Interest</p>
-              <p className="text-5xl font-black italic tracking-tighter" style={{ color: "var(--text-primary)" }}>
+              <p
+                className="text-5xl font-black italic tracking-tighter"
+                style={{ color: "var(--text-primary)" }}
+              >
                 {startup._count.accessRequests}
               </p>
             </div>
           </div>
 
-          {/* Banner */}
+          {/* ── Banner ──────────────────────────────────────────────────── */}
           {startup.bannerUrl && (
             <div
-              className="w-full aspect-[21/9] rounded-[3rem] overflow-hidden mb-16 shadow-2xl"
+              className="w-full aspect-[21/9] rounded-[3rem] overflow-hidden mb-16 shadow-sm"
               style={{ border: "1px solid var(--border)" }}
             >
               <img
@@ -158,16 +158,16 @@ export default async function StartupDetailsPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* Content grid */}
+          {/* ── Content grid ────────────────────────────────────────────── */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
 
             {/* Main column */}
             <div className="lg:col-span-2 space-y-12">
               <section
-                className="p-10 rounded-[3rem] relative overflow-hidden group"
-                style={{ border: "1px solid var(--border)", background: "var(--bg-2)", backdropFilter: "blur(12px)" }}
+                className="p-10 rounded-[3rem] relative overflow-hidden"
+                style={{ border: "1px solid var(--border)", background: "var(--bg-2)" }}
               >
-                <div className="absolute top-0 right-0 p-8 opacity-5">
+                <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
                   <HiOutlineShieldCheck className="w-24 h-24" />
                 </div>
                 <p className="ap-label mb-8">The Problem Statement</p>
@@ -175,7 +175,7 @@ export default async function StartupDetailsPage({ params }: PageProps) {
                   {startup.problemStatement}
                 </p>
 
-                {/* Share row */}
+                {/* Share row — CSS hover only, no JS handlers */}
                 <div
                   className="flex gap-6 mt-12 pt-8"
                   style={{ borderTop: "1px solid var(--border)" }}
@@ -185,19 +185,17 @@ export default async function StartupDetailsPage({ params }: PageProps) {
                   </p>
                   <a
                     href={`https://twitter.com/intent/tweet?text=Check out ${encodeURIComponent(startup.name)} on @arcapush%0A${canonicalUrl}`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="ap-label transition-colors"
-                    onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--accent)")}
-                    onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ap-link ap-label hover-accent"
                   >
                     X / Twitter
                   </a>
                   <a
                     href={`https://www.linkedin.com/sharing/share-offsite/?url=${canonicalUrl}`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="ap-label transition-colors"
-                    onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--accent)")}
-                    onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ap-link ap-label hover-accent"
                   >
                     LinkedIn
                   </a>
@@ -215,24 +213,24 @@ export default async function StartupDetailsPage({ params }: PageProps) {
               >
                 <p className="ap-label mb-6">Links</p>
                 {[
-                  { href: startup.website || "#", label: "Platform", Icon: HiOutlineGlobeAlt },
-                  { href: startup.founderTwitter || "#", label: "Founder", Icon: HiOutlineLink },
+                  { href: startup.website      || "#", label: "Platform", Icon: HiOutlineGlobeAlt },
+                  { href: startup.founderTwitter || "#", label: "Founder",  Icon: HiOutlineLink    },
                 ].map(({ href, label, Icon }) => (
+                  /* CSS hover via Tailwind group — no JS handlers */
                   <a
                     key={label}
-                    href={href} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center justify-between p-5 rounded-2xl transition-all group"
-                    style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)" }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)";
-                      (e.currentTarget as HTMLElement).style.background = "var(--accent-dim)";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
-                      (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.02)";
-                    }}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-5 rounded-2xl transition-all group hover-bg-accent-dim hover-border-accent"
+                    style={{ background: "var(--bg-3)", border: "1px solid var(--border)" }}
                   >
-                    <span className="text-xs font-black uppercase tracking-widest" style={{ color: "var(--text-primary)" }}>{label}</span>
+                    <span
+                      className="text-xs font-black uppercase tracking-widest"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      {label}
+                    </span>
                     <Icon className="w-4 h-4" style={{ color: "var(--text-tertiary)" }} />
                   </a>
                 ))}

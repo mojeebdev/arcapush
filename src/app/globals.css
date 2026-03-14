@@ -44,7 +44,6 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
 }
 
 body {
@@ -240,14 +239,14 @@ body::after {
   box-shadow: 0 8px 32px rgba(91, 43, 255, 0.2);
 }
 
-/* ── Divider ── */
+
 .ap-divider {
   height: 1px;
   background: var(--border);
   width: 100%;
 }
 
-/* ── Animations ── */
+
 @keyframes ticker {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -278,19 +277,27 @@ body::after {
   100% { transform: translate(30px, -20px) scale(1.05); }
 }
 
-/* ── Legacy overrides (components that use old dark bg classes) ── */
+
 .bg-black    { background-color: var(--bg-2) !important; }
 .bg-zinc-950 { background-color: var(--bg-2) !important; }
 .bg-zinc-900 { background-color: var(--bg-3) !important; }
 
-/* Ensure PaymentModal dark overlay stays dark */
+
 .payment-modal-overlay { background: rgba(10, 10, 15, 0.9) !important; }
 
 .font-playfair {
   font-family: 'Georgia', 'Times New Roman', serif;
 }
 
-/* ── Navbar light theme ── */
+
 .navbar-bg {
   background: rgba(247, 246, 242, 0.88) !important;
 }
+
+
+.hover-accent:hover         { color: var(--accent) !important; }
+.hover-text-primary:hover   { color: var(--text-primary) !important; }
+.hover-border-accent:hover  { border-color: var(--accent-border) !important; }
+.hover-bg-accent-dim:hover  { background: var(--accent-dim) !important; }
+.hover-bg-3:hover           { background: var(--bg-3) !important; }
+.ap-link                    { transition: color 0.2s ease, border-color 0.2s ease; }

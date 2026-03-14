@@ -7,9 +7,8 @@ import { AdminConfig } from "@/lib/adminConfig";
 import { getPostBySlug, getAllSlugs } from "@/lib/blog";
 import { ShareBar } from "./share-bar";
 
-export const dynamicParams = false; 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const dynamicParams = false;
+export const revalidate    = 0;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -25,11 +24,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!post) return {};
   const url = `${AdminConfig.SITE_URL}/blog/${post.slug}`;
   return {
-    title: `${post.title} · ${AdminConfig.SITE_NAME}`,
+    title:       `${post.title} · ${AdminConfig.SITE_NAME}`,
     description: post.description,
     metadataBase: new URL(AdminConfig.SITE_URL),
-    alternates: { canonical: url },
-    authors: [{ name: post.author, url: post.authorUrl }],
+    alternates:  { canonical: url },
+    authors:     [{ name: post.author, url: post.authorUrl }],
     openGraph: {
       title: post.title, description: post.description, url,
       siteName: AdminConfig.SITE_NAME, type: "article",
@@ -54,34 +53,28 @@ export default async function BlogPostPage({ params }: Props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    headline: post.title,
-    description: post.description,
-    datePublished: post.date,
-    image: post.image,
+    headline:        post.title,
+    description:     post.description,
+    datePublished:   post.date,
+    image:           post.image,
     author: {
       "@type": "Person",
-      name: post.author,
-      url: post.authorUrl,
+      name:    post.author,
+      url:     post.authorUrl,
       sameAs: [AdminConfig.FOUNDER_TWITTER, post.authorUrl],
     },
     publisher: {
       "@type": "Organization",
-      name: AdminConfig.SITE_NAME,
-      url: AdminConfig.SITE_URL,
-      logo: `${AdminConfig.SITE_URL}/arcapush_logo.png`,
+      name:    AdminConfig.SITE_NAME,
+      url:     AdminConfig.SITE_URL,
+      logo:    `${AdminConfig.SITE_URL}/arcapush_logo.png`,
     },
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": `${AdminConfig.SITE_URL}/blog/${post.slug}`,
     },
-    url: `${AdminConfig.SITE_URL}/blog/${post.slug}`,
+    url:      `${AdminConfig.SITE_URL}/blog/${post.slug}`,
     keywords: ["vibe coding", "vibe coder", "VC startups", "AI startups", post.category],
-  };
-
-  
-  const prose = {
-    h2: "text-2xl md:text-3xl font-black uppercase tracking-tighter mt-16 mb-6 pb-4",
-    h3: "text-xl font-black uppercase tracking-tighter mt-10 mb-4",
   };
 
   return (
@@ -89,15 +82,18 @@ export default async function BlogPostPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <main className="flex-grow">
-        {/* Header */}
+
+        {/* ── Header ────────────────────────────────────────────────────── */}
         <header className="pt-32 pb-10 px-6 max-w-3xl mx-auto">
-          <Link href="/blog"
-            className="inline-flex items-center gap-2 ap-label hover:text-[var(--text-primary)] mb-10 transition-colors"
+          {/* Back link — CSS hover only, no JS handlers */}
+          <Link
+            href="/blog"
+            className="ap-link ap-label hover-accent inline-flex items-center gap-2 mb-10 transition-colors"
           >
             ← Back to The Signal
           </Link>
 
-          {/* Category + Read Time */}
+          {/* Category + read time */}
           <div className="flex items-center gap-3 mb-6">
             <span
               className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border"
@@ -125,7 +121,9 @@ export default async function BlogPostPage({ params }: Props) {
           >
             <div className="flex items-center gap-4">
               {post.authorImage ? (
-                <Image src={post.authorImage} alt={post.author} width={40} height={40}
+                <Image
+                  src={post.authorImage} alt={post.author}
+                  width={40} height={40}
                   className="rounded-full object-cover flex-shrink-0"
                   style={{ border: "2px solid var(--accent-border)" }}
                 />
@@ -138,16 +136,20 @@ export default async function BlogPostPage({ params }: Props) {
                 </div>
               )}
               <div>
-                <a href={post.authorUrl} target="_blank" rel="noopener noreferrer"
-                  className="text-xs font-black uppercase tracking-widest transition-colors"
+                {/* Author link — CSS hover via class, no JS handler */}
+                <a
+                  href={post.authorUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ap-link text-xs font-black uppercase tracking-widest hover-accent"
                   style={{ color: "var(--text-primary)" }}
-                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--accent)")}
-                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")}
                 >
                   {post.author}
                 </a>
                 <p className="ap-label mt-0.5">
-                  {new Date(post.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                  {new Date(post.date).toLocaleDateString("en-US", {
+                    month: "long", day: "numeric", year: "numeric",
+                  })}
                 </p>
               </div>
             </div>
@@ -155,35 +157,49 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </header>
 
-        {/* Cover image */}
+        {/* ── Cover image ────────────────────────────────────────────────── */}
         <div className="px-6 max-w-3xl mx-auto mb-14">
           <div className="relative w-full h-[320px] md:h-[460px] rounded-[2rem] overflow-hidden">
             <Image src={post.image} alt={post.title} fill priority className="object-cover" />
           </div>
         </div>
 
-        {/* Article body */}
+        {/* ── Article body ───────────────────────────────────────────────── */}
         <article className="px-6 max-w-3xl mx-auto pb-14">
           <ReactMarkdown
             components={{
               h2: ({ children }) => (
-                <h2 className={prose.h2} style={{ color: "var(--text-primary)", borderBottom: "1px solid var(--border)" }}>{children}</h2>
+                <h2
+                  className="text-2xl md:text-3xl font-black uppercase tracking-tighter mt-16 mb-6 pb-4"
+                  style={{ color: "var(--text-primary)", borderBottom: "1px solid var(--border)" }}
+                >
+                  {children}
+                </h2>
               ),
               h3: ({ children }) => (
-                <h3 className={prose.h3} style={{ color: "var(--text-primary)" }}>{children}</h3>
+                <h3
+                  className="text-xl font-black uppercase tracking-tighter mt-10 mb-4"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {children}
+                </h3>
               ),
               p: ({ children }) => (
-                <p className="text-base leading-[1.9] mb-6" style={{ color: "var(--text-secondary)" }}>{children}</p>
+                <p className="text-base leading-[1.9] mb-6" style={{ color: "var(--text-secondary)" }}>
+                  {children}
+                </p>
               ),
               strong: ({ children }) => (
                 <strong className="font-black" style={{ color: "var(--text-primary)" }}>{children}</strong>
               ),
               a: ({ href, children }) => (
-                <a href={href} target="_blank" rel="noopener noreferrer"
-                  className="underline underline-offset-4 transition-colors"
+                /* Markdown links — CSS hover only */
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ap-link underline underline-offset-4 hover-accent"
                   style={{ color: "var(--accent)" }}
-                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.8")}
-                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
                 >
                   {children}
                 </a>
@@ -197,21 +213,24 @@ export default async function BlogPostPage({ params }: Props) {
                 </li>
               ),
               blockquote: ({ children }) => (
-                <blockquote className="pl-6 my-8 italic text-lg leading-relaxed"
+                <blockquote
+                  className="pl-6 my-8 italic text-lg leading-relaxed"
                   style={{ borderLeft: "2px solid var(--accent)", color: "var(--text-secondary)" }}
                 >
                   {children}
                 </blockquote>
               ),
               code: ({ children }) => (
-                <code className="rounded px-2 py-0.5 text-sm font-mono"
+                <code
+                  className="rounded px-2 py-0.5 text-sm font-mono"
                   style={{ background: "var(--bg-3)", border: "1px solid var(--border)", color: "var(--accent)" }}
                 >
                   {children}
                 </code>
               ),
               pre: ({ children }) => (
-                <pre className="rounded-2xl p-6 overflow-x-auto my-8 text-sm"
+                <pre
+                  className="rounded-2xl p-6 overflow-x-auto my-8 text-sm"
                   style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
                 >
                   {children}
@@ -224,16 +243,19 @@ export default async function BlogPostPage({ params }: Props) {
               ),
               thead: ({ children }) => <thead style={{ background: "var(--bg-3)" }}>{children}</thead>,
               tbody: ({ children }) => <tbody className="divide-y" style={{ borderColor: "var(--border)" }}>{children}</tbody>,
-              tr: ({ children }) => <tr className="transition-colors" style={{ color: "var(--text-secondary)" }}>{children}</tr>,
+              tr:    ({ children }) => <tr style={{ color: "var(--text-secondary)" }}>{children}</tr>,
               th: ({ children }) => (
-                <th className="text-left text-xs font-black uppercase tracking-widest px-6 py-4 whitespace-nowrap"
+                <th
+                  className="text-left text-xs font-black uppercase tracking-widest px-6 py-4 whitespace-nowrap"
                   style={{ color: "var(--text-tertiary)", borderBottom: "1px solid var(--border)" }}
                 >
                   {children}
                 </th>
               ),
               td: ({ children }) => (
-                <td className="text-sm px-6 py-4 align-middle" style={{ color: "var(--text-secondary)" }}>{children}</td>
+                <td className="text-sm px-6 py-4 align-middle" style={{ color: "var(--text-secondary)" }}>
+                  {children}
+                </td>
               ),
               hr: () => <hr className="my-12" style={{ borderColor: "var(--border)" }} />,
             }}
@@ -242,34 +264,36 @@ export default async function BlogPostPage({ params }: Props) {
           </ReactMarkdown>
         </article>
 
-        {/* Bottom share bar */}
+        {/* ── Bottom share bar ───────────────────────────────────────────── */}
         <div className="px-6 max-w-3xl mx-auto pb-10 pt-8" style={{ borderTop: "1px solid var(--border)" }}>
           <p className="ap-label mb-4">Found this useful? Pass it on.</p>
           <ShareBar title={post.title} slug={post.slug} />
         </div>
 
-        {/* CTA */}
+        {/* ── CTA ────────────────────────────────────────────────────────── */}
         <div className="px-6 max-w-3xl mx-auto pb-20 pt-6">
           <div
             className="rounded-[2rem] p-10 text-center"
             style={{ background: "var(--bg-2)", border: "1px solid var(--accent-border)" }}
           >
             <p className="ap-label mb-3">Arcapush Registry</p>
-            <h3 className="text-2xl font-black uppercase tracking-tighter mb-4" style={{ color: "var(--text-primary)" }}>
+            <h3
+              className="text-2xl font-black uppercase tracking-tighter mb-4"
+              style={{ color: "var(--text-primary)" }}
+            >
               Is your product listed?
             </h3>
             <p className="text-sm mb-8 max-w-md mx-auto" style={{ color: "var(--text-secondary)" }}>
-              Submit your vibe-coded product and get permanently indexed in the registry. Free for every founder.
+              Submit your vibe-coded product and get permanently indexed. Free for every founder.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/submit" className="ap-btn-primary">List Your Product</Link>
+              <Link href="/submit"   className="ap-btn-primary">List Your Product</Link>
               <Link href="/registry" className="ap-btn-ghost">Browse Registry</Link>
             </div>
           </div>
         </div>
+
       </main>
     </div>
   );
 }
-
-
