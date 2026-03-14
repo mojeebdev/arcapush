@@ -5,7 +5,6 @@ import { ProblemSection }   from "@/components/home/ProblemSection";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { ProofBar }         from "@/components/home/ProofBar";
 import { ProductsSection }  from "@/components/home/ProductsSection";
-import { InvestorSection }  from "@/components/home/InvestorSection";
 import { PricingSection }   from "@/components/home/PricingSection";
 import { FinalCTA }         from "@/components/home/FinalCTA";
 import { HeroPin }          from "@/components/HeroPin";
