@@ -4,7 +4,7 @@ import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-// ── Animated counter (from old Hero.tsx) ──────────────────────────────────────
+
 function useAnimatedCount(target: number, duration = 2.2) {
   const count   = useMotionValue(0);
   const rounded = useTransform(count, (v) => Math.floor(v).toLocaleString());
@@ -15,7 +15,7 @@ function useAnimatedCount(target: number, duration = 2.2) {
   return rounded;
 }
 
-// ── Floating particles (from old Hero.tsx) ────────────────────────────────────
+
 const Particle = ({ x, y, delay }: { x: string; y: string; delay: number }) => (
   <motion.div
     className="absolute w-px h-px rounded-full"
@@ -36,7 +36,7 @@ const PARTICLES = [
   { x: "44%", y: "42%" }, { x: "66%", y: "37%" }, { x: "28%", y: "32%" },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
+
 export function HeroSection({ totalCount }: { totalCount: string }) {
   const numericCount  = parseInt(totalCount?.replace(/\D/g, "") || "0", 10);
   const animatedCount = useAnimatedCount(numericCount);
@@ -51,18 +51,18 @@ export function HeroSection({ totalCount }: { totalCount: string }) {
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-14"
       style={{ background: "var(--bg)" }}
     >
-      {/* ── Grid (HTML design) ──────────────────────────────────────────────── */}
+      
       <div
         className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000"
         style={{
-          opacity: gridVisible ? 0.06 : 0,
+          opacity: gridVisible ? 0.5 : 0,
           backgroundImage:
-            "linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)",
+            "linear-gradient(var(--rule, #D6D2C8) 1px, transparent 1px), linear-gradient(90deg, var(--rule, #D6D2C8) 1px, transparent 1px)",
           backgroundSize: "64px 64px",
         }}
       />
 
-      {/* ── Blobs (HTML design adapted to light theme) ──────────────────────── */}
+      
       <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full pointer-events-none"
         style={{ background: "rgba(91,43,255,0.06)", filter: "blur(100px)", animation: "drift 12s ease-in-out infinite alternate" }}
       />
@@ -73,14 +73,14 @@ export function HeroSection({ totalCount }: { totalCount: string }) {
         style={{ background: "rgba(91,43,255,0.03)", filter: "blur(70px)", animation: "drift 12s ease-in-out infinite alternate", animationDelay: "-8s" }}
       />
 
-      {/* ── Floating particles (old Hero.tsx) ───────────────────────────────── */}
+      
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {PARTICLES.map((p, i) => (
           <Particle key={i} x={p.x} y={p.y} delay={i * 0.4} />
         ))}
       </div>
 
-      {/* ── Hero BG image (old Hero.tsx) ─────────────────────────────────────── */}
+      
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
         <motion.div
           initial={{ y: "35%", opacity: 0, scale: 1.05 }}

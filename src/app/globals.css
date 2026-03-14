@@ -3,31 +3,32 @@
 @tailwind utilities;
 
 :root {
-  
+  /* ── Backgrounds (off-white / cream palette) ── */
   --bg:        #F7F6F2;
   --bg-2:      #EFEDE6;
   --bg-3:      #E8E5DC;
   --bg-4:      #DDD9CE;
 
-  
+  /* ── Accent (purple — works on light) ── */
   --accent:        #5B2BFF;
   --accent-dim:    rgba(91, 43, 255, 0.08);
   --accent-border: rgba(91, 43, 255, 0.2);
 
- 
+  /* ── Text ── */
   --text-primary:   #0A0A0F;
   --text-secondary: #4A4845;
   --text-tertiary:  #8A8580;
 
-
+  /* ── Borders / Rules ── */
   --border:      rgba(10, 10, 15, 0.1);
   --border-2:    rgba(10, 10, 15, 0.18);
+  --rule:        #D6D2C8;
 
-  
+  /* ── Legacy named colors (kept for components that reference them) ── */
   --purple: #5B2BFF;
   --gold:   #D4AF37;
 
- 
+  /* ── Ink aliases (match HTML design) ── */
   --ink:    #0A0A0F;
   --rule:   #D6D2C8;
   --muted:  #8A8580;
@@ -56,7 +57,7 @@ body {
   position: relative;
 }
 
-
+/* Subtle noise texture overlay */
 body::after {
   content: '';
   position: fixed;
@@ -78,7 +79,7 @@ body::after {
 ::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent-border); }
 
-
+/* ── Typography Utilities ── */
 .ap-display {
   font-family: var(--font-syne), sans-serif;
   font-weight: 800;
@@ -105,6 +106,7 @@ body::after {
   color: var(--text-tertiary);
 }
 
+/* ── Pill ── */
 .ap-pill {
   display: inline-flex;
   align-items: center;
@@ -121,7 +123,7 @@ body::after {
   color: var(--accent);
 }
 
-
+/* ── Buttons ── */
 .ap-btn-primary {
   display: inline-flex;
   align-items: center;
@@ -174,7 +176,7 @@ body::after {
   background: rgba(10, 10, 15, 0.04);
 }
 
-
+/* ── Card ── */
 .ap-card {
   background: var(--bg-2);
   border: 1px solid var(--border);
@@ -186,6 +188,7 @@ body::after {
   background: var(--bg-3);
 }
 
+/* ── Inputs ── */
 .ap-input {
   width: 100%;
   background: #fff;
@@ -237,13 +240,14 @@ body::after {
   box-shadow: 0 8px 32px rgba(91, 43, 255, 0.2);
 }
 
+/* ── Divider ── */
 .ap-divider {
   height: 1px;
   background: var(--border);
   width: 100%;
 }
 
-
+/* ── Animations ── */
 @keyframes ticker {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -274,19 +278,19 @@ body::after {
   100% { transform: translate(30px, -20px) scale(1.05); }
 }
 
-
+/* ── Legacy overrides (components that use old dark bg classes) ── */
 .bg-black    { background-color: var(--bg-2) !important; }
 .bg-zinc-950 { background-color: var(--bg-2) !important; }
 .bg-zinc-900 { background-color: var(--bg-3) !important; }
 
-
+/* Ensure PaymentModal dark overlay stays dark */
 .payment-modal-overlay { background: rgba(10, 10, 15, 0.9) !important; }
 
 .font-playfair {
   font-family: 'Georgia', 'Times New Roman', serif;
 }
 
-
+/* ── Navbar light theme ── */
 .navbar-bg {
   background: rgba(247, 246, 242, 0.88) !important;
 }
