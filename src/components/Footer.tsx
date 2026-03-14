@@ -15,29 +15,34 @@ type FooterLinks = {
 
 const FOOTER_LINKS: FooterLinks = {
   Discover: [
-    { href: "/registry", label: "Registry"       },
-    { href: "/blog",     label: "Blog"           },
-    { href: "/pricing",  label: "Boost Listing"  },
-    { href: "/about",    label: "About"          },
+    { href: "/registry", label: "Registry" },
+    { href: "/blog", label: "Blog" },
+    { href: "/pricing", label: "Boost Listing" },
+    { href: "/about", label: "About" },
   ],
   Founders: [
-    { href: "/submit",    label: "List a Product" },
-    { href: "/pricing",   label: "Pricing"        },
-    { href: "/docs",      label: "Docs"           },
-    { href: "/investors", label: "VC Panel"       },
+    { href: "/submit", label: "List a Product" },
+    { href: "/pricing", label: "Pricing" },
+    { href: "/docs", label: "Docs" },
+    { href: "/investors", label: "VC Panel" },
   ],
   Intelligence: [
-    { href: "/blog/what-is-vibe-coding",            label: "What is Vibe Coding?"  },
-    { href: "/blog/andrej-karpathy-vibe-coding",    label: "Origin of Vibe Coding" },
-    { href: "/blog/vc-backed-vibe-coding-startups", label: "VC-Backed Startups"    },
-    { href: "/blog/best-vibe-coding-tools-2026",    label: "Best Tools 2026"       },
-    { href: "/blog/claude-vs-chatgpt-vibe-coding",  label: "Claude vs ChatGPT"     },
-    { href: "/blog/cursor-vs-github-copilot",       label: "Cursor vs Copilot"     },
+    { href: "/blog/what-is-vibe-coding", label: "What is Vibe Coding?" },
+    { href: "/blog/andrej-karpathy-vibe-coding", label: "Origin of Vibe Coding" },
+    { href: "/blog/vc-backed-vibe-coding-startups", label: "VC-Backed Startups" },
+    { href: "/blog/best-vibe-coding-tools-2026", label: "Best Tools 2026" },
+    { href: "/blog/claude-vs-chatgpt-vibe-coding", label: "Claude vs ChatGPT" },
+    { href: "/blog/cursor-vs-github-copilot", label: "Cursor vs Copilot" },
+  ],
+  // ADDED LEGAL SECTION FOR GSC COMPLIANCE
+  Legal: [
+    { href: "/privacy", label: "Privacy Policy" },
+    { href: "/terms", label: "Terms of Service" },
   ],
   Connect: [
     { href: "https://twitter.com/arcapush", label: "X / Twitter", external: true },
-    { href: "https://mojeeb.xyz",           label: "Founder",      external: true },
-    { href: "https://blindspotlab.xyz",     label: "BlindspotLab", external: true },
+    { href: "https://mojeeb.xyz", label: "Founder", external: true },
+    { href: "https://blindspotlab.xyz", label: "BlindspotLab", external: true },
   ],
 };
 
@@ -75,7 +80,8 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Top — Brand + Links */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-12 mb-16">
+        {/* Changed grid-cols to 3 on mobile and 6 on desktop to fit the new column */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-12 mb-16">
 
           {/* Brand column */}
           <div className="col-span-2 md:col-span-1">
