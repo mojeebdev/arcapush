@@ -134,7 +134,7 @@ export default async function HomePage() {
       <ProductsSection startups={featuredStartups as any} />
 
       
-      <InvestorSection />
+      
 
       
       <PricingSection />
