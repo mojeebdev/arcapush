@@ -6,83 +6,55 @@ datasource db {
   provider = "postgresql"
 }
 
-enum StartupTier {
-  FREE
-  PINNED
-}
-
-enum RequestStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}
-
 model User {
-  id            String   @id @default(cuid())
-
-  walletAddress String?  @unique
-  email         String?  @unique
-  name          String?
-  role          String   @default("viewer") // viewer | founder | admin
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  startups       Startup[]
-  accessRequests AccessRequest[]
-  onboardingComplete  Boolean   @default(false)
-  twitterHandle       String?
-  bio                 String?
-  accounts            Account[]
-  sessions            Session[]
+  id                 String          @id @default(cuid())
+  walletAddress      String?         @unique
+  email              String?         @unique
+  name               String?
+  role               String          @default("viewer")
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  onboardingComplete Boolean         @default(false)
+  twitterHandle      String?
+  bio                String?
+  accessRequests     AccessRequest[]
+  Account            Account[]
+  Session            Session[]
+  startups           Startup[]
 }
 
 model Startup {
-  id                String   @id @default(cuid())
-
-
-  slug              String?  @unique           // SEO-friendly URL: /startup/lovable
-  metaTitle         String?                    // Custom <title> tag (falls back to name)
-  metaDescription   String?  @db.Text          // Custom <meta name="description"> (falls back to tagline)
-  canonicalUrl      String?                    // Override canonical if needed (rare)
-
-  
-  name              String
-  tagline           String
-  problemStatement  String   @db.Text
-  bannerUrl         String
-  logoUrl           String?
-  category          String   @default("DeFi")
-  website           String?
-  twitter           String?
-
-
-  founderName       String
-  founderEmail      String
-  founderLinkedIn   String?
-  founderTwitter    String?
-  pitchDeckUrl      String?
-
-  
-  approved          Boolean     @default(false)
-
-
-  tier              StartupTier @default(FREE)
-  pinnedAt          DateTime?
-  pinnedUntil       DateTime?
-  pinTxHash         String?
-  pinChain          String?     // "base" | "solana"
-
-  
-  founderId         String?
-  founder           User?        @relation(fields: [founderId], references: [id])
-  accessRequests    AccessRequest[]
-  reviews           Review[]                    // ← NEW
-
-  
-  viewCount         Int          @default(0)
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
-
+  id               String          @id @default(cuid())
+  name             String
+  tagline          String
+  problemStatement String
+  bannerUrl        String
+  logoUrl          String?
+  category         String          @default("DeFi")
+  website          String?
+  twitter          String?
+  founderName      String
+  founderEmail     String
+  founderLinkedIn  String?
+  founderTwitter   String?
+  pitchDeckUrl     String?
+  tier             StartupTier     @default(FREE)
+  pinnedAt         DateTime?
+  pinnedUntil      DateTime?
+  pinTxHash        String?
+  pinChain         String?
+  founderId        String?
+  viewCount        Int             @default(0)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  approved         Boolean         @default(false)
+  slug             String?         @unique
+  metaTitle        String?
+  metaDescription  String?
+  canonicalUrl     String?
+  accessRequests   AccessRequest[]
+  reviews          Review[]
+  founder          User?           @relation(fields: [founderId], references: [id])
 
   @@index([tier, pinnedUntil])
   @@index([createdAt])
@@ -93,26 +65,18 @@ model Startup {
 
 model AccessRequest {
   id                String        @id @default(cuid())
-
-  // Requester info
-  requesterName      String
-  requesterEmail     String
-  requesterFirm      String
-  requesterRole      String?
-  requesterLinkedIn  String?
-
-  // Status
-  status             RequestStatus @default(PENDING)
-
-  // Relations
-  startupId          String
-  startup            Startup       @relation(fields: [startupId], references: [id], onDelete: Cascade)
-  requesterId        String?
-  requester          User?         @relation(fields: [requesterId], references: [id])
-
-  // Timestamps
-  createdAt          DateTime      @default(now())
-  reviewedAt         DateTime?
+  requesterName     String
+  requesterEmail    String
+  requesterFirm     String
+  requesterRole     String?
+  requesterLinkedIn String?
+  status            RequestStatus @default(PENDING)
+  startupId         String
+  requesterId       String?
+  createdAt         DateTime      @default(now())
+  reviewedAt        DateTime?
+  requester         User?         @relation(fields: [requesterId], references: [id])
+  startup           Startup       @relation(fields: [startupId], references: [id], onDelete: Cascade)
 
   @@unique([requesterEmail, startupId])
   @@index([startupId, status])
@@ -121,10 +85,10 @@ model AccessRequest {
 model Payment {
   id          String    @id @default(cuid())
   startupId   String
-  chain       String    // "base" | "solana"
+  chain       String
   txHash      String    @unique
   amount      String
-  currency    String    // "USDC" | "SOL"
+  currency    String
   walletFrom  String
   walletTo    String
   confirmedAt DateTime?
@@ -133,26 +97,53 @@ model Payment {
   @@index([startupId])
 }
 
-
 model Review {
-  id          String   @id @default(cuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  name      String
+  email     String
+  rating    Int
+  comment   String
+  startupId String
+  createdAt DateTime @default(now())
+  startup   Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  // Who left it
-  name        String                  // shown publicly
-  email       String                  // stored only, never shown publicly
-
-  // The review
-  rating      Int                     // 1 to 5
-  comment     String   @db.Text
-
-  // Which startup
-  startupId   String
-  startup     Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade)
-
-  // Timestamps
-  createdAt   DateTime @default(now())
-
-  // One review per email per startup
   @@unique([email, startupId])
   @@index([startupId])
+}
+
+model Account {
+  id                String  @id
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  User              User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+enum StartupTier {
+  FREE
+  PINNED
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
