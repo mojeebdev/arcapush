@@ -7,6 +7,7 @@ import { AdminConfig } from "@/lib/adminConfig";
 import { getPostBySlug, getAllSlugs } from "@/lib/blog";
 import { ShareBar } from "./share-bar";
 
+export const dynamicParams = false; 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 

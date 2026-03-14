@@ -1,4 +1,3 @@
-
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
@@ -43,17 +42,17 @@ export function getAllPosts(): Omit<BlogPost, "content">[] {
       const raw = fs.readFileSync(path.join(dir, filename), "utf-8");
       const { data } = matter(raw);
       return {
-        slug: filename.replace(".md", ""),
-        title: data.title,
+        slug:        filename.replace(".md", ""),
+        title:       data.title,
         description: data.description,
-        date: data.date,
-        author: data.author ?? "Mojeeb",
-        authorUrl: data.authorUrl ?? "https://mojeeb.xyz",
+        date:        data.date,
+        author:      data.author     ?? "Mojeeb",
+        authorUrl:   data.authorUrl  ?? "https://mojeeb.xyz",
         authorImage: data.authorImage,
-        category: data.category ?? "Insights",
-        readTime: data.readTime ?? "5 min read",
-        image: data.image ?? "/og-arcapush.png", 
-        featured: data.featured ?? false,
+        category:    data.category   ?? "Insights",
+        readTime:    data.readTime   ?? "5 min read",
+        image:       data.image      ?? "/og-arcapush.png",
+        featured:    data.featured   ?? false,
       };
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -61,6 +60,17 @@ export function getAllPosts(): Omit<BlogPost, "content">[] {
 
 export function getPostBySlug(slug: string): BlogPost | null {
   const dir = getBlogDir();
+
+  
+  if (
+    !slug ||
+    /\.(jpe?g|png|gif|webp|svg|ico|mp4|pdf|css|js|woff2?)$/i.test(slug) ||
+    slug.includes("/") ||
+    slug.includes("\\")
+  ) {
+    return null;
+  }
+
   const filePath = path.join(dir, `${slug}.md`);
 
   if (!fs.existsSync(filePath)) {
@@ -78,16 +88,16 @@ export function getPostBySlug(slug: string): BlogPost | null {
 
   return {
     slug,
-    title: data.title,
+    title:       data.title,
     description: data.description,
-    date: data.date,
-    author: data.author ?? "Mojeeb",
-    authorUrl: data.authorUrl ?? "https://mojeeb.xyz",
+    date:        data.date,
+    author:      data.author     ?? "Mojeeb",
+    authorUrl:   data.authorUrl  ?? "https://mojeeb.xyz",
     authorImage: data.authorImage,
-    category: data.category ?? "Insights",
-    readTime: data.readTime ?? "5 min read",
-    image: data.image ?? "/og-arcapush.png", 
-    featured: data.featured ?? false,
+    category:    data.category   ?? "Insights",
+    readTime:    data.readTime   ?? "5 min read",
+    image:       data.image      ?? "/og-arcapush.png",
+    featured:    data.featured   ?? false,
     content,
   };
 }
