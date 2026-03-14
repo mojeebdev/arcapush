@@ -184,9 +184,9 @@ export function HeroSection({ totalCount }: { totalCount: string }) {
           <Link href="/submit" className="ap-btn-primary">
             List Your Product Free <span>→</span>
           </Link>
-          <a href="/blog/how-arcapush-works" className="ap-btn-ghost">
+          <Link href="/how-it-works" className="ap-btn-ghost">
             ↓ See how it works
-          </a>
+          </Link>
         </motion.div>
 
         {/* Live badge (old Hero.tsx animated count) */}

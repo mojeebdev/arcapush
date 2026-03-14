@@ -21,7 +21,7 @@ const USDC_ABI = [
   },
 ] as const;
 
-// ── Perks per boost package (derived from label) ─────────────────────────────
+
 const BOOST_PERKS: Record<string, string[]> = {
   "30m": ["Permanent indexed listing", "Search engine indexed", "90 rotations"],
   "1d":  ["Everything in 30m", "X storytelling post", "Discovery feed priority", "Featured badge"],
@@ -46,7 +46,7 @@ export default function PricingPage() {
       .then((d) => setApprovedStartups(d.startups || []));
   }, []);
 
-  // ── Base USDC payment ──────────────────────────────────────────────────────
+  
   const handleBasePayment = async (plan: typeof AdminConfig.PIN_PACKAGES[number]) => {
     if (!selectedStartupId) return toast.error("Select your product first.");
     if (!isConnected)       return toast.error("Connect your wallet.");
