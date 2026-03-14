@@ -32,7 +32,6 @@ export function Navbar() {
 
   const { address: evmAddress, isConnected: isEvmConnected } = useAccount();
   const { disconnect: disconnectEvm } = useDisconnect();
-  const activeChainId = useChainId();
   const connectors = useConnectors();
   const { connect: connectEvm } = useConnect();
 
@@ -72,38 +71,36 @@ export function Navbar() {
       }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 gap-8">
+        <div className="flex items-center justify-between h-14 gap-6">
 
           {/* Logo */}
-          <Link href="/" className="shrink-0 group">
+          <Link href="/" className="inline-block mb-4">
             <Image
               src="/arcapush_wordmark.png"
               alt="Arcapush"
-              width={120}
-              height={28}
-              className="h-7 w-auto object-contain"
+              width={140}
+              height={32}
+              className="h-8 w-auto object-contain"
               priority
             />
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-6">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs font-black uppercase tracking-widest transition-colors"
+                className="text-xs font-black uppercase tracking-widest transition-colors hover:[color:var(--text-primary)]"
                 style={{ color: "var(--text-tertiary)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-primary)")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-tertiary)")}
               >
                 {link.label}
               </Link>
             ))}
           </div>
 
-          {/* Search */}
-          <div className="flex-1 max-w-sm hidden md:block">
+          {/* Search — takes remaining space */}
+          <div className="flex-1 max-w-xs hidden md:block">
             <GlobalSearch />
           </div>
 
@@ -207,29 +204,12 @@ export function Navbar() {
             ) : status === "unauthenticated" ? (
               <button
                 onClick={() => signIn()}
-                className="text-xs font-black uppercase tracking-widest px-4 py-2.5 rounded-xl transition-all"
-                style={{
-                  background: "var(--bg-3)",
-                  border: "1px solid var(--border)",
-                  color: "var(--text-secondary)",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)";
-                  (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
-                  (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
-                }}
+                className="ap-btn-primary"
+                style={{ padding: "0.65rem 1.5rem" }}
               >
-                Sign In
+                Get Started →
               </button>
             ) : null}
-
-            {/* Primary CTA */}
-            <Link href="/submit" className="ap-btn-primary" style={{ padding: "0.65rem 1.5rem" }}>
-              List Product
-            </Link>
 
           </div>
 
@@ -279,16 +259,15 @@ export function Navbar() {
             ) : (
               <button
                 onClick={() => signIn()}
-                className="text-xs font-black uppercase tracking-widest py-3 rounded-xl"
-                style={{ color: "var(--text-secondary)", background: "var(--bg-3)", border: "1px solid var(--border)" }}
+                className="ap-btn-primary text-center py-3 rounded-xl"
               >
-                Sign In
+                Get Started →
               </button>
             )}
             <Link
               href="/submit"
               onClick={() => setMobileOpen(false)}
-              className="ap-btn-primary text-center"
+              className="ap-btn-ghost text-center"
             >
               List Product
             </Link>

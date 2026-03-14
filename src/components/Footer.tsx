@@ -84,8 +84,8 @@ export function Footer() {
                 src="/arcapush_wordmark.png"
                 alt="Arcapush"
                 width={120}
-                height={24}
-                className="h-6 w-auto object-contain"
+                height={32}
+                className="h-8 w-auto object-contain"
               />
             </Link>
             <p

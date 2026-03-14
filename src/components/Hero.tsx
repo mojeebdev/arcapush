@@ -106,14 +106,14 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full text-center">
+      <div className="max-w-5xl mx-auto px-6 lg:px-8 relative z-10 w-full text-center">
 
         {/* Eyebrow */}
         <motion.div
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3 }}
-          className="flex justify-center mb-5"
+          className="flex justify-center mb-4"
         >
           <div className="ap-pill">
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--accent)" }} />
@@ -127,7 +127,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="font-black uppercase tracking-tighter leading-[0.92] mb-4"
-          style={{ fontSize: "clamp(2.2rem, 7vw, 6rem)" }}
+          style={{ fontSize: "clamp(2rem, 6vw, 5rem)" }}
         >
           <span className="block" style={{ color: "var(--text-primary)" }}>List Once.</span>
           <span className="block" style={{ color: "var(--text-secondary)" }}>Google Indexes It.</span>
@@ -139,7 +139,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           initial={{ scaleX: 0, opacity: 0 }}
           animate={{ scaleX: 1, opacity: 1 }}
           transition={{ duration: 0.9, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
-          className="w-20 h-px mx-auto mb-4"
+          className="w-16 h-px mx-auto mb-4"
           style={{
             background: "linear-gradient(to right, transparent, var(--accent-border), transparent)",
             transformOrigin: "center",
@@ -151,7 +151,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.95 }}
-          className="text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-3"
+          className="text-sm md:text-base max-w-xl mx-auto leading-relaxed mb-3"
           style={{ color: "var(--text-secondary)", fontFamily: "Georgia, serif" }}
         >
           The registry for vibe-coded products. Every listing needs a problem statement —
@@ -166,7 +166,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.1 }}
-          className="ap-mono mb-7"
+          className="ap-mono mb-6"
         >
           Problem statement required · Google indexed · VC discovery tooling
         </motion.p>
@@ -176,7 +176,7 @@ export const Hero = ({ totalCount }: { totalCount: string }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.2 }}
-          className="flex flex-col items-center gap-5"
+          className="flex flex-col items-center gap-4"
         >
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 w-full">
             <Link href="/submit" className="ap-btn-primary w-full md:w-auto text-center">
