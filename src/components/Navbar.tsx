@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import {
   HiOutlineBars3,
   HiOutlineXMark,
@@ -11,7 +12,7 @@ import {
   HiOutlineUser,
   HiOutlineArrowRightOnRectangle,
 } from "react-icons/hi2";
-import { useAccount, useConnect, useDisconnect, useChainId, useConnectors } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useConnectors } from "wagmi";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import GlobalSearch from "./GlobalSearch";
@@ -28,6 +29,7 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
+  const router = useRouter();
   const { data: session, status } = useSession();
 
   const { address: evmAddress, isConnected: isEvmConnected } = useAccount();
@@ -74,7 +76,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-14 gap-6">
 
           {/* Logo */}
-          <Link href="/" className="inline-block mb-4">
+          <Link href="/" className="shrink-0">
             <Image
               src="/arcapush_wordmark.png"
               alt="Arcapush"
@@ -99,7 +101,7 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Search — takes remaining space */}
+          {/* Search */}
           <div className="flex-1 max-w-xs hidden md:block">
             <GlobalSearch />
           </div>
@@ -168,31 +170,15 @@ export function Navbar() {
                       <Link
                         href="/submit"
                         onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all hover:[background:var(--bg-3)] hover:[color:var(--text-primary)]"
                         style={{ color: "var(--text-secondary)" }}
-                        onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
-                          (e.currentTarget as HTMLElement).style.background = "var(--bg-3)";
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
-                          (e.currentTarget as HTMLElement).style.background = "transparent";
-                        }}
                       >
                         List a Product
                       </Link>
                       <button
                         onClick={() => { signOut(); setUserMenuOpen(false); }}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all hover:[color:#ff6b6b] hover:[background:rgba(255,60,60,0.05)]"
                         style={{ color: "var(--text-tertiary)" }}
-                        onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLElement).style.color = "#ff6b6b";
-                          (e.currentTarget as HTMLElement).style.background = "rgba(255,60,60,0.05)";
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
-                          (e.currentTarget as HTMLElement).style.background = "transparent";
-                        }}
                       >
                         <HiOutlineArrowRightOnRectangle className="w-3.5 h-3.5" />
                         Sign Out
@@ -203,7 +189,7 @@ export function Navbar() {
               </div>
             ) : status === "unauthenticated" ? (
               <button
-                onClick={() => signIn()}
+                onClick={() => router.push("/auth/signin")}
                 className="ap-btn-primary"
                 style={{ padding: "0.65rem 1.5rem" }}
               >
@@ -258,7 +244,7 @@ export function Navbar() {
               </button>
             ) : (
               <button
-                onClick={() => signIn()}
+                onClick={() => router.push("/auth/signin")}
                 className="ap-btn-primary text-center py-3 rounded-xl"
               >
                 Get Started →
