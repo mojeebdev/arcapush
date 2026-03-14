@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -17,7 +19,7 @@ export interface AdminDashboardProps {
 
 interface StartupSubmission {
   id: string;
-  slug?: string;       
+  slug?: string;
   name: string;
   tagline: string;
   founderName: string;
@@ -49,24 +51,20 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
     try {
       const [startupRes, requestRes] = await Promise.all([
         fetch(`/api/startups`, { headers: { "x-guardian-pin": guardianPin } }),
-        fetch(`/api/access-request`, { headers: { "x-guardian-pin": guardianPin } })
+        fetch(`/api/access-request`, { headers: { "x-guardian-pin": guardianPin } }),
       ]);
-
       const startupData = await startupRes.json();
       const requestData = await requestRes.json();
-
       if (startupRes.ok) setStartups(startupData.startups || []);
       if (requestRes.ok) setRequests(requestData.requests || []);
     } catch {
-      toast.error("Guardian Stream Interrupted");
+      toast.error("Data fetch failed.");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [guardianPin]);
+  useEffect(() => { fetchData(); }, [guardianPin]);
 
   const handleApproveStartup = async (id: string) => {
     try {
@@ -76,7 +74,7 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
         body: JSON.stringify({ approved: true }),
       });
       if (res.ok) {
-        toast.success("Food Item Authorized for Feed");
+        toast.success("Listing approved and founder notified.");
         fetchData();
       }
     } catch {
@@ -92,101 +90,169 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
         body: JSON.stringify({ status: action, adminSecret: guardianPin }),
       });
       if (res.ok) {
-        toast.success(action === "APPROVED" ? "Investor Authorized" : "Signal Silenced");
+        toast.success(action === "APPROVED" ? "Investor access granted." : "Request rejected.");
         fetchData();
       }
     } catch {
-      toast.error("Handshake failed.");
+      toast.error("Action failed.");
     }
   };
 
-  const filteredStartups = startups.filter(s =>
+  const filteredStartups = startups.filter((s) =>
     filter === "ALL" ? true : filter === "APPROVED" ? s.approved : !s.approved
   );
-
-  const filteredRequests = requests.filter(r =>
+  const filteredRequests = requests.filter((r) =>
     filter === "ALL" ? true : filter === "APPROVED" ? r.status === "APPROVED" : r.status === "PENDING"
   );
 
+  // ── Shared button hover helpers ──────────────────────────
+  const hoverAccent = (e: React.MouseEvent) => {
+    (e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)";
+  };
+  const resetBorder = (e: React.MouseEvent) => {
+    (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+  };
+
   return (
     <div className="space-y-8">
-      {/* View Toggle */}
-      <div className="flex bg-zinc-900/50 p-1 rounded-3xl border border-white/5 w-fit">
+
+      {/* View toggle */}
+      <div
+        className="flex p-1 rounded-3xl w-fit"
+        style={{ background: "var(--bg-3)", border: "1px solid var(--border)" }}
+      >
         {(["SUBMISSIONS", "SIGNALS"] as const).map((v) => (
           <button
             key={v}
             onClick={() => setView(v)}
-            className={`px-8 py-3 rounded-2xl text-[10px] font-black tracking-widest transition-all ${
-              view === v ? "bg-white text-black shadow-xl" : "text-zinc-500 hover:text-white"
-            }`}
+            className="px-8 py-3 rounded-2xl text-xs font-black tracking-widest transition-all"
+            style={{
+              background: view === v ? "var(--accent)" : "transparent",
+              color: view === v ? "#0a0a0a" : "var(--text-tertiary)",
+            }}
+            onMouseEnter={(e) => {
+              if (view !== v) (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+            }}
+            onMouseLeave={(e) => {
+              if (view !== v) (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
+            }}
           >
             {v}
           </button>
         ))}
       </div>
 
-      {/* Filter */}
+      {/* Filter pills */}
       <div className="flex items-center gap-2">
         {(["PENDING", "APPROVED", "ALL"] as const).map((s) => (
           <button
             key={s}
             onClick={() => setFilter(s)}
-            className={`px-6 py-2 rounded-full text-[9px] font-black uppercase tracking-widest border ${
-              filter === s ? "bg-[#4E24CF] border-[#4E24CF] text-white" : "bg-zinc-900 text-zinc-500 border-white/5 hover:text-white"
-            }`}
+            className="px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all"
+            style={{
+              background: filter === s ? "var(--accent)" : "var(--bg-3)",
+              border: `1px solid ${filter === s ? "var(--accent)" : "var(--border)"}`,
+              color: filter === s ? "#0a0a0a" : "var(--text-tertiary)",
+            }}
           >
             {s}
           </button>
         ))}
-        <button onClick={fetchData} className="ml-auto p-3 bg-zinc-900 border border-white/5 rounded-full">
-          <HiOutlineArrowPath className={`w-4 h-4 text-zinc-400 ${loading ? "animate-spin" : ""}`} />
+
+        {/* Refresh */}
+        <button
+          onClick={fetchData}
+          className="ml-auto p-3 rounded-full transition-all"
+          style={{ background: "var(--bg-3)", border: "1px solid var(--border)" }}
+          onMouseEnter={hoverAccent}
+          onMouseLeave={resetBorder}
+        >
+          <HiOutlineArrowPath
+            className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+            style={{ color: "var(--text-secondary)" }}
+          />
         </button>
       </div>
 
+      {/* Content */}
       {loading ? (
         <div className="grid gap-4">
           {[1, 2].map((i) => (
-            <div key={i} className="h-40 bg-zinc-900/40 rounded-[2.5rem] animate-pulse border border-white/5" />
+            <div
+              key={i}
+              className="h-40 rounded-[2.5rem] animate-pulse"
+              style={{ background: "var(--bg-3)", border: "1px solid var(--border)" }}
+            />
           ))}
         </div>
       ) : (
         <div className="grid gap-6">
+
+          {/* SUBMISSIONS tab */}
           {view === "SUBMISSIONS" ? (
             filteredStartups.length === 0 ? (
               <EmptyState message="No Submissions Found" />
             ) : (
               filteredStartups.map((startup) => (
-                <div key={startup.id} className="group bg-zinc-950 border border-white/5 rounded-[2.5rem] p-8 hover:border-[#4E24CF]/30 transition-all">
+                <div
+                  key={startup.id}
+                  className="group rounded-[2.5rem] p-8 transition-all"
+                  style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+                  onMouseEnter={hoverAccent}
+                  onMouseLeave={resetBorder}
+                >
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                     <div className="space-y-3">
-                      <div className="flex items-center gap-4">
-                        <span className={`px-3 py-1 rounded-full border text-[8px] font-black uppercase ${
-                          startup.approved ? 'text-emerald-400 border-emerald-400/20' : 'text-[#D4AF37] border-[#D4AF37]/20'
-                        }`}>
-                          {startup.approved ? "LIVE" : "UNAUTHORIZED"}
+
+                      {/* Status + category */}
+                      <div className="flex items-center gap-4 flex-wrap">
+                        <span
+                          className="px-3 py-1 rounded-full border text-xs font-black uppercase"
+                          style={startup.approved
+                            ? { color: "#4ade80", borderColor: "rgba(74,222,128,0.2)" }
+                            : { color: "var(--accent)", borderColor: "var(--accent-border)" }
+                          }
+                        >
+                          {startup.approved ? "LIVE" : "PENDING"}
                         </span>
-                        <span className="text-[9px] font-black text-[#4E24CF] uppercase tracking-widest">
+                        <span className="ap-label" style={{ color: "var(--accent)" }}>
                           {startup.category}
                         </span>
                       </div>
-                      <h4 className="text-3xl font-black text-white italic tracking-tighter uppercase">
+
+                      <h4
+                        className="text-3xl font-black italic tracking-tighter uppercase"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {startup.name}
                       </h4>
-                      <p className="text-zinc-500 text-sm italic">{startup.tagline}</p>
-                      <div className="flex items-center gap-4 text-[10px] text-zinc-600 font-bold uppercase pt-2">
-                        <span className="text-white">Founder: {startup.founderName}</span>
-                        <span>{startup.founderEmail}</span>
+                      <p className="text-sm italic" style={{ color: "var(--text-secondary)" }}>
+                        {startup.tagline}
+                      </p>
+                      <div className="flex items-center gap-4 pt-2">
+                        <span className="text-xs font-bold uppercase" style={{ color: "var(--text-primary)" }}>
+                          Founder: {startup.founderName}
+                        </span>
+                        <span className="ap-label">{startup.founderEmail}</span>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3">
-                      
                       {startup.approved && (
                         <Link
                           href={`/startup/${startup.slug ?? startup.id}`}
                           target="_blank"
-                          className="p-4 bg-zinc-900 border border-white/5 rounded-2xl text-zinc-400 hover:text-white hover:border-[#4E24CF]/50 transition-all"
-                          title="View Live Entry"
+                          className="p-4 rounded-2xl transition-all"
+                          title="View live listing"
+                          style={{ background: "var(--bg-3)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
+                          onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+                            (e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)";
+                          }}
+                          onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+                            (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+                          }}
                         >
                           <HiOutlineArrowUpRight className="w-5 h-5" />
                         </Link>
@@ -194,9 +260,10 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
                       {!startup.approved && (
                         <button
                           onClick={() => handleApproveStartup(startup.id)}
-                          className="px-10 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase hover:bg-[#D4AF37] transition-all"
+                          className="ap-btn-primary"
+                          style={{ padding: "0.9rem 2rem" }}
                         >
-                          Authorize Entry
+                          Approve Listing
                         </button>
                       )}
                     </div>
@@ -204,41 +271,61 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
                 </div>
               ))
             )
+
+          /* SIGNALS tab */
           ) : (
             filteredRequests.length === 0 ? (
-              <EmptyState message="No Investor Signals" />
+              <EmptyState message="No Investor Requests" />
             ) : (
               filteredRequests.map((req) => (
-                <div key={req.id} className="group bg-zinc-950 border border-white/5 rounded-[2.5rem] p-8 hover:border-[#D4AF37]/30 transition-all">
+                <div
+                  key={req.id}
+                  className="group rounded-[2.5rem] p-8 transition-all"
+                  style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+                  onMouseEnter={hoverAccent}
+                  onMouseLeave={resetBorder}
+                >
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                     <div className="space-y-3">
+
+                      {/* Status */}
                       <div className="flex items-center gap-4">
-                        <span className={`px-3 py-1 rounded-full border text-[8px] font-black uppercase ${
-                          req.status === 'APPROVED' ? 'text-emerald-400 border-emerald-400/20' : 'text-[#D4AF37] border-[#D4AF37]/20'
-                        }`}>
+                        <span
+                          className="px-3 py-1 rounded-full border text-xs font-black uppercase"
+                          style={req.status === "APPROVED"
+                            ? { color: "#4ade80", borderColor: "rgba(74,222,128,0.2)" }
+                            : { color: "var(--accent)", borderColor: "var(--accent-border)" }
+                          }
+                        >
                           {req.status}
                         </span>
-                        <span className="text-[9px] font-black text-[#D4AF37] uppercase tracking-widest">
-                          Signal Request
-                        </span>
+                        <span className="ap-label">Investor Request</span>
                       </div>
-                      <h4 className="text-3xl font-black text-white italic tracking-tighter uppercase">
+
+                      <h4
+                        className="text-3xl font-black italic tracking-tighter uppercase"
+                        style={{ color: "var(--text-primary)" }}
+                      >
                         {req.requesterName} @ {req.requesterFirm}
                       </h4>
-                      <div className="flex items-center gap-2 text-zinc-500 text-[10px] font-bold uppercase italic">
-                        <HiOutlineBuildingOffice2 className="w-4 h-4 text-[#4E24CF]" />
+
+                      <div className="flex items-center gap-2 text-xs font-bold uppercase italic" style={{ color: "var(--text-secondary)" }}>
+                        <HiOutlineBuildingOffice2 className="w-4 h-4" style={{ color: "var(--accent)" }} />
                         Target:{" "}
                         {req.startup ? (
                           <Link
                             href={`/startup/${req.startup.slug ?? req.startup.id}`}
                             target="_blank"
-                            className="text-white hover:text-[#D4AF37] transition-colors flex items-center gap-1"
+                            className="flex items-center gap-1 transition-colors"
+                            style={{ color: "var(--text-primary)" }}
+                            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--accent)")}
+                            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")}
                           >
                             {req.startup.name}
                             <HiOutlineArrowUpRight className="w-3 h-3" />
                           </Link>
                         ) : (
-                          <span className="text-white">General Terminal Access</span>
+                          <span style={{ color: "var(--text-primary)" }}>General Access</span>
                         )}
                       </div>
                     </div>
@@ -247,13 +334,19 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
                       <div className="flex gap-3">
                         <button
                           onClick={() => handleApproveInvestor(req.id, "APPROVED")}
-                          className="px-8 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase hover:bg-emerald-400 transition-all"
+                          className="ap-btn-primary"
+                          style={{ padding: "0.9rem 1.75rem" }}
+                          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "#4ade80")}
+                          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--accent)")}
                         >
                           Grant Access
                         </button>
                         <button
                           onClick={() => handleApproveInvestor(req.id, "REJECTED")}
-                          className="p-4 bg-zinc-900 text-zinc-600 hover:text-red-500 rounded-2xl transition-colors"
+                          className="p-4 rounded-2xl transition-colors"
+                          style={{ background: "var(--bg-3)", color: "var(--text-tertiary)", border: "1px solid var(--border)" }}
+                          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#f87171")}
+                          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)")}
                         >
                           <HiOutlineXCircle className="w-6 h-6" />
                         </button>
@@ -272,9 +365,12 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="bg-zinc-950 border border-white/5 rounded-[3rem] p-32 text-center shadow-2xl">
-      <HiOutlineClock className="w-16 h-16 text-zinc-900 mx-auto mb-6" />
-      <p className="text-zinc-700 font-black uppercase tracking-[0.5em] text-[10px]">{message}</p>
+    <div
+      className="rounded-[3rem] p-32 text-center shadow-2xl"
+      style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+    >
+      <HiOutlineClock className="w-16 h-16 mx-auto mb-6" style={{ color: "var(--bg-4, #1c1c1c)" }} />
+      <p className="ap-label">{message}</p>
     </div>
   );
 }

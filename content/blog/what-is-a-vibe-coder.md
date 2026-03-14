@@ -92,8 +92,8 @@ There is no certification, no course, no formal path. The way to become a vibe c
 
 Pick one tool — Lovable if you have no coding background, Cursor if you do — and build something you actually want to exist. Ship it. Show people. Iterate.
 
-The community is at [vibestream.cc/registry](/registry) — every vibe coding product documented in one place.
+The community is at [Arcapush.cc/registry](/registry) — every vibe coding product documented in one place.
 
-If you build something worth funding, [submit it](/submit). That is what Vibestream is for.
+If you build something worth funding, [submit it](/submit). That is what Arcapush is for.
 
 **Tags:** `Vibe Coder` `AI Founder` `New Builder` `Vibe Coding` `Startups`

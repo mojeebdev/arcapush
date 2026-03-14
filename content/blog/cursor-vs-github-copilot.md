@@ -109,6 +109,6 @@ The $29.3B valuation Cursor reached is partly a market signal about this distinc
 
 Cursor won the vibe coding market. GitHub Copilot is a different product for a different use case. Choosing between them depends on what you are trying to do — and for vibe coders building real products fast, the choice is clear.
 
-Every major vibe coding tool and the VC-backed companies behind them are tracked in the Vibestream encyclopedia. [Browse the registry →](/registry)
+Every major vibe coding tool and the VC-backed companies behind them are tracked in the Arcapush encyclopedia. [Browse the registry →](/registry)
 
 **Tags:** `Cursor` `GitHub Copilot` `Vibe Coding Tools` `Comparison` `AI Coding`

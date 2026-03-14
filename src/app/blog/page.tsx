@@ -1,8 +1,3 @@
-// ============================================================
-// FILE PATH: src/app/blog/page.tsx
-// ORIGINAL — dark theme (black background)
-// ============================================================
-
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -12,12 +7,12 @@ import { getAllPosts } from "@/lib/blog";
 export const metadata: Metadata = {
   title: `Blog · ${AdminConfig.SITE_NAME}`,
   description:
-    "Insights, data, and strategy from the definitive encyclopedia for VC-backed Vibe Coders. Vibe coding, AI startups, funding rounds, and the future of building.",
+    "Insights, data, and strategy from the definitive registry for vibe-coded products. Vibe coding, AI startups, solo founders, and the future of building.",
   metadataBase: new URL(AdminConfig.SITE_URL),
   alternates: { canonical: `${AdminConfig.SITE_URL}/blog` },
   openGraph: {
     title: `Blog · ${AdminConfig.SITE_NAME}`,
-    description: "Insights from the vibe coding encyclopedia.",
+    description: "Insights from the vibe coding registry.",
     url: `${AdminConfig.SITE_URL}/blog`,
     siteName: AdminConfig.SITE_NAME,
     type: "website",
@@ -32,14 +27,49 @@ export const metadata: Metadata = {
   },
 };
 
-const CATEGORY_COLORS: Record<string, string> = {
-  "Deep Dive":    "text-[#4E24CF] border-[#4E24CF]/30 bg-[#4E24CF]/10",
-  "Data":         "text-[#D4AF37] border-[#D4AF37]/30 bg-[#D4AF37]/10",
-  "Strategy":     "text-blue-400 border-blue-400/30 bg-blue-400/10",
-  "Founder":      "text-emerald-400 border-emerald-400/30 bg-emerald-400/10",
-  "Founder Story":"text-emerald-400 border-emerald-400/30 bg-emerald-400/10",
-  "Insights":     "text-zinc-400 border-zinc-400/30 bg-zinc-400/10",
+const CATEGORY_STYLE: Record<string, React.CSSProperties> = {
+  "Deep Dive":     { color: "var(--accent)",  borderColor: "var(--accent-border)",  background: "var(--accent-dim)"  },
+  "Data":          { color: "var(--accent)",  borderColor: "var(--accent-border)",  background: "var(--accent-dim)"  },
+  "Strategy":      { color: "#60a5fa",        borderColor: "rgba(96,165,250,0.3)",  background: "rgba(96,165,250,0.1)"  },
+  "Founder":       { color: "#4ade80",        borderColor: "rgba(74,222,128,0.3)",  background: "rgba(74,222,128,0.1)"  },
+  "Founder Story": { color: "#4ade80",        borderColor: "rgba(74,222,128,0.3)",  background: "rgba(74,222,128,0.1)"  },
+  "Insights":      { color: "var(--text-secondary)", borderColor: "var(--border)", background: "var(--bg-3)" },
 };
+
+const fallbackCategoryStyle: React.CSSProperties = {
+  color: "var(--text-secondary)",
+  borderColor: "var(--border)",
+  background: "var(--bg-3)",
+};
+
+function CategoryBadge({ category }: { category: string }) {
+  const style = CATEGORY_STYLE[category] ?? fallbackCategoryStyle;
+  return (
+    <span
+      className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border"
+      style={style}
+    >
+      {category}
+    </span>
+  );
+}
+
+function AuthorAvatar({ author, size = 28 }: { author: string; size?: number }) {
+  return (
+    <div
+      className="rounded-full flex items-center justify-center font-black flex-shrink-0"
+      style={{
+        width: size, height: size,
+        background: "var(--accent-dim)",
+        border: "1px solid var(--accent-border)",
+        color: "var(--accent)",
+        fontSize: size < 28 ? "7px" : "9px",
+      }}
+    >
+      {author.charAt(0).toUpperCase()}
+    </div>
+  );
+}
 
 export default function BlogPage() {
   const posts = getAllPosts();
@@ -47,39 +77,45 @@ export default function BlogPage() {
   const rest = posts.filter((p) => !p.featured);
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: "var(--bg)", color: "var(--text-primary)" }}>
       <main className="flex-grow">
 
         {/* Header */}
-        <div className="pt-32 pb-16 px-6 max-w-5xl mx-auto border-b border-white/5">
-          <span className="text-[#D4AF37] text-[10px] font-black uppercase tracking-[0.4em]">
-            Vibestream Intelligence
-          </span>
-          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mt-2 text-white">
-            The <span className="text-[#4E24CF]">Signal.</span>
+        <div
+          className="pt-32 pb-16 px-6 max-w-5xl mx-auto"
+          style={{ borderBottom: "1px solid var(--border)" }}
+        >
+          <p className="ap-label mb-2">Arcapush Intelligence</p>
+          <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mt-2" style={{ color: "var(--text-primary)" }}>
+            The <span style={{ color: "var(--accent)" }}>Signal.</span>
           </h1>
-          <p className="text-zinc-500 text-sm mt-4 font-bold uppercase tracking-widest max-w-xl">
-            Data, strategy, and insights from the vibe coding encyclopedia.
+          <p className="text-sm mt-4 font-bold uppercase tracking-widest max-w-xl" style={{ color: "var(--text-secondary)" }}>
+            Data, strategy, and insights from the vibe coding registry.
           </p>
         </div>
 
         <div className="px-6 max-w-5xl mx-auto py-16">
           {posts.length === 0 ? (
             <div className="text-center py-32">
-              <p className="text-zinc-600 font-black uppercase tracking-widest text-[10px]">
-                First transmission incoming.
-              </p>
+              <p className="ap-label">First post incoming.</p>
             </div>
           ) : (
             <>
               {/* Featured Post */}
               {featured && (
                 <div className="mb-16">
-                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-[#D4AF37] mb-4">
-                    Featured
-                  </p>
+                  <p className="ap-label mb-4">Featured</p>
                   <Link href={`/blog/${featured.slug}`}>
-                    <div className="group bg-zinc-950 border border-[#4E24CF]/30 rounded-[2.5rem] overflow-hidden hover:border-[#4E24CF] transition-all">
+                    <div
+                      className="group rounded-[2.5rem] overflow-hidden transition-all"
+                      style={{
+                        background: "var(--bg-2)",
+                        border: "1px solid var(--accent-border)",
+                      }}
+                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--accent)")}
+                      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)")}
+                    >
+                      {/* Cover */}
                       <div className="relative h-[260px] w-full overflow-hidden">
                         <Image
                           src={featured.image}
@@ -87,51 +123,59 @@ export default function BlogPage() {
                           fill
                           className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
+                        <div
+                          className="absolute inset-0"
+                          style={{ background: "linear-gradient(to top, var(--bg-2), rgba(17,17,17,0.6), transparent)" }}
+                        />
                       </div>
+
+                      {/* Body */}
                       <div className="p-10">
                         <div className="flex items-center gap-3 mb-6">
-                          <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${CATEGORY_COLORS[featured.category] ?? CATEGORY_COLORS["Insights"]}`}>
-                            {featured.category}
-                          </span>
-                          <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest">
-                            {featured.readTime}
-                          </span>
+                          <CategoryBadge category={featured.category} />
+                          <span className="ap-label">{featured.readTime}</span>
                         </div>
-                        <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-white group-hover:text-[#4E24CF] transition-colors mb-4 leading-tight">
+
+                        <h2
+                          className="text-3xl md:text-4xl font-black uppercase tracking-tighter mb-4 leading-tight transition-colors"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           {featured.title}
                         </h2>
-                        <p className="text-zinc-400 text-sm leading-relaxed mb-6 max-w-2xl">
+
+                        <p className="text-sm leading-relaxed mb-6 max-w-2xl" style={{ color: "var(--text-secondary)" }}>
                           {featured.description}
                         </p>
+
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             {featured.authorImage ? (
                               <Image
                                 src={featured.authorImage}
                                 alt={featured.author}
-                                width={28}
-                                height={28}
-                                className="rounded-full object-cover ring-2 ring-[#4E24CF]/40 flex-shrink-0"
+                                width={28} height={28}
+                                className="rounded-full object-cover flex-shrink-0"
+                                style={{ border: "2px solid var(--accent-border)" }}
                               />
                             ) : (
-                              <div className="w-7 h-7 rounded-full bg-[#4E24CF] flex items-center justify-center text-[9px] font-black text-white flex-shrink-0">
-                                {featured.author.charAt(0).toUpperCase()}
-                              </div>
+                              <AuthorAvatar author={featured.author} size={28} />
                             )}
                             <div>
-                              <p className="text-[10px] font-black text-white uppercase tracking-widest">
+                              <p className="text-xs font-black uppercase tracking-widest" style={{ color: "var(--text-primary)" }}>
                                 {featured.author}
                               </p>
-                              <p className="text-[9px] text-zinc-600 uppercase tracking-widest">
+                              <p className="ap-label mt-0.5">
                                 {new Date(featured.date).toLocaleDateString("en-US", {
                                   month: "long", day: "numeric", year: "numeric",
                                 })}
                               </p>
                             </div>
                           </div>
-                          <span className="text-[10px] font-black uppercase tracking-widest text-[#4E24CF] group-hover:translate-x-1 transition-transform inline-block">
-                            Read &rarr;
+                          <span
+                            className="text-xs font-black uppercase tracking-widest group-hover:translate-x-1 transition-transform inline-block"
+                            style={{ color: "var(--accent)" }}
+                          >
+                            Read →
                           </span>
                         </div>
                       </div>
@@ -145,7 +189,13 @@ export default function BlogPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {rest.map((post) => (
                     <Link key={post.slug} href={`/blog/${post.slug}`}>
-                      <div className="group bg-zinc-950 border border-white/5 rounded-[2rem] overflow-hidden hover:border-[#4E24CF]/40 transition-all h-full flex flex-col">
+                      <div
+                        className="group rounded-[2rem] overflow-hidden transition-all h-full flex flex-col"
+                        style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+                        onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)")}
+                        onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--border)")}
+                      >
+                        {/* Thumbnail */}
                         <div className="relative h-[160px] w-full overflow-hidden">
                           <Image
                             src={post.image}
@@ -153,46 +203,53 @@ export default function BlogPage() {
                             fill
                             className="object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
+                          <div
+                            className="absolute inset-0"
+                            style={{ background: "linear-gradient(to top, var(--bg-2), rgba(17,17,17,0.4), transparent)" }}
+                          />
                           <div className="absolute top-4 left-4">
-                            <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${CATEGORY_COLORS[post.category] ?? CATEGORY_COLORS["Insights"]}`}>
-                              {post.category}
-                            </span>
+                            <CategoryBadge category={post.category} />
                           </div>
                         </div>
+
+                        {/* Content */}
                         <div className="p-8 flex-grow flex flex-col">
-                          <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest mb-3">
-                            {post.readTime}
-                          </span>
-                          <h2 className="text-xl font-black uppercase tracking-tighter text-white group-hover:text-[#4E24CF] transition-colors mb-3 leading-tight flex-grow">
+                          <span className="ap-label mb-3">{post.readTime}</span>
+
+                          <h2
+                            className="text-xl font-black uppercase tracking-tighter mb-3 leading-tight flex-grow transition-colors"
+                            style={{ color: "var(--text-primary)" }}
+                          >
                             {post.title}
                           </h2>
-                          <p className="text-zinc-500 text-xs leading-relaxed mb-6 line-clamp-2">
+
+                          <p className="text-xs leading-relaxed mb-6 line-clamp-2" style={{ color: "var(--text-secondary)" }}>
                             {post.description}
                           </p>
+
                           <div className="flex items-center justify-between mt-auto">
                             <div className="flex items-center gap-2">
                               {post.authorImage ? (
                                 <Image
                                   src={post.authorImage}
                                   alt={post.author}
-                                  width={20}
-                                  height={20}
-                                  className="rounded-full object-cover ring-1 ring-[#4E24CF]/30 flex-shrink-0"
+                                  width={20} height={20}
+                                  className="rounded-full object-cover flex-shrink-0"
+                                  style={{ border: "1px solid var(--accent-border)" }}
                                 />
                               ) : (
-                                <div className="w-5 h-5 rounded-full bg-[#4E24CF] flex items-center justify-center text-[7px] font-black text-white flex-shrink-0">
-                                  {post.author.charAt(0).toUpperCase()}
-                                </div>
+                                <AuthorAvatar author={post.author} size={20} />
                               )}
-                              <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest">
+                              <p className="ap-label">
                                 {new Date(post.date).toLocaleDateString("en-US", {
                                   month: "short", day: "numeric", year: "numeric",
                                 })}
                               </p>
                             </div>
-                            <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-[#4E24CF] transition-colors">
-                              Read &rarr;
+                            <span
+                              className="ap-label transition-colors group-hover:text-[var(--accent)]"
+                            >
+                              Read →
                             </span>
                           </div>
                         </div>

@@ -75,11 +75,11 @@ For founders building vibe coding products, this has practical implications:
 
 ## The Ecosystem the Word Describes
 
-The vibe coding ecosystem — the tools, the founders, the companies — continues to grow. Every startup building in this space is documented in the Vibestream encyclopedia.
+The vibe coding ecosystem — the tools, the founders, the companies — continues to grow. Every startup building in this space is documented in the Arcapush encyclopedia.
 
-Vibestream exists precisely because the word needed a home: a place where the practice Karpathy named and Collins recognized is tracked, documented, and celebrated.
+Arcapush exists precisely because the word needed a home: a place where the practice Karpathy named and Collins recognized is tracked, documented, and celebrated.
 
-[Browse the Vibestream registry →](/registry) | [Submit your vibe coding startup →](/submit)
+[Browse the Arcapush registry →](/registry) | [Submit your vibe coding startup →](/submit)
 
 ---
 

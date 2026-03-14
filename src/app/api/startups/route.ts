@@ -5,21 +5,21 @@ import { generateUniqueSlug } from "@/lib/slug";
 
 export async function GET(req: Request) {
   try {
-    const pin = req.headers.get('x-guardian-pin');
+    const pin = req.headers.get("x-guardian-pin");
     const isAdmin = pin === process.env.ADMIN_PIN;
 
     const startups = await prisma.startup.findMany({
       where: isAdmin ? {} : { approved: true },
       orderBy: [
-        { tier: 'desc' },
-        { pinnedAt: 'desc' },
-        { createdAt: 'desc' },
+        { tier: "desc" },
+        { pinnedAt: "desc" },
+        { createdAt: "desc" },
       ],
     });
 
     return NextResponse.json({ startups });
   } catch (error: any) {
-    return NextResponse.json({ error: "Signal Failure" }, { status: 500 });
+    return NextResponse.json({ error: "Fetch failed" }, { status: 500 });
   }
 }
 
@@ -27,7 +27,6 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    
     const slug = await generateUniqueSlug(body.name);
 
     const startup = await prisma.startup.create({
@@ -52,9 +51,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json(startup, { status: 201 });
   } catch (error: any) {
-    console.error("Database Error:", error);
+    console.error("Startup POST error:", error);
     return NextResponse.json(
-      { error: "Transmission Interrupted", details: error.message },
+      { error: "Submission failed", details: error.message },
       { status: 500 }
     );
   }

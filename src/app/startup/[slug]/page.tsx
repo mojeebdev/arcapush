@@ -1,21 +1,14 @@
-// ============================================================
-// FILE PATH: src/app/startup/[slug]/page.tsx
-// CHANGE: Added ReviewSection at the bottom of the content grid
-// ============================================================
-
-import { prisma } from '@/lib/prisma';
-import { notFound, redirect } from 'next/navigation';
-import Link from 'next/link';
-import { Metadata } from 'next';
+import { prisma } from "@/lib/prisma";
+import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
+import { Metadata } from "next";
 import {
-  HiOutlineGlobeAlt,
-  HiOutlineLink,
-  HiOutlineShieldCheck,
-  HiOutlineArrowUpRight,
-  HiOutlineShare
+  HiOutlineGlobeAlt, HiOutlineLink,
+  HiOutlineShieldCheck, HiOutlineArrowUpRight, HiOutlineShare,
 } from "react-icons/hi2";
-import { ClientDetails } from './ClientDetails';
-import { ReviewSection } from '@/components/ReviewSection';
+import { ClientDetails } from "./ClientDetails";
+import { ReviewSection } from "@/components/ReviewSection";
+import { AdminConfig } from "@/lib/adminConfig";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -23,43 +16,36 @@ interface PageProps {
 
 async function getStartup(slugOrId: string) {
   return prisma.startup.findFirst({
-    where: {
-      OR: [
-        { slug: slugOrId },
-        { id: slugOrId },
-      ],
-    },
-    include: {
-      _count: { select: { accessRequests: true } },
-    },
+    where: { OR: [{ slug: slugOrId }, { id: slugOrId }] },
+    include: { _count: { select: { accessRequests: true } } },
   });
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const startup = await getStartup(slug);
-
-  if (!startup) return { title: "Signal Lost | VibeStream" };
+  if (!startup) return { title: `Not Found | ${AdminConfig.SITE_NAME}` };
 
   const canonicalPath = startup.slug ?? startup.id;
-  const canonicalUrl = `https://vibestream.cc/startup/${canonicalPath}`;
+  const canonicalUrl = `${AdminConfig.SITE_URL}/startup/${canonicalPath}`;
 
   return {
-    title: startup.metaTitle || `${startup.name} | VibeStream Encyclopedia`,
+    title: startup.metaTitle || `${startup.name} | ${AdminConfig.SITE_NAME}`,
     description: startup.metaDescription || startup.tagline,
     alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: `${startup.name} — Verified on VibeStream`,
+      title: `${startup.name} — Listed on ${AdminConfig.SITE_NAME}`,
       description: startup.metaDescription || startup.tagline,
-      images: [{ url: startup.bannerUrl || '/og-image.png', width: 1200, height: 630 }],
+      images: [{ url: startup.bannerUrl || AdminConfig.SITE_OG_IMAGE, width: 1200, height: 630 }],
       url: canonicalUrl,
-      type: 'website',
+      type: "website",
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
+      site: AdminConfig.BRAND_TWITTER,
       title: startup.name,
       description: startup.metaDescription || startup.tagline,
-      images: [startup.bannerUrl || '/og-image.png'],
+      images: [startup.bannerUrl || AdminConfig.SITE_OG_IMAGE],
     },
   };
 }
@@ -69,72 +55,90 @@ export default async function StartupDetailsPage({ params }: PageProps) {
   const startup = await getStartup(slug);
 
   if (!startup) notFound();
-
-  if (startup.slug && slug !== startup.slug) {
-    redirect(`/startup/${startup.slug}`);
-  }
+  if (startup.slug && slug !== startup.slug) redirect(`/startup/${startup.slug}`);
 
   const canonicalPath = startup.slug ?? startup.id;
-  const canonicalUrl = `https://vibestream.cc/startup/${canonicalPath}`;
+  const canonicalUrl = `${AdminConfig.SITE_URL}/startup/${canonicalPath}`;
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": startup.name,
-    "description": startup.metaDescription || startup.tagline,
-    "applicationCategory": startup.category,
-    "url": startup.website,
-    "image": startup.logoUrl || startup.bannerUrl,
-    "datePublished": startup.createdAt.toISOString(),
-    "dateModified": startup.updatedAt.toISOString(),
-    "sameAs": [startup.website, startup.twitter].filter(Boolean),
-    "author": {
-      "@type": "Person",
-      "name": startup.founderName,
-    },
-    "publisher": {
+    name: startup.name,
+    description: startup.metaDescription || startup.tagline,
+    applicationCategory: startup.category,
+    url: startup.website,
+    image: startup.logoUrl || startup.bannerUrl,
+    datePublished: startup.createdAt.toISOString(),
+    dateModified: startup.updatedAt.toISOString(),
+    sameAs: [startup.website, startup.twitter].filter(Boolean),
+    author: { "@type": "Person", name: startup.founderName },
+    publisher: {
       "@type": "Organization",
-      "name": "VibeStream",
-      "url": "https://vibestream.cc",
+      name: AdminConfig.SITE_NAME,
+      url: AdminConfig.SITE_URL,
     },
   };
 
   return (
     <ClientDetails startup={startup}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <div className="min-h-screen bg-black text-white pt-32 pb-20 px-6">
+      <div className="min-h-screen pt-32 pb-20 px-6" style={{ background: "var(--bg)", color: "var(--text-primary)" }}>
         <div className="max-w-6xl mx-auto relative">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#4E24CF]/5 blur-[120px] rounded-full pointer-events-none" />
+
+          {/* Ambient glow */}
+          <div
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full pointer-events-none blur-[120px]"
+            style={{ background: "rgba(232,255,71,0.03)" }}
+          />
 
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start mb-16 gap-8 relative z-10">
             <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <span className="bg-[#4E24CF]/10 text-[#4E24CF] text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.3em] border border-[#4E24CF]/20">
+              <div className="flex items-center gap-3 flex-wrap">
+                <span
+                  className="text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest"
+                  style={{
+                    background: "var(--accent-dim)",
+                    border: "1px solid var(--accent-border)",
+                    color: "var(--accent)",
+                  }}
+                >
                   {startup.category || "Vibe Code"}
                 </span>
                 {startup.tier === "PINNED" && (
-                  <span className="bg-[#D4AF37]/10 text-[#D4AF37] text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.3em] border border-[#D4AF37]/20 flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
-                    In Limelight
+                  <span
+                    className="text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest flex items-center gap-2"
+                    style={{
+                      background: "var(--accent-dim)",
+                      border: "1px solid var(--accent-border)",
+                      color: "var(--accent)",
+                    }}
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--accent)" }} />
+                    Boosted
                   </span>
                 )}
               </div>
-              <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-[0.85] text-white">
+
+              <h1
+                className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-[0.85]"
+                style={{ color: "var(--text-primary)" }}
+              >
                 {startup.name}
               </h1>
-              <p className="text-zinc-500 text-xl md:text-2xl font-medium max-w-2xl leading-tight">
+              <p className="text-xl md:text-2xl font-medium max-w-2xl leading-tight" style={{ color: "var(--text-secondary)" }}>
                 {startup.tagline}
               </p>
             </div>
 
-            <div className="p-10 border border-white/5 bg-zinc-950 rounded-[3rem] text-center min-w-[200px] shadow-2xl">
-              <p className="text-zinc-600 text-[10px] font-black uppercase tracking-[0.4em] mb-2">VC Interest</p>
-              <p className="text-5xl font-black text-white italic tracking-tighter">
+            {/* VC interest count */}
+            <div
+              className="p-10 rounded-[3rem] text-center min-w-[200px] shadow-2xl"
+              style={{ border: "1px solid var(--border)", background: "var(--bg-2)" }}
+            >
+              <p className="ap-label mb-2">VC Interest</p>
+              <p className="text-5xl font-black italic tracking-tighter" style={{ color: "var(--text-primary)" }}>
                 {startup._count.accessRequests}
               </p>
             </div>
@@ -142,7 +146,10 @@ export default async function StartupDetailsPage({ params }: PageProps) {
 
           {/* Banner */}
           {startup.bannerUrl && (
-            <div className="w-full aspect-[21/9] rounded-[3rem] overflow-hidden border border-white/5 mb-16 shadow-2xl">
+            <div
+              className="w-full aspect-[21/9] rounded-[3rem] overflow-hidden mb-16 shadow-2xl"
+              style={{ border: "1px solid var(--border)" }}
+            >
               <img
                 src={startup.bannerUrl}
                 alt={`${startup.name} banner`}
@@ -151,71 +158,95 @@ export default async function StartupDetailsPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* Content Grid */}
+          {/* Content grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
+
+            {/* Main column */}
             <div className="lg:col-span-2 space-y-12">
-              <section className="p-10 border border-white/5 rounded-[3rem] bg-zinc-950/50 backdrop-blur-xl relative overflow-hidden group">
+              <section
+                className="p-10 rounded-[3rem] relative overflow-hidden group"
+                style={{ border: "1px solid var(--border)", background: "var(--bg-2)", backdropFilter: "blur(12px)" }}
+              >
                 <div className="absolute top-0 right-0 p-8 opacity-5">
                   <HiOutlineShieldCheck className="w-24 h-24" />
                 </div>
-                <h3 className="text-[#D4AF37] text-[10px] font-black uppercase tracking-[0.4em] mb-8">The Problem Statement</h3>
-                <p className="text-2xl text-zinc-300 leading-relaxed font-medium">
+                <p className="ap-label mb-8">The Problem Statement</p>
+                <p className="text-2xl leading-relaxed font-medium" style={{ color: "var(--text-secondary)" }}>
                   {startup.problemStatement}
                 </p>
 
-                {/* Share */}
-                <div className="flex gap-6 mt-12 border-t border-white/5 pt-8">
-                  <p className="text-zinc-600 text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
-                    <HiOutlineShare /> Broadcast Signal:
+                {/* Share row */}
+                <div
+                  className="flex gap-6 mt-12 pt-8"
+                  style={{ borderTop: "1px solid var(--border)" }}
+                >
+                  <p className="ap-label flex items-center gap-2">
+                    <HiOutlineShare /> Share:
                   </p>
                   <a
-                    href={`https://twitter.com/intent/tweet?text=Analyzing ${encodeURIComponent(startup.name)} on @Vibestream_cc. No Marketing. Just Code.&url=${canonicalUrl}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[9px] font-black uppercase tracking-[0.2em] text-[#4E24CF] hover:text-white transition-colors"
+                    href={`https://twitter.com/intent/tweet?text=Check out ${encodeURIComponent(startup.name)} on @arcapush%0A${canonicalUrl}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="ap-label transition-colors"
+                    onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--accent)")}
+                    onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)")}
                   >
-                    Share on X
+                    X / Twitter
                   </a>
                   <a
                     href={`https://www.linkedin.com/sharing/share-offsite/?url=${canonicalUrl}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[9px] font-black uppercase tracking-[0.2em] text-[#D4AF37] hover:text-white transition-colors"
+                    target="_blank" rel="noopener noreferrer"
+                    className="ap-label transition-colors"
+                    onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--accent)")}
+                    onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)")}
                   >
                     LinkedIn
                   </a>
                 </div>
               </section>
 
-              {/* ── REVIEW SECTION ── */}
-              <ReviewSection
-                startupId={startup.id}
-                startupName={startup.name}
-              />
+              <ReviewSection startupId={startup.id} startupName={startup.name} />
             </div>
 
+            {/* Sidebar */}
             <aside className="space-y-8">
-              <div className="p-8 border border-white/5 rounded-[3rem] bg-zinc-950 space-y-4">
-                <h3 className="text-zinc-600 text-[10px] font-black uppercase tracking-[0.4em] mb-6">Signals</h3>
-                <a href={startup.website || "#"} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-[#4E24CF]/50 hover:bg-[#4E24CF]/5 transition-all group">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white">Platform</span>
-                  <HiOutlineGlobeAlt className="w-4 h-4 text-zinc-500 group-hover:text-white" />
-                </a>
-                <a href={startup.founderTwitter || "#"} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-[#4E24CF]/50 hover:bg-[#4E24CF]/5 transition-all group">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white">Founder</span>
-                  <HiOutlineLink className="w-4 h-4 text-zinc-500 group-hover:text-white" />
-                </a>
+              <div
+                className="p-8 rounded-[3rem] space-y-4"
+                style={{ border: "1px solid var(--border)", background: "var(--bg-2)" }}
+              >
+                <p className="ap-label mb-6">Links</p>
+                {[
+                  { href: startup.website || "#", label: "Platform", Icon: HiOutlineGlobeAlt },
+                  { href: startup.founderTwitter || "#", label: "Founder", Icon: HiOutlineLink },
+                ].map(({ href, label, Icon }) => (
+                  <a
+                    key={label}
+                    href={href} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center justify-between p-5 rounded-2xl transition-all group"
+                    style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)" }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)";
+                      (e.currentTarget as HTMLElement).style.background = "var(--accent-dim)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+                      (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.02)";
+                    }}
+                  >
+                    <span className="text-xs font-black uppercase tracking-widest" style={{ color: "var(--text-primary)" }}>{label}</span>
+                    <Icon className="w-4 h-4" style={{ color: "var(--text-tertiary)" }} />
+                  </a>
+                ))}
               </div>
 
               <Link
                 href={`/request?startupId=${startup.id}&name=${encodeURIComponent(startup.name)}`}
-                className="w-full py-6 rounded-[2rem] bg-white text-black font-black uppercase tracking-[0.3em] text-[11px] hover:bg-[#D4AF37] transition-all shadow-xl shadow-white/5 flex items-center justify-center gap-2"
+                className="ap-btn-primary w-full flex items-center justify-center gap-2"
               >
                 Request Pitch Access <HiOutlineArrowUpRight className="w-4 h-4" />
               </Link>
 
-              <p className="text-[9px] text-zinc-700 font-black text-center uppercase tracking-[0.5em]">
-                VIBE-ID: {startup.slug ?? startup.id.slice(0, 8)}
+              <p className="ap-label text-center">
+                ID: {startup.slug ?? startup.id.slice(0, 8)}
               </p>
             </aside>
           </div>

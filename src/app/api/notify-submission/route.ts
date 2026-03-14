@@ -1,5 +1,6 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Resend } from 'resend';
+import { AdminConfig } from "@/lib/adminConfig";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -7,46 +8,60 @@ export async function POST(req: NextRequest) {
   try {
     const { founderEmail, founderName, startupName, startupId } = await req.json();
 
-    
+    // Admin notification
     await resend.emails.send({
-      from: 'Guardian Alert <system@vibestream.cc>',
+      from: 'Arcapush <system@arcapush.com>',
       to: ['blindspotlabs1@gmail.com'],
-      subject: `🚨 NEW VIBE CODE: ${startupName}`,
+      subject: `🚀 New Listing: ${startupName}`,
       html: `
-        <div style="font-family: monospace; background: #09090b; color: #fff; padding: 30px; border: 1px solid #27272a;">
-          <h2 style="color: #4E24CF;">[INCOMING TRANSMISSION]</h2>
-          <p>A new "food item" has been submitted for verification.</p>
-          <hr style="border: 0; border-top: 1px solid #27272a; margin: 20px 0;" />
-          <p><strong>Startup:</strong> ${startupName}</p>
+        <div style="font-family: monospace; background: #0a0a0a; color: #f0ede8; padding: 30px; border: 1px solid rgba(232,255,71,0.2);">
+          <h2 style="color: #e8ff47;">[NEW LISTING]</h2>
+          <p>A new product has been submitted for review.</p>
+          <hr style="border: 0; border-top: 1px solid #222; margin: 20px 0;" />
+          <p><strong>Product:</strong> ${startupName}</p>
           <p><strong>Founder:</strong> ${founderName} (${founderEmail})</p>
           <div style="margin-top: 30px;">
-            <a href="https://vibestream.cc/admin" style="background: #4E24CF; color: #fff; padding: 10px 20px; text-decoration: none; font-weight: bold; font-size: 12px;">
+            <a href="${AdminConfig.SITE_URL}/admin"
+               style="background: #e8ff47; color: #0a0a0a; padding: 10px 20px; text-decoration: none; font-weight: bold; font-size: 12px; text-transform: uppercase;">
               OPEN ADMIN PANEL
             </a>
           </div>
+          <p style="font-size: 9px; color: #4a4845; margin-top: 20px;">ARCAPUSH v${AdminConfig.ARCAPUSH_VERSION}</p>
         </div>
       `
     });
 
     
     await resend.emails.send({
-      from: 'VibeStream <system@vibestream.cc>',
+      from: 'Arcapush <system@arcapush.com>',
       to: [founderEmail],
-      subject: `Vibe Code Received: ${startupName}`,
+      subject: `Listing Received: ${startupName}`,
       html: `
-        <div style="font-family: sans-serif; background: #000; color: #fff; padding: 40px; border-radius: 20px;">
-          <h1 style="text-transform: uppercase;">Awaiting Verification.</h1>
-          <p style="color: #a1a1aa;">Hello ${founderName}, we've received your submission for <strong>${startupName}</strong>.</p>
-          <p style="color: #a1a1aa;">The Guardian is currently reviewing your signal. You will receive an update once it is indexed in the Encyclopedia.</p>
-          <p style="margin-top: 40px; font-size: 10px; color: #3f3f46; letter-spacing: 2px;">VIBESTREAM // SYSTEM STATUS: INITIALIZED</p>
+        <div style="font-family: sans-serif; background: #0a0a0a; color: #f0ede8; padding: 40px; border-radius: 20px; border: 1px solid rgba(232,255,71,0.15);">
+          <h1 style="text-transform: uppercase; letter-spacing: -1px; color: #e8ff47;">Listing Received.</h1>
+          <p style="color: #888580;">Hello ${founderName},</p>
+          <p style="color: #888580;">We've received your listing for <strong style="color: #f0ede8;">${startupName}</strong>.</p>
+          <p style="color: #888580;">We review all submissions within 6 hours. You'll get an email when your product goes live in the registry.</p>
+          <div style="margin-top: 30px; padding: 20px; background: rgba(232,255,71,0.05); border: 1px solid rgba(232,255,71,0.1); border-radius: 12px;">
+            <p style="font-size: 11px; color: #888580; margin: 0; text-transform: uppercase; letter-spacing: 0.1em;">
+              Want faster visibility? Boost your listing to the hero slot with USDC or SOL.
+            </p>
+            <a href="${AdminConfig.SITE_URL}/pricing"
+               style="display: inline-block; margin-top: 12px; background: #e8ff47; color: #0a0a0a; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">
+              View Boost Options
+            </a>
+          </div>
+          <p style="margin-top: 40px; font-size: 10px; color: #4a4845; letter-spacing: 2px; text-transform: uppercase;">
+            Arcapush — ${AdminConfig.SITE_URL}
+          </p>
         </div>
       `
     });
 
     return NextResponse.json({ success: true });
-    
+
   } catch (error: any) {
-    console.error("Notification System Error:", error);
-    return NextResponse.json({ error: "Alert Failed" }, { status: 500 });
+    console.error("Notification error:", error);
+    return NextResponse.json({ error: "Notification failed" }, { status: 500 });
   }
 }

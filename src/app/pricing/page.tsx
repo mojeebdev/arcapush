@@ -3,81 +3,57 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
-import { useWriteContract, useAccount, useSwitchChain } from 'wagmi';
-import { parseUnits } from 'viem';
-import { base } from 'wagmi/chains';
+import { useWriteContract, useAccount, useSwitchChain } from "wagmi";
+import { parseUnits } from "viem";
+import { base } from "wagmi/chains";
 import { AdminConfig } from "@/lib/adminConfig";
 import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, ComputeBudgetProgram } from "@solana/web3.js";
 
-const PIN_PACKAGES = [
+const BOOST_PACKAGES = [
   {
-    label: "30 Mins",
-    price: "5",
-    value: 30,
-    rotations: "90",
-    description: "Instant momentum. Perpetual archive.",
-    perks: ["90 Rotations (20s each)", "Permanent Encyclopedia Entry", "Search Engine Indexed"],
-    accent: "zinc-500"
+    label: "30 Minutes", price: "5",  value: "30m",
+    rotations: "90",     description: "Instant push — 30 mins at the top.",
+    perks: ["90 rotations", "Permanent indexed listing", "Search engine indexed"],
+    featured: false,
   },
   {
-    label: "1 Day",
-    price: "25",
-    value: 1440,
-    rotations: "4,320",
-    description: "The 'X-Factor' package with Social Push.",
-    perks: ["4,320 Rotations", "Thoughtful X Storytelling Post", "Permanent Presence", "Discovery Feed Priority"],
-    accent: "[#4E24CF]",
-    featured: true
+    label: "1 Day",      price: "25", value: "1d",
+    rotations: "4,320",  description: "24 hours featured + VC discovery panel.",
+    perks: ["4,320 rotations", "X storytelling post", "Discovery feed priority", "Featured badge"],
+    featured: true,
   },
   {
-    label: "3 Days",
-    price: "60",
-    value: 4320,
-    rotations: "12,960",
-    description: "Extended exposure for maximum resonance.",
-    perks: ["12,960 Rotations", "X Storytelling Post", "Priority Support", "Featured Startup Badge"],
-    accent: "blue-500"
+    label: "3 Days",     price: "60", value: "3d",
+    rotations: "12,960", description: "Weekend domination — 3 days pinned.",
+    perks: ["12,960 rotations", "X storytelling post", "Priority support", "Featured badge"],
+    featured: false,
   },
   {
-    label: "1 Week",
-    price: "100",
-    value: 10080,
-    rotations: "30,240",
-    description: "Full market immersion and strategy alignment.",
-    perks: ["30,240 Rotations", "X Storytelling Post", "1-on-1 Marketing Call", "Verified Vibe Badge"],
-    accent: "[#D4AF37]"
+    label: "1 Week",     price: "100", value: "1w",
+    rotations: "30,240", description: "Full week push — maximum signal.",
+    perks: ["30,240 rotations", "X storytelling post", "1-on-1 strategy call", "Verified badge"],
+    featured: false,
   },
   {
-    label: "2 Weeks",
-    price: "175",
-    value: 20160,
-    rotations: "60,480",
-    description: "Sustained dominance across the ecosystem.",
-    perks: ["60,480 Rotations", "2x X Storytelling Posts", "Strategy Retainer", "Partner Network Intro"],
-    accent: "purple-500"
+    label: "2 Weeks",    price: "175", value: "2w",
+    rotations: "60,480", description: "Sustained exposure — 14 days.",
+    perks: ["60,480 rotations", "2× X posts", "Strategy retainer", "Partner network intro"],
+    featured: false,
   },
   {
-    label: "1 Month",
-    price: "299",
-    value: 43200,
-    rotations: "129,600",
-    description: "Total Encyclopedia domination and partnership.",
-    perks: ["129,600 Rotations", "Lifetime Encyclopedia Entry", "VC Access Channel", "Founder Strategy Retainer"],
-    accent: "white"
-  }
+    label: "1 Month",    price: "299", value: "1m",
+    rotations: "129,600", description: "30-day domination — VC magnet.",
+    perks: ["129,600 rotations", "Lifetime indexed entry", "VC access channel", "Founder strategy retainer"],
+    featured: false,
+  },
 ];
 
 const USDC_ABI = [
   {
-    name: 'transfer',
-    type: 'function',
-    stateMutability: 'nonpayable',
-    inputs: [
-      { name: 'recipient', type: 'address' },
-      { name: 'amount', type: 'uint256' }
-    ],
-    outputs: [{ name: '', type: 'bool' }]
-  }
+    name: "transfer", type: "function", stateMutability: "nonpayable",
+    inputs: [{ name: "recipient", type: "address" }, { name: "amount", type: "uint256" }],
+    outputs: [{ name: "", type: "bool" }],
+  },
 ] as const;
 
 export default function PricingPage() {
@@ -89,14 +65,14 @@ export default function PricingPage() {
   const { writeContractAsync } = useWriteContract();
 
   useEffect(() => {
-    fetch('/api/startups?status=APPROVED')
-      .then(res => res.json())
-      .then(data => setApprovedStartups(data.startups || []));
+    fetch("/api/startups?status=APPROVED")
+      .then((r) => r.json())
+      .then((d) => setApprovedStartups(d.startups || []));
   }, []);
 
   const handleBasePayment = async (plan: any) => {
-    if (!selectedStartupId) return toast.error("Select a target.");
-    if (!isConnected) return toast.error("Connect Wallet.");
+    if (!selectedStartupId) return toast.error("Select your product first.");
+    if (!isConnected) return toast.error("Connect your wallet.");
     const destination = AdminConfig.PAYMENT_WALLET_BASE;
     setIsProcessing(true);
     const toastId = toast.loading("Processing Base USDC...");
@@ -105,124 +81,120 @@ export default function PricingPage() {
       const hash = await writeContractAsync({
         address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
         abi: USDC_ABI,
-        functionName: 'transfer',
-        args: [destination as `0x${string}`, parseUnits(plan.price.replace(',', ''), 6)],
+        functionName: "transfer",
+        args: [destination as `0x${string}`, parseUnits(plan.price.replace(",", ""), 6)],
       });
       await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ startupId: selectedStartupId, chain: "base", txHash: hash, packageValue: plan.value })
+        body: JSON.stringify({ startupId: selectedStartupId, chain: "base", txHash: hash, packageValue: plan.value }),
       });
-      toast.success("🚀 Boost Active!", { id: toastId });
-    } catch {
-      toast.error("Failed.", { id: toastId });
-    } finally {
-      setIsProcessing(false);
-    }
+      toast.success("🚀 Boost active!", { id: toastId });
+    } catch { toast.error("Payment failed.", { id: toastId }); }
+    finally { setIsProcessing(false); }
   };
 
   const handleSolanaPayment = async (plan: any) => {
-    if (!selectedStartupId || !window.solana) return toast.error("Check selection/wallet.");
+    if (!selectedStartupId || !(window as any).solana) return toast.error("Check selection/wallet.");
     setIsProcessing(true);
     const toastId = toast.loading("Processing SOL...");
     try {
       const priceRes = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
       const priceData = await priceRes.json();
-      const lamports = Math.floor((Number(plan.price.replace(',', '')) / priceData.solana.usd) * LAMPORTS_PER_SOL);
-      const resp = await window.solana.connect();
+      const lamports = Math.floor((Number(plan.price.replace(",", "")) / priceData.solana.usd) * LAMPORTS_PER_SOL);
+      const resp = await (window as any).solana.connect();
       const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
       const { blockhash } = await connection.getLatestBlockhash();
-      const transaction = new Transaction({ recentBlockhash: blockhash, feePayer: resp.publicKey })
-        .add(
-          ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 25000 }),
-          SystemProgram.transfer({
-            fromPubkey: resp.publicKey,
-            toPubkey: new PublicKey(AdminConfig.PAYMENT_WALLET_SOLANA),
-            lamports
-          })
-        );
-      const { signature } = await window.solana.signAndSendTransaction(transaction);
+      const transaction = new Transaction({ recentBlockhash: blockhash, feePayer: resp.publicKey }).add(
+        ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 25000 }),
+        SystemProgram.transfer({ fromPubkey: resp.publicKey, toPubkey: new PublicKey(AdminConfig.PAYMENT_WALLET_SOLANA), lamports })
+      );
+      const { signature } = await (window as any).solana.signAndSendTransaction(transaction);
       await fetch("/api/pin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ startupId: selectedStartupId, chain: "solana", txHash: signature, packageValue: plan.value })
+        body: JSON.stringify({ startupId: selectedStartupId, chain: "solana", txHash: signature, packageValue: plan.value }),
       });
-      toast.success("🔥 SOL Boost Active!", { id: toastId });
-    } catch {
-      toast.error("Failed.");
-    } finally {
-      setIsProcessing(false);
-    }
+      toast.success("🔥 SOL boost active!", { id: toastId });
+    } catch { toast.error("Payment failed.", { id: toastId }); }
+    finally { setIsProcessing(false); }
   };
 
   return (
-    <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto min-h-screen bg-black text-white">
-      <Toaster position="bottom-right" />
+    <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto min-h-screen" style={{ background: "var(--bg)", color: "var(--text-primary)" }}>
+      <Toaster position="bottom-right" toastOptions={{
+        style: { background: "var(--bg-2)", color: "var(--text-primary)", border: "1px solid var(--border)", fontFamily: "var(--font-mono)", fontSize: "0.72rem" }
+      }} />
 
       {/* Header */}
       <div className="text-center mb-16">
-        <span className="text-[#D4AF37] text-[10px] font-black uppercase tracking-[0.4em]">Signal Boost</span>
-        <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mt-2">
-          Amplify Your <span className="text-[#4E24CF]">Vibe Code.</span>
+        <p className="ap-label mb-3">Boost Packages</p>
+        <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter" style={{ color: "var(--text-primary)" }}>
+          Push Your Product <span style={{ color: "var(--accent)" }}>Further.</span>
         </h1>
-        <p className="text-zinc-500 text-sm mt-4 font-bold uppercase tracking-widest">
-          Early access pricing — locked in for life when you boost today.
+        <p className="text-sm mt-4 font-bold uppercase tracking-widest" style={{ color: "var(--text-secondary)" }}>
+          On-chain verified · USDC on Base · SOL on Solana
         </p>
       </div>
 
-      {/* Startup Selector */}
+      {/* Product selector */}
       <section className="mb-12 max-w-xl mx-auto">
-        <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-2 mb-2 block">
-          Select Your Startup
-        </label>
+        <label className="ap-label ml-2 mb-2 block">Select Your Product</label>
         <select
           value={selectedStartupId}
           onChange={(e) => setSelectedStartupId(e.target.value)}
-          className="w-full bg-zinc-950 border border-white/10 rounded-2xl px-5 py-4 text-[11px] font-black text-white uppercase tracking-widest outline-none focus:border-[#4E24CF] transition-colors"
+          className="w-full rounded-2xl px-5 py-4 text-xs font-black uppercase tracking-widest outline-none"
+          style={{ background: "var(--bg-2)", border: "1px solid var(--border)", color: "var(--text-primary)" }}
+          onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent-border)")}
+          onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
         >
-          <option value="">Choose a Startup...</option>
-          {approvedStartups.map(s => (
-            <option key={s.id} value={s.id}>{s.name}</option>
+          <option value="">Choose a product...</option>
+          {approvedStartups.map((s) => (
+            <option key={s.id} value={s.id} className="bg-black">{s.name}</option>
           ))}
         </select>
         {!selectedStartupId && (
-          <p className="text-zinc-700 text-[9px] font-black uppercase tracking-widest mt-2 ml-2">
-            Your startup must be approved before boosting.
-          </p>
+          <p className="ap-label ml-2 mt-2">Your product must be approved before boosting.</p>
         )}
       </section>
 
-      {/* Pricing Grid */}
+      {/* Packages grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {PIN_PACKAGES.map((plan) => (
+        {BOOST_PACKAGES.map((plan) => (
           <motion.div
             key={plan.label}
             whileHover={{ y: -8 }}
-            className={`relative rounded-[3rem] p-10 bg-zinc-950 border flex flex-col ${
-              plan.featured ? 'border-[#4E24CF] shadow-[0_0_40px_rgba(78,36,207,0.15)]' : 'border-white/5'
-            }`}
+            className="relative rounded-[3rem] p-10 flex flex-col"
+            style={{
+              background: "var(--bg-2)",
+              border: `1px solid ${plan.featured ? "var(--accent)" : "var(--border)"}`,
+              boxShadow: plan.featured ? "0 0 40px rgba(232,255,71,0.08)" : "none",
+            }}
           >
             {plan.featured && (
-              <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#4E24CF] px-4 py-1 rounded-full text-[10px] font-black uppercase italic whitespace-nowrap">
+              <span
+                className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-black uppercase italic whitespace-nowrap"
+                style={{ background: "var(--accent)", color: "#0a0a0a" }}
+              >
                 Most Popular
               </span>
             )}
 
-            <h3 className="text-2xl font-black uppercase italic mb-1">{plan.label}</h3>
-            <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-6">{plan.description}</p>
+            <h3 className="text-2xl font-black uppercase italic mb-1" style={{ color: "var(--text-primary)" }}>{plan.label}</h3>
+            <p className="ap-label mb-6">{plan.description}</p>
 
             <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-5xl font-black">${plan.price}</span>
-              <span className="text-zinc-700 text-[10px] font-black">USD</span>
+              <span className="text-5xl font-black" style={{ color: plan.featured ? "var(--accent)" : "var(--text-primary)" }}>
+                ${plan.price}
+              </span>
+              <span className="ap-label">USD</span>
             </div>
-            <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest mb-8">
-              {plan.rotations} rotations
-            </p>
+            <p className="ap-label mb-8">{plan.rotations} rotations</p>
 
-            <ul className="space-y-4 mb-10">
+            <ul className="space-y-4 mb-10 flex-grow">
               {plan.perks.map((perk, i) => (
-                <li key={i} className="flex items-center gap-3 text-[10px] font-black uppercase text-zinc-400">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] flex-shrink-0" />
+                <li key={i} className="flex items-center gap-3 text-xs font-black uppercase" style={{ color: "var(--text-secondary)" }}>
+                  <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "var(--accent)" }} />
                   {perk}
                 </li>
               ))}
@@ -232,14 +204,20 @@ export default function PricingPage() {
               <button
                 onClick={() => handleBasePayment(plan)}
                 disabled={isProcessing || !selectedStartupId}
-                className="w-full py-4 rounded-2xl font-black text-[10px] bg-blue-600/10 border border-blue-600/20 text-blue-500 hover:bg-blue-600 hover:text-white transition-all uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                style={{ background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.2)", color: "#60a5fa" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#2563eb"; (e.currentTarget as HTMLElement).style.color = "#fff"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(96,165,250,0.1)"; (e.currentTarget as HTMLElement).style.color = "#60a5fa"; }}
               >
                 Pay with Base USDC
               </button>
               <button
                 onClick={() => handleSolanaPayment(plan)}
                 disabled={isProcessing || !selectedStartupId}
-                className="w-full py-4 rounded-2xl font-black text-[10px] bg-white text-black hover:bg-[#D4AF37] hover:text-white transition-all uppercase tracking-widest disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                style={{ background: "var(--accent)", color: "#0a0a0a" }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "#f5ff6e")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "var(--accent)")}
               >
                 Pay with Solana SOL
               </button>
@@ -248,9 +226,8 @@ export default function PricingPage() {
         ))}
       </div>
 
-      {/* Trust Footer */}
-      <p className="text-center text-[9px] text-zinc-700 font-black uppercase tracking-[0.4em] mt-16">
-        On-chain verified · Permanent encyclopedia entry · Cancel anytime
+      <p className="text-center ap-label mt-16">
+        On-chain verified · Permanent indexed listing · Cancel anytime
       </p>
     </main>
   );

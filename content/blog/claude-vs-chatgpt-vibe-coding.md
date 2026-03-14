@@ -94,6 +94,6 @@ The best vibe coders are not loyal to any single AI model. They use the tool tha
 
 ---
 
-Vibestream tracks every major AI tool and vibe coding startup. [Browse the encyclopedia →](/registry) | [Submit your startup →](/submit)
+Arcapush tracks every major AI tool and vibe coding startup. [Browse the encyclopedia →](/registry) | [Submit your startup →](/submit)
 
 **Tags:** `Claude` `ChatGPT` `AI Models` `Vibe Coding` `Code Generation` `Comparison`

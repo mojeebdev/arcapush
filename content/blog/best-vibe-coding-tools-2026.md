@@ -128,6 +128,6 @@ The ecosystem is improving rapidly. These rankings will look different in twelve
 
 ---
 
-Every vibe coding infrastructure is tracked in the Vibestream encyclopedia. [Browse the registry →](/registry)
+Every vibe coding infrastructure is tracked in the Arcapush encyclopedia. [Browse the registry →](/registry)
 
 **Tags:** `Vibe Coding Tools` `Cursor` `Lovable` `Bolt` `Replit` `2026` `Ranked List`

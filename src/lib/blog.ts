@@ -1,8 +1,8 @@
+
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-// Works both locally and on Vercel
 const BLOG_DIR = path.join(process.cwd(), "content/blog");
 
 export interface BlogPost {
@@ -21,7 +21,6 @@ export interface BlogPost {
 }
 
 function getBlogDir(): string {
-  // Try multiple paths — handles Vercel's deployment structure
   const candidates = [
     path.join(process.cwd(), "content/blog"),
     path.join(process.cwd(), ".next/server/content/blog"),
@@ -53,7 +52,7 @@ export function getAllPosts(): Omit<BlogPost, "content">[] {
         authorImage: data.authorImage,
         category: data.category ?? "Insights",
         readTime: data.readTime ?? "5 min read",
-        image: data.image ?? "/og-vibestream.png",
+        image: data.image ?? "/og-arcapush.png", 
         featured: data.featured ?? false,
       };
     })
@@ -87,7 +86,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
     authorImage: data.authorImage,
     category: data.category ?? "Insights",
     readTime: data.readTime ?? "5 min read",
-    image: data.image ?? "/og-vibestream.png",
+    image: data.image ?? "/og-arcapush.png", 
     featured: data.featured ?? false,
     content,
   };

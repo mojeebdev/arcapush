@@ -69,7 +69,7 @@ Here is the thing most vibe coding founders skip entirely. They pitch investors 
 
 Before you send a single pitch email, your startup needs to be findable. Not just a landing page. An indexed presence that shows up when a VC Googles your name or your category.
 
-This is why Vibestream exists. [Submit](/submit) your product to the [encyclopedia](/registry) before you start your raise. When an investor gets your cold email and searches for you, they find a clean permanent page with your problem statement, your category, and your founding team. That page is doing sales work while you sleep.
+This is why Arcapush exists. [Submit](/submit) your product to the [encyclopedia](/registry) before you start your raise. When an investor gets your cold email and searches for you, they find a clean permanent page with your problem statement, your category, and your founding team. That page is doing sales work while you sleep.
 
 Discovery should not start at the pitch meeting. It should start weeks before one.
 
@@ -89,7 +89,7 @@ The founders who raise are not always the ones with the best product. They are t
 
 That is what the playbook is for. Build fast. Speak clearly. Get funded.
 
-Submit your vibe coding startup to the encyclopedia at [vibestream.cc](/submit).
+Submit your vibe coding startup to the encyclopedia at [Arcapush.cc](/submit).
 
 ---
 

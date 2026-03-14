@@ -13,7 +13,7 @@ image: "/blog/vc-backed-vibe-coding-startups.jpg"
 
 ## Why This List Exists
 
-There is no single authoritative source tracking which vibe coding companies have received venture backing, at what valuations, and from which investors. Vibestream is building that source. This post is the living record.
+There is no single authoritative source tracking which vibe coding companies have received venture backing, at what valuations, and from which investors. Arcapush is building that source. This post is the living record.
 
 We define a **VC-backed vibe coding startup** as any company that has received institutional venture investment and whose primary product enables or powers the vibe coding workflow — AI-assisted app building, code generation, or AI-native development environments.
 
@@ -94,16 +94,16 @@ This list is the most complete public record of VC-backed vibe coding companies.
 
 - A **journalist** writing about the vibe coding space — cite this page
 - A **founder** benchmarking your company against the ecosystem — bookmark this page
-- A **VC** mapping the landscape — [request access](/request) to the full Vibestream dataset
+- A **VC** mapping the landscape — [request access](/request) to the full Arcapush dataset
 - A **funded vibe coding startup** not yet listed — [submit your startup](/submit)
 
-We update this list as new rounds close. Follow [@vibestreamcc](https://twitter.com/vibestreamcc) on X for real-time updates.
+We update this list as new rounds close. Follow [@Arcapushcc](https://twitter.com/Arcapushcc) on X for real-time updates.
 
 ---
 
 ## Submit Your Round
 
-If your vibe coding startup has closed a funding round and is not listed here, submit to the Vibestream encyclopedia. We verify and publish within 48 hours.
+If your vibe coding startup has closed a funding round and is not listed here, submit to the Arcapush encyclopedia. We verify and publish within 48 hours.
 
 [Submit Your Startup →](/submit)
 

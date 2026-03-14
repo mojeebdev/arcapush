@@ -29,6 +29,11 @@ model User {
 
   startups       Startup[]
   accessRequests AccessRequest[]
+  onboardingComplete  Boolean   @default(false)
+  twitterHandle       String?
+  bio                 String?
+  accounts            Account[]
+  sessions            Session[]
 }
 
 model Startup {

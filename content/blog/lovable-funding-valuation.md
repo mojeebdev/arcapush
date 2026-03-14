@@ -86,6 +86,6 @@ Lovable occupies a distinct position: it is the only tool at scale specifically 
 
 ---
 
-Every major vibe coding funding round is tracked and documented in the Vibestream encyclopedia. [Browse the registry →](/registry) | [Submit your startup →](/submit)
+Every major vibe coding funding round is tracked and documented in the Arcapush encyclopedia. [Browse the registry →](/registry) | [Submit your startup →](/submit)
 
 **Tags:** `Lovable` `VC Funding` `Valuation` `Startup Funding` `Vibe Coding`

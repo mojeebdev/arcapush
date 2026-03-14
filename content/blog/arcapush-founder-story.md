@@ -1,5 +1,5 @@
 ---
-title: "Why I Built Vibestream: The Gap Nobody Was Filling in the Vibe Coding Era"
+title: "Why I Built Arcapush: The Gap Nobody Was Filling in the Vibe Coding Era"
 description: "A founder story about 16 years of building, a gap in the vibe coding movement, and why an encyclopedia beats a directory every time."
 date: "2026-03-09"
 author: "Mojeeb"
@@ -8,11 +8,11 @@ authorImage: "/authors/mojeeb.jpg"
 category: "Founder Story"
 readTime: "7 min read"
 featured: true
-image: "/blog/why-i-built-vibestream.png"
+image: "/blog/why-i-built-Arcapush.png"
 ---
-# Why I Built Vibestream: The Gap Nobody Was Filling in the Vibe Coding Era
+# Why I Built Arcapush: The Gap Nobody Was Filling in the Vibe Coding Era
 
-*By Mojeeb Adewale — Founder, Vibestream.cc | Follow me: [@mojeebeth](https://x.com/mojeebeth) | [mojeeb.xyz](https://mojeeb.xyz)*
+*By Mojeeb Adewale — Founder, Arcapush.cc | Follow me: [@mojeebeth](https://x.com/mojeebeth) | [mojeeb.xyz](https://mojeeb.xyz)*
 
 ---
 
@@ -20,7 +20,7 @@ There's a debate that has floated across every Web3 Twitter space, every startup
 
 **What's harder — building a product, or marketing it?**
 
-The honest answer? Both are brutally hard. And that's exactly why I built Vibestream.
+The honest answer? Both are brutally hard. And that's exactly why I built Arcapush.
 
 ---
 
@@ -44,13 +44,13 @@ But I've spent 12+ years in Web2 marketing and 4+ years deep in Web3 strategy �
 
 I've been a skit creator (500+ videos before I quit in 2021 to focus on Web3). I spearheaded marketing campaigns like the **TAIKU NFT** launch, which gained over 9,000 followers in three days. I've founded communities — from Anblabs to Echelon HQ to what is now **BlindspotLab** ([blindspotlab.xyz](https://blindspotlab.xyz)), an AI-powered auditing, marketing, and strategy intelligence platform.
 
-Vibestream is not my first product. Before it, I shipped:
+Arcapush is not my first product. Before it, I shipped:
 
 - **trench.mojeeb.xyz** — the first gamified crypto slang platform, because people are lazy to learn but nobody's too lazy to play
 - **whate.online** — Zero Decision Meal Intelligence, pulling from 10,000+ global meal datasets to end the daily "what should I eat?" fatigue
 - **dearly.icu** — personalized, emotional greetings that go far beyond generic messages; you give it a persona, hobbies, your relationship, your tone — it does the rest
 
-Each product was born from a real frustration. Vibestream is no different.
+Each product was born from a real frustration. Arcapush is no different.
 
 ---
 
@@ -66,22 +66,22 @@ There was no central, curated place documenting what was being built. No encyclo
 
 No one was documenting the *culture*.
 
-That gap is where Vibestream was born.
+That gap is where Arcapush was born.
 
 ---
 
-## What Vibestream Actually Is (And What It's Not)
+## What Arcapush Actually Is (And What It's Not)
 
-Let me be direct: **Vibestream is not a Product Hunt clone. It is not a BetaList clone.**
+Let me be direct: **Arcapush is not a Product Hunt clone. It is not a BetaList clone.**
 
-Vibestream is an **encyclopedia** — a living, structured reference for vibe-coded products. 
+Arcapush is an **encyclopedia** — a living, structured reference for vibe-coded products. 
 It's built for three audiences:
 
 1. **Vibe coders and founders** who want their product discovered without having to become full-time marketers
 2. **VCs and angel investors** actively looking for the next unicorn born from the AI-native development era
 3. **Developers and researchers** who want to study the stacks, patterns, and tools powering the best startups right now
 
-The positioning is deliberate: **you see a vibe-coded product, you see Vibestream.**
+The positioning is deliberate: **you see a vibe-coded product, you see Arcapush.**
 
 We want to be the platform where the next wave of unicorns get their first serious audience — before the press picks them up, before the mainstream catches on.
 
@@ -89,11 +89,11 @@ We want to be the platform where the next wave of unicorns get their first serio
 
 ## Why a Historian Built This
 
-Here's the part people don't expect: my degree in History is actually why I understand what Vibestream needs to be.
+Here's the part people don't expect: my degree in History is actually why I understand what Arcapush needs to be.
 
 History is documentation. It's the organized record of what happened, who built what, why it mattered, and what came next. Most tech directories are noise. They capture the moment, not the meaning.
 
-Vibestream is built to capture the meaning. The stacks. The founder stories. The funding context. The cultural moment that made vibe coding possible in the first place.
+Arcapush is built to capture the meaning. The stacks. The founder stories. The funding context. The cultural moment that made vibe coding possible in the first place.
 
 We're not just listing products. We're archiving a movement.
 
@@ -101,7 +101,7 @@ We're not just listing products. We're archiving a movement.
 
 ## The Build Process: Honest About How It Happened
 
-I'll be transparent, because I think the founder story matters: Vibestream was brainstormed with Gemini, prompted into existence with Claude, and finished through a combination of both — because credits run out and builders keep going anyway.
+I'll be transparent, because I think the founder story matters: Arcapush was brainstormed with Gemini, prompted into existence with Claude, and finished through a combination of both — because credits run out and builders keep going anyway.
 
 The stack is real: **Next.js App Router, Prisma 7, Supabase, TypeScript, Tailwind, wagmi/viem on Base for USDC payments, and Solana wallet adapter.**
 
@@ -111,11 +111,11 @@ The framework came from my head. The vision came from 16 years of watching produ
 
 ## What's Next
 
-Vibestream launched today on Product Hunt.
+Arcapush launched today on Product Hunt.
 
-If you're a vibe coder with a product — [list it](https://vibestream.cc/submit).  
-If you're a VC or investor looking at the next wave — [explore the encyclopedia](https://vibestream.cc/registry).  
-If you're a founder who's tired of building great things in obscurity — [we built this for you](https://vibestream.cc).
+If you're a vibe coder with a product — [list it](https://arcapush.com/submit).  
+If you're a VC or investor looking at the next wave — [explore the encyclopedia](https://arcapush.com/registry).  
+If you're a founder who's tired of building great things in obscurity — [we built this for you](https://arcapush.com).
 
 The vibe coding era is just beginning. The products being built right now will define the next decade of software.
 
@@ -123,8 +123,8 @@ We're here to make sure they're found.
 
 ---
 
-*Mojeeb Adewale is the founder of [Vibestream.cc](https://vibestream.cc) and [BlindspotLab](https://blindspotlab.xyz). He has 16 years of combined Web2 and Web3 marketing experience and ships products from Lagos, Nigeria. Follow him at [@mojeebeth](https://x.com/mojeebeth) and explore his work at [mojeeb.xyz](https://mojeeb.xyz).*
+*Mojeeb Adewale is the founder of [Arcapush.cc](https://arcapush.com) and [BlindspotLab](https://blindspotlab.xyz). He has 16 years of combined Web2 and Web3 marketing experience and ships products from Lagos, Nigeria. Follow him at [@mojeebeth](https://x.com/mojeebeth) and explore his work at [mojeeb.xyz](https://mojeeb.xyz).*
 
 ---
 
-**Tags:** `Vibestream` `Founder Story` `Mojeeb` `Building in Public` `Vibe Coding`
+**Tags:** `Arcapush` `Founder Story` `Mojeeb` `Building in Public` `Vibe Coding`

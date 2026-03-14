@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -15,29 +16,27 @@ export default function AdminPage() {
     setLoading(true);
 
     try {
-      
       const response = await fetch("/admin/verify", {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json" 
+          "Accept": "application/json",
         },
         body: JSON.stringify({ pin: pin.trim() }),
       });
 
       const data = await response.json();
 
-      
       if (response.ok && data.authorized) {
         setIsAuthorized(true);
-        toast.success("Guardian Identified");
+        toast.success("Access granted");
       } else {
-        toast.error(data.error || "Invalid Guardian Pin");
+        toast.error(data.error || "Invalid PIN");
         setPin("");
       }
     } catch (err) {
-      console.error("📡 Signal Failure:", err);
-      toast.error("Signal Lost");
+      console.error("Auth error:", err);
+      toast.error("Connection failed");
     } finally {
       setLoading(false);
     }
@@ -45,29 +44,59 @@ export default function AdminPage() {
 
   if (!isAuthorized) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white p-6 relative">
+      <div
+        className="min-h-screen flex flex-col items-center justify-center p-6 relative"
+        style={{ background: "var(--bg)" }}
+      >
         <Toaster position="top-center" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#4E24CF]/10 via-transparent to-transparent opacity-50" />
+
+        {/* Ambient glow */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: "radial-gradient(circle at center, rgba(232,255,71,0.04) 0%, transparent 60%)",
+          }}
+        />
+
         <div className="z-10 w-full max-w-sm flex flex-col items-center">
-          <div className="w-16 h-16 rounded-full bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/20 mb-10 shadow-2xl">
-            <HiOutlineLockClosed className="w-7 h-7 text-[#D4AF37]" />
+          <div
+            className="w-16 h-16 rounded-full flex items-center justify-center mb-10 shadow-2xl"
+            style={{
+              background: "var(--accent-dim)",
+              border: "1px solid var(--accent-border)",
+            }}
+          >
+            <HiOutlineLockClosed className="w-7 h-7" style={{ color: "var(--accent)" }} />
           </div>
-          <h1 className="text-[10px] font-black tracking-[0.6em] uppercase text-zinc-500 mb-10">Guardian Protocol</h1>
-          <input 
-            type="password" 
-            placeholder="PIN" 
+
+          <p className="ap-label mb-10">Admin Access</p>
+
+          <input
+            type="password"
+            placeholder="PIN"
             autoFocus
-            className="w-full bg-zinc-950 border border-white/5 p-6 rounded-3xl text-center text-3xl tracking-[0.8em] focus:outline-none focus:border-[#4E24CF]/50 transition-all font-mono shadow-2xl placeholder:text-zinc-900"
+            className="w-full p-6 rounded-3xl text-center text-3xl tracking-[0.8em] outline-none transition-all font-mono"
+            style={{
+              background: "var(--bg-2)",
+              border: "1px solid var(--border)",
+              color: "var(--text-primary)",
+            }}
             value={pin}
             onChange={(e) => setPin(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+            onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent-border)")}
+            onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
           />
-          <button 
-            onClick={handleLogin} 
+
+          <button
+            onClick={handleLogin}
             disabled={loading}
-            className="w-full bg-white text-black py-6 rounded-3xl font-black uppercase tracking-[0.3em] text-[11px] mt-6 hover:bg-[#D4AF37] transition-all shadow-2xl flex items-center justify-center gap-2"
+            className="w-full py-5 rounded-3xl font-black uppercase tracking-[0.3em] text-[11px] mt-5 transition-all shadow-2xl flex items-center justify-center gap-2 disabled:opacity-40"
+            style={{ background: "var(--accent)", color: "#0a0a0a" }}
           >
-            {loading ? "Decrypting..." : <>Verify Identity <HiOutlineFingerPrint className="w-4 h-4" /></>}
+            {loading ? "Verifying..." : (
+              <>Verify Identity <HiOutlineFingerPrint className="w-4 h-4" /></>
+            )}
           </button>
         </div>
       </div>
@@ -75,26 +104,53 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white p-8 md:p-24 overflow-x-hidden">
+    <div
+      className="min-h-screen p-8 md:p-24 overflow-x-hidden"
+      style={{ background: "var(--bg)", color: "var(--text-primary)" }}
+    >
       <Toaster position="top-center" />
-      <div className="max-w-7xl mx-auto relative">
-        <header className="flex flex-col md:flex-row md:items-end justify-between border-b border-white/5 pb-16 gap-8">
+      <div className="max-w-7xl mx-auto">
+        <header
+          className="flex flex-col md:flex-row md:items-end justify-between pb-16 gap-8"
+          style={{ borderBottom: "1px solid var(--border)" }}
+        >
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-              <span className="text-[10px] font-black tracking-[0.4em] text-emerald-500 uppercase">Guardian Stream: Synchronized</span>
+              <span
+                className="h-2 w-2 rounded-full animate-pulse"
+                style={{ background: "var(--accent)", boxShadow: "0 0 10px rgba(232,255,71,0.5)" }}
+              />
+              <span className="ap-label" style={{ color: "var(--accent)" }}>Admin Panel — Active</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase italic leading-[0.8]">
-              Vibe <span className="text-[#4E24CF]">Stream</span>
+            <h1
+              className="text-5xl md:text-7xl font-black tracking-tighter uppercase italic leading-[0.8]"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Arca<span style={{ color: "var(--accent)" }}>push</span>
             </h1>
           </div>
-          <button 
-            onClick={() => setIsAuthorized(false)} 
-            className="text-[9px] font-black tracking-[0.3em] uppercase px-10 py-4 border border-white/5 rounded-full bg-zinc-950 hover:bg-red-500/10 hover:text-red-500 transition-all shadow-2xl"
+
+          <button
+            onClick={() => setIsAuthorized(false)}
+            className="text-xs font-black tracking-[0.3em] uppercase px-10 py-4 rounded-full transition-all"
+            style={{
+              border: "1px solid var(--border)",
+              background: "var(--bg-3)",
+              color: "var(--text-secondary)",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.color = "#ff6b6b";
+              (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,60,60,0.3)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+              (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+            }}
           >
             Lock Terminal
           </button>
         </header>
+
         <main className="mt-20">
           <AdminDashboardView guardianPin={pin} />
         </main>

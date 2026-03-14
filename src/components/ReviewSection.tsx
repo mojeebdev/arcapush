@@ -1,7 +1,3 @@
-// ============================================================
-// FILE PATH: src/components/ReviewSection.tsx
-// ============================================================
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -24,26 +20,22 @@ interface ReviewSectionProps {
 function StarRating({ value, onChange }: { value: number; onChange?: (v: number) => void }) {
   const [hovered, setHovered] = useState(0);
   const interactive = !!onChange;
-
   return (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((star) => {
         const filled = star <= (hovered || value);
         return (
-          <button
-            key={star}
-            type={interactive ? "button" : "button"}
+          <button key={star} type="button"
             onClick={() => onChange?.(star)}
             onMouseEnter={() => interactive && setHovered(star)}
             onMouseLeave={() => interactive && setHovered(0)}
             className={interactive ? "cursor-pointer transition-transform hover:scale-110" : "cursor-default"}
             disabled={!interactive}
           >
-            {filled ? (
-              <HiStar className="w-6 h-6 text-[#D4AF37]" />
-            ) : (
-              <HiOutlineStar className="w-6 h-6 text-zinc-600" />
-            )}
+            {filled
+              ? <HiStar className="w-6 h-6" style={{ color: "var(--accent)" }} />
+              : <HiOutlineStar className="w-6 h-6" style={{ color: "var(--text-tertiary)" }} />
+            }
           </button>
         );
       })}
@@ -55,9 +47,8 @@ function AverageStars({ avg }: { avg: number }) {
   return (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((star) => (
-        <HiStar
-          key={star}
-          className={`w-4 h-4 ${star <= Math.round(avg) ? "text-[#D4AF37]" : "text-zinc-700"}`}
+        <HiStar key={star} className="w-4 h-4"
+          style={{ color: star <= Math.round(avg) ? "var(--accent)" : "var(--text-tertiary)" }}
         />
       ))}
     </div>
@@ -71,13 +62,7 @@ export function ReviewSection({ startupId, startupName }: ReviewSectionProps) {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
-
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    rating: 0,
-    comment: "",
-  });
+  const [form, setForm] = useState({ name: "", email: "", rating: 0, comment: "" });
 
   const fetchReviews = async () => {
     try {
@@ -86,205 +71,121 @@ export function ReviewSection({ startupId, startupName }: ReviewSectionProps) {
       setReviews(data.reviews || []);
       setAvgRating(data.avgRating);
       setTotal(data.total);
-    } catch {
-      // silent fail
-    } finally {
-      setLoading(false);
-    }
+    } catch { /* silent */ } finally { setLoading(false); }
   };
 
   useEffect(() => { fetchReviews(); }, [startupId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (form.rating === 0) {
-      toast.error("Please select a star rating.");
-      return;
-    }
-
+    if (form.rating === 0) { toast.error("Please select a star rating."); return; }
     setSubmitting(true);
-    const toastId = toast.loading("Submitting review...");
-
+    const toastId = toast.loading("Submitting...");
     try {
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, startupId }),
       });
-
       const data = await res.json();
-
-      if (!res.ok) {
-        toast.error(data.error || "Failed to submit.", { id: toastId });
-        return;
-      }
-
+      if (!res.ok) { toast.error(data.error || "Failed.", { id: toastId }); return; }
       toast.success("Review submitted!", { id: toastId });
       setForm({ name: "", email: "", rating: 0, comment: "" });
       setShowForm(false);
       fetchReviews();
-
-    } catch {
-      toast.error("Something went wrong.", { id: toastId });
-    } finally {
-      setSubmitting(false);
-    }
+    } catch { toast.error("Something went wrong.", { id: toastId }); }
+    finally { setSubmitting(false); }
   };
 
-  return (
-    <section className="mt-16 border-t border-white/5 pt-16">
+  const inputCls = "w-full ap-input";
 
+  return (
+    <section className="mt-16 pt-16" style={{ borderTop: "1px solid var(--border)" }}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-12">
         <div>
-          <p className="text-[#D4AF37] text-[10px] font-black uppercase tracking-[0.4em] mb-2">
-            Community Signal
-          </p>
-          <h2 className="text-2xl font-black uppercase tracking-tighter text-white">
-            Reviews
-          </h2>
+          <p className="ap-label mb-2">Community Signal</p>
+          <h2 className="text-2xl font-black uppercase tracking-tighter" style={{ color: "var(--text-primary)" }}>Reviews</h2>
           {!loading && total > 0 && avgRating && (
             <div className="flex items-center gap-3 mt-3">
               <AverageStars avg={avgRating} />
-              <span className="text-white font-black text-sm">
-                {avgRating.toFixed(1)}
-              </span>
-              <span className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">
-                {total} {total === 1 ? "review" : "reviews"}
-              </span>
+              <span className="font-black text-sm" style={{ color: "var(--text-primary)" }}>{avgRating.toFixed(1)}</span>
+              <span className="ap-label">{total} {total === 1 ? "review" : "reviews"}</span>
             </div>
           )}
         </div>
-
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="px-8 py-4 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-[#4E24CF] hover:text-white transition-all active:scale-95 shrink-0"
-        >
+        <button onClick={() => setShowForm(!showForm)} className={showForm ? "ap-btn-ghost shrink-0" : "ap-btn-primary shrink-0"}>
           {showForm ? "Cancel" : "Leave a Review"}
         </button>
       </div>
 
-      {/* Review Form */}
+      {/* Form */}
       {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="bg-zinc-950 border border-white/5 rounded-[2.5rem] p-8 mb-12 space-y-6"
+        <form onSubmit={handleSubmit} className="rounded-[2.5rem] p-8 mb-12 space-y-6"
+          style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
         >
-          <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 border-b border-white/5 pb-6">
-            Reviewing {startupName}
-          </p>
-
-          {/* Star Rating */}
+          <p className="ap-label pb-6" style={{ borderBottom: "1px solid var(--border)" }}>Reviewing {startupName}</p>
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
-              Your Rating
-            </label>
-            <StarRating
-              value={form.rating}
-              onChange={(v) => setForm({ ...form, rating: v })}
-            />
+            <label className="ap-label">Your Rating</label>
+            <StarRating value={form.rating} onChange={(v) => setForm({ ...form, rating: v })} />
           </div>
-
-          {/* Name + Email */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
-                Your Name
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="Jane Smith"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full bg-zinc-900/50 border border-white/5 rounded-2xl px-5 py-4 text-white text-sm focus:outline-none focus:border-[#4E24CF]/50 transition-all placeholder:text-zinc-700"
-              />
+              <label className="ap-label">Name</label>
+              <input type="text" required placeholder="Jane Smith" value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputCls} />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
-                Email <span className="text-zinc-700 normal-case tracking-normal font-normal">(not shown publicly)</span>
-              </label>
-              <input
-                type="email"
-                required
-                placeholder="jane@example.com"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full bg-zinc-900/50 border border-white/5 rounded-2xl px-5 py-4 text-white text-sm focus:outline-none focus:border-[#4E24CF]/50 transition-all placeholder:text-zinc-700"
-              />
+              <label className="ap-label">Email <span className="normal-case font-normal tracking-normal text-xs" style={{ color: "var(--text-tertiary)" }}>(not shown)</span></label>
+              <input type="email" required placeholder="jane@example.com" value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputCls} />
             </div>
           </div>
-
-          {/* Comment */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
-              Your Review
-            </label>
-            <textarea
-              required
-              rows={4}
-              placeholder="What do you think about this product? Be honest."
-              value={form.comment}
+            <label className="ap-label">Review</label>
+            <textarea required rows={4} placeholder="What do you think about this product?" value={form.comment}
               onChange={(e) => setForm({ ...form, comment: e.target.value })}
-              className="w-full bg-zinc-900/50 border border-white/5 rounded-2xl px-5 py-4 text-white text-sm focus:outline-none focus:border-[#4E24CF]/50 transition-all placeholder:text-zinc-700 resize-none"
-            />
+              className={`${inputCls} resize-none`} style={{ minHeight: "6rem" }} />
           </div>
-
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full py-5 bg-white text-black rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-[#4E24CF] hover:text-white transition-all disabled:opacity-40 active:scale-[0.98]"
-          >
+          <button type="submit" disabled={submitting} className="ap-btn-primary w-full disabled:opacity-40">
             {submitting ? "Submitting..." : "Submit Review"}
           </button>
-
-          <p className="text-[9px] text-zinc-700 text-center font-black uppercase tracking-widest">
-            One review per person per startup.
-          </p>
+          <p className="ap-label text-center">One review per person per product.</p>
         </form>
       )}
 
-      {/* Reviews List */}
+      {/* Reviews list */}
       {loading ? (
-        <div className="text-zinc-600 font-black text-[10px] uppercase tracking-widest animate-pulse">
-          Loading reviews...
-        </div>
+        <p className="ap-label animate-pulse">Loading reviews...</p>
       ) : reviews.length === 0 ? (
-        <div className="text-center py-16 border border-dashed border-white/5 rounded-[2rem]">
-          <p className="text-zinc-600 font-black text-[10px] uppercase tracking-widest">
-            No reviews yet. Be the first.
-          </p>
+        <div className="text-center py-16 rounded-[2rem] border border-dashed" style={{ borderColor: "var(--border)" }}>
+          <p className="ap-label">No reviews yet. Be the first.</p>
         </div>
       ) : (
         <div className="space-y-6">
           {reviews.map((review) => (
-            <div
-              key={review.id}
-              className="bg-zinc-950 border border-white/5 rounded-[2rem] p-8 hover:border-white/10 transition-all"
+            <div key={review.id} className="rounded-[2rem] p-8 transition-all"
+              style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--border-2)")}
+              onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--border)")}
             >
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div className="flex items-center gap-4">
-                  {/* Avatar initial */}
-                  <div className="w-10 h-10 rounded-full bg-[#4E24CF]/20 border border-[#4E24CF]/30 flex items-center justify-center text-[11px] font-black text-[#4E24CF] flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0"
+                    style={{ background: "var(--accent-dim)", border: "1px solid var(--accent-border)", color: "var(--accent)" }}
+                  >
                     {review.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p className="text-white font-black text-[11px] uppercase tracking-widest">
-                      {review.name}
-                    </p>
-                    <p className="text-zinc-600 text-[9px] uppercase tracking-widest mt-0.5">
-                      {new Date(review.createdAt).toLocaleDateString("en-US", {
-                        month: "short", day: "numeric", year: "numeric",
-                      })}
+                    <p className="font-black text-xs uppercase tracking-widest" style={{ color: "var(--text-primary)" }}>{review.name}</p>
+                    <p className="ap-label mt-0.5">
+                      {new Date(review.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </p>
                   </div>
                 </div>
                 <StarRating value={review.rating} />
               </div>
-              <p className="text-zinc-400 text-sm leading-relaxed">
-                {review.comment}
-              </p>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{review.comment}</p>
             </div>
           ))}
         </div>

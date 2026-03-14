@@ -33,10 +33,10 @@ export async function POST(
 
       if (startup && updatedRequest.startupId && updatedRequest.startupId !== 'general_access') {
         
-       const pitchLink = startup.pitchDeckUrl || `https://vibestream.cc/startup/${startup.slug ?? startup.id}`;
+       const pitchLink = startup.pitchDeckUrl || `https://arcapush.com/startup/${startup.slug ?? startup.id}`;
         
         await resend.emails.send({
-          from: 'Guardian <system@vibestream.cc>',
+          from: 'Guardian <system@arcapush.com>',
           to: updatedRequest.requesterEmail,
           subject: `🔐 Access Granted: ${startup.name} Pitch`,
           html: `
@@ -61,14 +61,14 @@ export async function POST(
                 <span style="color: #4E24CF;">${pitchLink}</span>
               </p>
               <hr style="border: 0; border-top: 1px solid #222; margin: 30px 0;" />
-              <p style="font-size: 10px; color: #444; letter-spacing: 0.3em;">VIBESTREAM | VENTURE CAPITAL</p>
+              <p style="font-size: 10px; color: #444; letter-spacing: 0.3em;">Arcapush | VENTURE CAPITAL</p>
             </div>
           `
         });
       } else {
         
         await resend.emails.send({
-          from: 'Guardian <system@vibestream.cc>',
+          from: 'Guardian <system@Arcapush.cc>',
           to: updatedRequest.requesterEmail,
           subject: '🚀 Signal Live: Terminal Access Authorized',
           html: `
@@ -80,14 +80,14 @@ export async function POST(
               <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
                 <tr>
                   <td>
-                    <a href="https://vibestream.cc" target="_blank" style="background-color: #ffffff; color: #000000; padding: 18px 35px; border-radius: 12px; text-decoration: none; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; display: inline-block;">
+                    <a href="https://arcapush.com" target="_blank" style="background-color: #ffffff; color: #000000; padding: 18px 35px; border-radius: 12px; text-decoration: none; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; display: inline-block;">
                       Enter Terminal
                     </a>
                   </td>
                 </tr>
               </table>
 
-              <p style="font-size: 10px; color: #666; letter-spacing: 0.3em; text-align: center;">VIBESTREAM.CC </p>
+              <p style="font-size: 10px; color: #666; letter-spacing: 0.3em; text-align: center;">Arcapush.CC </p>
             </div>
           `
         });

@@ -14,7 +14,7 @@ function RequestForm() {
   const searchParams = useSearchParams();
   
   const startupId = searchParams.get("startupId") || "general_access";
-  const startupName = searchParams.get("name") || "VibeStream Network";
+  const startupName = searchParams.get("name") || "Arcapush Network";
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -149,7 +149,7 @@ function RequestForm() {
       </form>
       
       <p className="text-center text-[9px] text-zinc-700 font-bold uppercase tracking-[0.4em] mt-12">
-        VibeStream Security Protocol 
+        Arcapush Security Protocol 
       </p>
     </div>
   );

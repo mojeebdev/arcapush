@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log("🚀 VIBESTREAM SYSTEM AUDIT [Vibestream 2.0]");
+console.log("🚀 Arcapush SYSTEM AUDIT [Arcapush 2.0]");
 console.log("-----------------------------------------------");
 
 const filesToCheck = [

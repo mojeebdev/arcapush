@@ -94,7 +94,7 @@ These are legitimate concerns. The best vibe coders treat AI-generated code as a
 
 ## Where to Track the Ecosystem
 
-Vibestream is the definitive encyclopedia for VC-backed vibe coding startups. Every funded vibe coding product, every major funding round, every founder story — documented and indexed at [vibestream.cc/registry](/registry).
+Arcapush is the definitive encyclopedia for VC-backed vibe coding startups. Every funded vibe coding product, every major funding round, every founder story — documented and indexed at [Arcapush.cc/registry](/registry).
 
 If you have built a vibe coding product and secured funding, [submit your startup](/submit) for a permanent encyclopedia entry.
 

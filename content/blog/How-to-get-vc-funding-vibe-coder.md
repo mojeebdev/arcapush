@@ -41,13 +41,13 @@ The criteria have not changed, but vibe coding adds a new dimension to each one.
 
 No VC meeting before you have a product. A working application with real users — even 50 — is worth more than any pitch deck.
 
-**Step 2: Get on Vibestream**
+**Step 2: Get on Arcapush**
 
-[Submit your startup](/submit) to the Vibestream encyclopedia. VCs and investors actively use Vibestream to discover new vibe coding products. A verified listing puts you in front of the people you want to reach.
+[Submit your startup](/submit) to the Arcapush encyclopedia. VCs and investors actively use Arcapush to discover new vibe coding products. A verified listing puts you in front of the people you want to reach.
 
 **Step 3: Build in public**
 
-Document your journey on X. Share your metrics, your failures, your product updates. Vibe coding is inherently visual — show your process. Tag [@vibestreamcc](https://twitter.com/vibestreamcc). Build an audience of early users and potential investors simultaneously.
+Document your journey on X. Share your metrics, your failures, your product updates. Vibe coding is inherently visual — show your process. Tag [@Arcapushcc](https://twitter.com/Arcapushcc). Build an audience of early users and potential investors simultaneously.
 
 **Step 4: Warm introductions over cold outreach**
 
@@ -100,6 +100,6 @@ Getting funded is the start, not the end. The vibe coding products that become l
 
 The vibe coding era is creating a new generation of founders. The ones who move fastest, build most genuinely, and stay closest to their users will be the ones who build the next unicorns.
 
-[Submit your vibe coding startup to the Vibestream encyclopedia →](/submit)
+[Submit your vibe coding startup to the Arcapush encyclopedia →](/submit)
 
 **Tags:** `VC Funding` `Fundraising` `Vibe Coding` `Startups` `Founder Advice`

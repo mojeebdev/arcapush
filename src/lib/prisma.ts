@@ -10,7 +10,7 @@ const globalForPrisma = globalThis as unknown as {
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-  console.warn("⚠️ DATABASE_URL is missing. Vibestreamvis running in restricted mode.");
+  console.warn("⚠️ DATABASE_URL is missing. Arcapushvis running in restricted mode.");
 }
 
 const pool = new Pool({ 

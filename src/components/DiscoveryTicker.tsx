@@ -9,7 +9,7 @@ import { HiOutlineRocketLaunch } from "react-icons/hi2";
 
 interface TickerStartup {
   id: string;
-  slug?: string | null;       // SEO slug — pass through to StartupCard
+  slug?: string | null;
   name: string;
   tagline: string;
   problemStatement: string;
@@ -39,15 +39,27 @@ export function DiscoveryTicker({ startups }: DiscoveryTickerProps) {
   if (startups.length === 0) {
     return (
       <section className="mt-24">
-        <div className="flex items-center gap-4 mb-10 border-b border-white/5 pb-6">
-          <HiOutlineRocketLaunch className="w-5 h-5 text-zinc-500" />
-          <h2 className="text-sm font-black uppercase tracking-[0.4em] text-zinc-500">Discovery Feed</h2>
+        <div
+          className="flex items-center gap-4 mb-10 pb-6"
+          style={{ borderBottom: "1px solid var(--border)" }}
+        >
+          <HiOutlineRocketLaunch className="w-5 h-5" style={{ color: "var(--text-tertiary)" }} />
+          <h2 className="ap-mono">Discovery Feed</h2>
         </div>
-        <div className="bg-zinc-900/20 border border-dashed border-white/10 rounded-[2rem] p-20 text-center">
-          <p className="text-zinc-600 font-bold uppercase tracking-widest text-[10px]">
-            No community signals detected.{" "}
-            <a href="/submit" className="text-white hover:text-[#D4AF37] transition-colors">
-              Transmit yours
+        <div
+          className="rounded-[2rem] p-20 text-center border border-dashed"
+          style={{ background: "rgba(255,255,255,0.01)", borderColor: "var(--border)" }}
+        >
+          <p className="ap-label">
+            No products indexed yet.{" "}
+            <a
+              href="/submit"
+              className="transition-colors"
+              style={{ color: "var(--text-primary)" }}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--accent)")}
+              onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")}
+            >
+              List yours
             </a>
           </p>
         </div>
@@ -57,19 +69,36 @@ export function DiscoveryTicker({ startups }: DiscoveryTickerProps) {
 
   return (
     <section className="mt-24">
-      <div className="flex items-center justify-between mb-10 border-b border-white/5 pb-6">
+      {/* Header row */}
+      <div
+        className="flex items-center justify-between mb-10 pb-6"
+        style={{ borderBottom: "1px solid var(--border)" }}
+      >
         <div className="flex items-center gap-4">
-          <HiOutlineRocketLaunch className="w-5 h-5 text-[#4E24CF] animate-pulse" />
-          <h2 className="text-sm font-black uppercase tracking-[0.4em] text-white">Live Signals</h2>
+          <HiOutlineRocketLaunch
+            className="w-5 h-5 animate-pulse"
+            style={{ color: "var(--accent)" }}
+          />
+          <h2
+            className="text-sm font-black uppercase tracking-widest"
+            style={{ color: "var(--text-primary)" }}
+          >
+            Live Signals
+          </h2>
         </div>
+
         <div className="flex items-center gap-4">
-          <span className="text-[10px] font-mono text-zinc-600 tracking-tighter">
-            <span className="text-[#D4AF37]">{String(currentIndex + 1).padStart(2, '0')}</span>
-            {" "}/ {String(total).padStart(2, '0')}
+          <span className="font-mono text-xs tracking-tighter" style={{ color: "var(--text-tertiary)" }}>
+            <span style={{ color: "var(--accent)" }}>{String(currentIndex + 1).padStart(2, "0")}</span>
+            {" "}/ {String(total).padStart(2, "0")}
           </span>
-          <div className="w-24 h-[1px] bg-white/5 rounded-full overflow-hidden">
+          <div
+            className="w-24 h-px rounded-full overflow-hidden"
+            style={{ background: "var(--border)" }}
+          >
             <motion.div
-              className="h-full bg-[#D4AF37]"
+              className="h-full"
+              style={{ background: "var(--accent)" }}
               initial={{ width: 0 }}
               animate={{ width: `${progress * 100}%` }}
               transition={{ ease: "linear" }}
@@ -78,7 +107,7 @@ export function DiscoveryTicker({ startups }: DiscoveryTickerProps) {
         </div>
       </div>
 
-      {/* Main Rotation Display */}
+      {/* Main rotation */}
       <div className="relative min-h-[400px]">
         <AnimatePresence mode="wait">
           {currentItem && (
@@ -95,23 +124,19 @@ export function DiscoveryTicker({ startups }: DiscoveryTickerProps) {
         </AnimatePresence>
       </div>
 
-      {/* All Projects Grid */}
+      {/* All projects grid */}
       {startups.length > 3 && (
         <div className="mt-32">
           <div className="flex items-center gap-4 mb-10">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/5" />
-            <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.5em]">
-              All <span className="text-[#4E24CF]">Community</span> Projects
+            <div className="h-px flex-1" style={{ background: "linear-gradient(to right, transparent, var(--border))" }} />
+            <h3 className="ap-label">
+              All <span style={{ color: "var(--accent)" }}>Products</span>
             </h3>
-            <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/5" />
+            <div className="h-px flex-1" style={{ background: "linear-gradient(to left, transparent, var(--border))" }} />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {startups.map((startup) => (
-              <StartupCard
-                key={startup.id}
-                startup={startup}
-                variant="grid"
-              />
+              <StartupCard key={startup.id} startup={startup} variant="grid" />
             ))}
           </div>
         </div>

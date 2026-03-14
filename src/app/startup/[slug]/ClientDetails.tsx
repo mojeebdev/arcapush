@@ -1,21 +1,16 @@
 "use client";
+
 import { useState } from "react";
 import { PaymentModal } from "@/components/PaymentModal";
 import { AscensionSuccess } from "@/components/AscensionSuccess";
 import { HiOutlineBolt } from "react-icons/hi2";
 
-export function ClientDetails({ startup, children }: { startup: any, children: React.ReactNode }) {
+export function ClientDetails({ startup, children }: { startup: any; children: React.ReactNode }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [successData, setSuccessData] = useState<any>(null);
 
-  const handleSuccess = (data: any) => {
-    setIsModalOpen(false);
-    setSuccessData(data);
-  };
-
-  const handleCloseSuccess = () => {
-    setSuccessData(null);
-  };
+  const handleSuccess = (data: any) => { setIsModalOpen(false); setSuccessData(data); };
+  const handleCloseSuccess = () => setSuccessData(null);
 
   return (
     <>
@@ -24,14 +19,18 @@ export function ClientDetails({ startup, children }: { startup: any, children: R
       {!successData && (
         <button
           onClick={() => setIsModalOpen(true)}
-          className="fixed bottom-10 right-10 z-[60] flex items-center gap-3 px-8 py-4 bg-[#D4AF37] text-black font-black uppercase italic tracking-tighter rounded-full shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:scale-110 transition-transform active:scale-95 group"
+          className="fixed bottom-10 right-10 z-[60] flex items-center gap-3 px-8 py-4 font-black uppercase italic tracking-tighter rounded-full transition-transform hover:scale-110 active:scale-95 group"
+          style={{
+            background: "var(--accent)",
+            color: "#0a0a0a",
+            boxShadow: "0 0 30px rgba(232,255,71,0.3)",
+          }}
         >
           <HiOutlineBolt className="w-5 h-5 group-hover:animate-bounce" />
           Boost Signal
         </button>
       )}
 
-      {/* PaymentModal always uses internal id for payment processing */}
       {isModalOpen && (
         <PaymentModal
           startupId={startup.id}
@@ -47,6 +46,8 @@ export function ClientDetails({ startup, children }: { startup: any, children: R
           expiresAt={successData.expiresAt}
           txHash={successData.txHash}
           duration={successData.duration}
+          startupSlug={startup.slug}
+          startupId={startup.id}
           onClose={handleCloseSuccess}
         />
       )}

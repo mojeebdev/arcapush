@@ -5,16 +5,18 @@ export async function MilestoneCounter() {
   const formattedCount = new Intl.NumberFormat().format(count);
 
   return (
-    <div className="flex flex-col items-center justify-center py-12 border-y border-white/5 bg-zinc-900/10 backdrop-blur-sm">
-      <div className="text-[10px] uppercase tracking-[0.5em] text-emerald-500 font-black mb-2">
-        VibeStream Network Strength
-      </div>
-      <div className="text-6xl font-black tracking-tighter text-white tabular-nums">
+    <div
+      className="flex flex-col items-center justify-center py-12 backdrop-blur-sm"
+      style={{ borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", background: "rgba(255,255,255,0.01)" }}
+    >
+      <p className="ap-label mb-2" style={{ color: "var(--accent)" }}>Arcapush Registry</p>
+      <div
+        className="text-6xl font-black tracking-tighter tabular-nums"
+        style={{ color: "var(--text-primary)" }}
+      >
         {formattedCount}
       </div>
-      <div className="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold mt-2">
-        Startups Initialized
-      </div>
+      <p className="ap-label mt-2">Products Indexed</p>
     </div>
   );
 }

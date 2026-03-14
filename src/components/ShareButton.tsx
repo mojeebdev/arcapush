@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { useState } from "react";
@@ -5,23 +7,19 @@ import toast from "react-hot-toast";
 import { HiOutlineShare, HiOutlineClipboardDocument } from "react-icons/hi2";
 import { FaXTwitter } from "react-icons/fa6";
 
-
 interface ShareButtonProps {
   startup: { id: string; name: string; tagline: string };
 }
 
 export function ShareButton({ startup }: ShareButtonProps) {
   const [open, setOpen] = useState(false);
-  
-  
-  const url = `${process.env.NEXT_PUBLIC_APP_URL || "https://vibestream.cc"}/startup/${startup.id}`;
-  
-  
-  const text = `🚀 Check out ${startup.name} on @VibeStreamCC — ${startup.tagline}`;
+
+  const url = `${process.env.NEXT_PUBLIC_APP_URL || "https://arcapush.com"}/startup/${startup.id}`;
+  const text = `🚀 Check out ${startup.name} on @arcapush — ${startup.tagline}`;
 
   const copyLink = () => {
     navigator.clipboard.writeText(url);
-    toast.success("Signal Link Copied!");
+    toast.success("Link copied!");
     setOpen(false);
   };
 
@@ -38,7 +36,8 @@ export function ShareButton({ startup }: ShareButtonProps) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="px-6 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all flex items-center gap-2 active:scale-95"
+        className="ap-btn-ghost flex items-center gap-2 active:scale-95"
+        style={{ padding: "0.75rem 1.25rem" }}
       >
         <HiOutlineShare className="w-4 h-4" />
         Share
@@ -46,24 +45,43 @@ export function ShareButton({ startup }: ShareButtonProps) {
 
       {open && (
         <>
-          {/* Guardian Overlay for click-away behavior */}
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          
-          <div className="absolute bottom-full mb-3 right-0 z-50 w-56 bg-zinc-950 border border-white/10 rounded-2xl p-2 shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div
+            className="absolute bottom-full mb-3 right-0 z-50 w-52 rounded-2xl p-2 shadow-2xl"
+            style={{ background: "var(--bg-2)", border: "1px solid var(--border-2)" }}
+          >
             <button
               onClick={shareTwitter}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white hover:bg-white/5 transition-all"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+              style={{ color: "var(--text-secondary)" }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+                (e.currentTarget as HTMLElement).style.background = "var(--bg-3)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+                (e.currentTarget as HTMLElement).style.background = "transparent";
+              }}
             >
-              <FaXTwitter className="w-4 h-4 text-white" />
+              <FaXTwitter className="w-4 h-4" style={{ color: "var(--text-primary)" }} />
               Post on X
             </button>
-            
+
             <button
               onClick={copyLink}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white hover:bg-white/5 transition-all"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+              style={{ color: "var(--text-secondary)" }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+                (e.currentTarget as HTMLElement).style.background = "var(--bg-3)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+                (e.currentTarget as HTMLElement).style.background = "transparent";
+              }}
             >
-              <HiOutlineClipboardDocument className="w-4 h-4 text-white" />
-              Copy Signal
+              <HiOutlineClipboardDocument className="w-4 h-4" style={{ color: "var(--text-primary)" }} />
+              Copy Link
             </button>
           </div>
         </>
