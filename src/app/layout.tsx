@@ -48,9 +48,9 @@ export const metadata: Metadata = {
   },
 
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/arcapush_logo.png",
+    shortcut: "/arcapush_logo.png",
+    apple: "/arcapush_logo.png",
   },
 
   openGraph: {
@@ -88,7 +88,7 @@ const jsonLd = [
     name: "Arcapush",
     alternateName: ["arcapush", "Arca Push"],
     url: AdminConfig.SITE_URL,
-    logo: `${AdminConfig.SITE_URL}/logo.png`,
+    logo: `${AdminConfig.SITE_URL}/arcapush_logo.png`,
     description:
       "Arcapush is the home of vibe-coded products. Solo founders list once. Google indexes it. VCs discover it.",
     foundingDate: "2026",

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useSession, signIn, signOut } from "next-auth/react";
 import {
   HiOutlineBars3,
@@ -11,7 +12,6 @@ import {
   HiOutlineArrowRightOnRectangle,
 } from "react-icons/hi2";
 import { useAccount, useConnect, useDisconnect, useChainId, useConnectors } from "wagmi";
-import { base } from "wagmi/chains";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import GlobalSearch from "./GlobalSearch";
@@ -72,16 +72,18 @@ export function Navbar() {
       }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 gap-8">
+        <div className="flex items-center justify-between h-14 gap-8">
 
           {/* Logo */}
           <Link href="/" className="shrink-0 group">
-            <span
-              className="text-xl font-black uppercase tracking-tighter"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Arca<span style={{ color: "var(--accent)" }}>push</span>
-            </span>
+            <Image
+              src="/arcapush_wordmark.png"
+              alt="Arcapush"
+              width={120}
+              height={28}
+              className="h-7 w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Desktop Nav */}
@@ -108,7 +110,7 @@ export function Navbar() {
           {/* Right side */}
           <div className="hidden md:flex items-center gap-3 shrink-0">
 
-            {/* Wallet — payment only */}
+            {/* Wallet */}
             {mounted && (
               <div
                 className="flex items-center gap-2 pr-3"
@@ -161,10 +163,7 @@ export function Navbar() {
 
                 {userMenuOpen && (
                   <>
-                    <div
-                      className="fixed inset-0 z-40"
-                      onClick={() => setUserMenuOpen(false)}
-                    />
+                    <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
                     <div
                       className="absolute top-full right-0 mt-2 z-50 w-48 rounded-2xl p-2 shadow-2xl"
                       style={{ background: "var(--bg-2)", border: "1px solid var(--border-2)" }}
@@ -228,11 +227,7 @@ export function Navbar() {
             ) : null}
 
             {/* Primary CTA */}
-            <Link
-              href="/submit"
-              className="ap-btn-primary"
-              style={{ padding: "0.65rem 1.5rem" }}
-            >
+            <Link href="/submit" className="ap-btn-primary" style={{ padding: "0.65rem 1.5rem" }}>
               List Product
             </Link>
 

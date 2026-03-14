@@ -67,7 +67,7 @@ export default async function BlogPostPage({ params }: Props) {
       "@type": "Organization",
       name: AdminConfig.SITE_NAME,
       url: AdminConfig.SITE_URL,
-      logo: `${AdminConfig.SITE_URL}/logo.png`,
+      logo: `${AdminConfig.SITE_URL}/arcapush_logo.png`,
     },
     mainEntityOfPage: {
       "@type": "WebPage",
