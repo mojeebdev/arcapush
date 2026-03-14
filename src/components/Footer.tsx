@@ -14,6 +14,7 @@ const FOOTER_LINKS: FooterLinks = {
     { href: "/about",    label: "About"    },
   ],
   Founders: [
+    { href: "/content/blog/how-arcapush-works", label: "How It Works" },
     { href: "/submit",    label: "List a Product" },
     { href: "/pricing",   label: "Pricing"        },
     { href: "/docs",      label: "Docs"           },

@@ -8,7 +8,7 @@ authorImage: "/authors/mojeeb.jpg"
 category: "Insights"
 readTime: "5 min read"
 featured: false
-image: "/blog/how-Arcapush-works.jpg"
+image: "/blog/how-arcapush-works.jpg"
 
 ---
 

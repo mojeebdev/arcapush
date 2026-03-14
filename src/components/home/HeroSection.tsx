@@ -184,7 +184,7 @@ export function HeroSection({ totalCount }: { totalCount: string }) {
           <Link href="/submit" className="ap-btn-primary">
             List Your Product Free <span>→</span>
           </Link>
-          <a href="#how" className="ap-btn-ghost">
+          <a href="/content/blog/how-arcapush-works" className="ap-btn-ghost">
             ↓ See how it works
           </a>
         </motion.div>

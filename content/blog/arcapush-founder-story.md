@@ -8,7 +8,7 @@ authorImage: "/authors/mojeeb.jpg"
 category: "Founder Story"
 readTime: "7 min read"
 featured: true
-image: "/blog/why-i-built-Arcapush.png"
+image: "/blog/why-i-built-arcapush.png"
 ---
 # Why I Built Arcapush: The Gap Nobody Was Filling in the Vibe Coding Era
 

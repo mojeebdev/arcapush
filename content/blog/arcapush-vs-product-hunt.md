@@ -8,7 +8,7 @@ authorImage: "/authors/mojeeb.jpg"
 category: "Deep Dive"
 featured: false
 readTime: "5 min read"
-image: "/blog/Arcapush-vs-producthunt.png"
+image: "/blog/arcapush-vs-producthunt.png"
 ---
 
 Every time a founder discovers Arcapush, the same question comes up.
