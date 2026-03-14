@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useRotation } from "@/hooks/useRotation";
-import { useTicker } from "@/hooks/useTicker";
+import { useTicker }   from "@/hooks/useTicker";
 import { AdminConfig } from "@/lib/adminConfig";
 import { StartupCard } from "./StartupCard";
 import { HiOutlineRocketLaunch } from "react-icons/hi2";
@@ -48,13 +48,13 @@ export function DiscoveryTicker({ startups }: DiscoveryTickerProps) {
         </div>
         <div
           className="rounded-[2rem] p-20 text-center border border-dashed"
-          style={{ background: "rgba(255,255,255,0.01)", borderColor: "var(--border)" }}
+          style={{ background: "var(--bg-2)", borderColor: "var(--border)" }}
         >
           <p className="ap-label">
             No products indexed yet.{" "}
             <a
               href="/submit"
-              className="transition-colors"
+              className="transition-colors underline underline-offset-4"
               style={{ color: "var(--text-primary)" }}
               onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--accent)")}
               onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")}
@@ -69,33 +69,23 @@ export function DiscoveryTicker({ startups }: DiscoveryTickerProps) {
 
   return (
     <section className="mt-24">
-      {/* Header row */}
+      {/* Header */}
       <div
         className="flex items-center justify-between mb-10 pb-6"
         style={{ borderBottom: "1px solid var(--border)" }}
       >
         <div className="flex items-center gap-4">
-          <HiOutlineRocketLaunch
-            className="w-5 h-5 animate-pulse"
-            style={{ color: "var(--accent)" }}
-          />
-          <h2
-            className="text-sm font-black uppercase tracking-widest"
-            style={{ color: "var(--text-primary)" }}
-          >
+          <HiOutlineRocketLaunch className="w-5 h-5 animate-pulse" style={{ color: "var(--accent)" }} />
+          <h2 className="text-sm font-black uppercase tracking-widest" style={{ color: "var(--text-primary)" }}>
             Live Signals
           </h2>
         </div>
-
         <div className="flex items-center gap-4">
           <span className="font-mono text-xs tracking-tighter" style={{ color: "var(--text-tertiary)" }}>
             <span style={{ color: "var(--accent)" }}>{String(currentIndex + 1).padStart(2, "0")}</span>
             {" "}/ {String(total).padStart(2, "0")}
           </span>
-          <div
-            className="w-24 h-px rounded-full overflow-hidden"
-            style={{ background: "var(--border)" }}
-          >
+          <div className="w-24 h-px rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
             <motion.div
               className="h-full"
               style={{ background: "var(--accent)" }}
@@ -113,9 +103,9 @@ export function DiscoveryTicker({ startups }: DiscoveryTickerProps) {
           {currentItem && (
             <motion.div
               key={currentItem.id}
-              initial={{ opacity: 0, y: 10, filter: "blur(10px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -10, filter: "blur(10px)" }}
+              initial={{ opacity: 0, y: 10,  filter: "blur(10px)" }}
+              animate={{ opacity: 1, y: 0,   filter: "blur(0px)"  }}
+              exit={{    opacity: 0, y: -10, filter: "blur(10px)" }}
               transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
             >
               <StartupCard startup={currentItem} variant="ticker" />
@@ -124,14 +114,12 @@ export function DiscoveryTicker({ startups }: DiscoveryTickerProps) {
         </AnimatePresence>
       </div>
 
-      {/* All projects grid */}
+      {/* All products grid */}
       {startups.length > 3 && (
         <div className="mt-32">
           <div className="flex items-center gap-4 mb-10">
             <div className="h-px flex-1" style={{ background: "linear-gradient(to right, transparent, var(--border))" }} />
-            <h3 className="ap-label">
-              All <span style={{ color: "var(--accent)" }}>Products</span>
-            </h3>
+            <h3 className="ap-label">All <span style={{ color: "var(--accent)" }}>Products</span></h3>
             <div className="h-px flex-1" style={{ background: "linear-gradient(to left, transparent, var(--border))" }} />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

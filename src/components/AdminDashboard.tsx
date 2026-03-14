@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -128,7 +126,7 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
             className="px-8 py-3 rounded-2xl text-xs font-black tracking-widest transition-all"
             style={{
               background: view === v ? "var(--accent)" : "transparent",
-              color: view === v ? "#0a0a0a" : "var(--text-tertiary)",
+              color: view === v ? "#fff" : "var(--text-tertiary)",
             }}
             onMouseEnter={(e) => {
               if (view !== v) (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
@@ -152,7 +150,7 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
             style={{
               background: filter === s ? "var(--accent)" : "var(--bg-3)",
               border: `1px solid ${filter === s ? "var(--accent)" : "var(--border)"}`,
-              color: filter === s ? "#0a0a0a" : "var(--text-tertiary)",
+              color: filter === s ? "#fff" : "var(--text-tertiary)",
             }}
           >
             {s}
@@ -369,7 +367,7 @@ function EmptyState({ message }: { message: string }) {
       className="rounded-[3rem] p-32 text-center shadow-2xl"
       style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
     >
-      <HiOutlineClock className="w-16 h-16 mx-auto mb-6" style={{ color: "var(--bg-4, #1c1c1c)" }} />
+      <HiOutlineClock className="w-16 h-16 mx-auto mb-6" style={{ color: "var(--text-tertiary)" }} />
       <p className="ap-label">{message}</p>
     </div>
   );

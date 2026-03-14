@@ -12,7 +12,7 @@ interface Props {
 }
 
 export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
-  const router = useRouter();
+  const router  = useRouter();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: defaultName,
@@ -23,24 +23,18 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name.trim()) {
-      toast.error("Name is required.");
-      return;
-    }
+    if (!form.name.trim()) { toast.error("Name is required."); return; }
     setLoading(true);
-
     try {
       const res = await fetch("/api/onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, userId }),
       });
-
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || "Something went wrong");
       }
-
       toast.success("Profile saved. Let's list your product.");
       router.push("/submit");
     } catch (err: any) {
@@ -61,10 +55,7 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
           <HiOutlineUser className="w-3 h-3" /> Display Name
         </label>
         <input
-          type="text"
-          required
-          className="ap-input"
-          placeholder="Mojeeb"
+          type="text" required className="ap-input" placeholder="Mojeeb"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
@@ -76,14 +67,13 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
         <div className="flex flex-wrap gap-2">
           {ROLES.map((r) => (
             <button
-              key={r}
-              type="button"
+              key={r} type="button"
               onClick={() => setForm({ ...form, role: r })}
               className="px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all"
               style={{
-                background: form.role === r ? "var(--accent)" : "var(--bg-3)",
-                color: form.role === r ? "#0a0a0a" : "var(--text-secondary)",
-                border: "1px solid",
+                background:  form.role === r ? "var(--accent)" : "var(--bg-3)",
+                color:       form.role === r ? "#fff"          : "var(--text-secondary)",
+                border:      "1px solid",
                 borderColor: form.role === r ? "var(--accent)" : "var(--border)",
               }}
             >
@@ -100,11 +90,12 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
         </label>
         <div className="relative">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black"
-            style={{ color: "var(--text-tertiary)" }}>@</span>
+            style={{ color: "var(--text-tertiary)" }}
+          >
+            @
+          </span>
           <input
-            type="text"
-            className="ap-input pl-8"
-            placeholder="mojeebeth"
+            type="text" className="ap-input pl-8" placeholder="mojeebeth"
             value={form.twitterHandle}
             onChange={(e) => setForm({ ...form, twitterHandle: e.target.value.replace("@", "") })}
           />
@@ -120,8 +111,7 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
           </span>
         </label>
         <input
-          type="text"
-          className="ap-input"
+          type="text" className="ap-input"
           placeholder="Building in public. Vibe coder. Web3 strategist."
           maxLength={120}
           value={form.bio}
@@ -129,8 +119,10 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
         />
       </div>
 
-      {/* Email (read-only, for display) */}
-      <div className="p-4 rounded-xl text-sm" style={{ background: "var(--bg-3)", color: "var(--text-secondary)" }}>
+      {/* Email (read-only) */}
+      <div className="p-4 rounded-xl text-sm"
+        style={{ background: "var(--bg-3)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
+      >
         <span className="ap-label mr-2">Account</span>
         {defaultEmail}
       </div>

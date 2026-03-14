@@ -26,8 +26,9 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted]       = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [scrolled, setScrolled]     = useState(false);
 
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -40,7 +41,12 @@ export function Navbar() {
   const { publicKey, connected: isSolConnected, disconnect: disconnectSol } = useWallet();
   const { setVisible: setSolModalVisible } = useWalletModal();
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const handleWalletConnect = () => {
     if (isEvmConnected || isSolConnected) {
@@ -53,23 +59,21 @@ export function Navbar() {
     if (connectors.length > 0) connectEvm({ connector: connectors[0] });
   };
 
-  const walletDisplay = !mounted
-    ? null
-    : isEvmConnected
-    ? `${evmAddress?.slice(0, 4)}…${evmAddress?.slice(-4)}`
-    : isSolConnected
-    ? `${publicKey?.toBase58().slice(0, 4)}…${publicKey?.toBase58().slice(-4)}`
+  const walletDisplay = !mounted ? null
+    : isEvmConnected  ? `${evmAddress?.slice(0, 4)}…${evmAddress?.slice(-4)}`
+    : isSolConnected  ? `${publicKey?.toBase58().slice(0, 4)}…${publicKey?.toBase58().slice(-4)}`
     : null;
 
   const isWalletConnected = mounted && (isEvmConnected || isSolConnected);
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50"
+      className="fixed top-0 left-0 right-0 z-50 transition-shadow duration-300"
       style={{
-        background: "rgba(10,10,10,0.85)",
+        background: "rgba(247,246,242,0.88)",
         backdropFilter: "blur(12px)",
         borderBottom: "1px solid var(--border)",
+        boxShadow: scrolled ? "0 2px 24px rgba(10,10,15,0.06)" : "none",
       }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -93,8 +97,10 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs font-black uppercase tracking-widest transition-colors hover:[color:var(--text-primary)]"
+                className="text-xs font-black uppercase tracking-widest transition-colors"
                 style={{ color: "var(--text-tertiary)" }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)")}
               >
                 {link.label}
               </Link>
@@ -135,10 +141,7 @@ export function Navbar() {
                   <HiOutlineWallet className="w-3.5 h-3.5" />
                   {walletDisplay ?? "Wallet"}
                   {isWalletConnected && (
-                    <span
-                      className="w-1.5 h-1.5 rounded-full animate-pulse"
-                      style={{ background: "var(--accent)" }}
-                    />
+                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--accent)" }} />
                   )}
                 </button>
               </div>
@@ -165,20 +168,24 @@ export function Navbar() {
                     <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
                     <div
                       className="absolute top-full right-0 mt-2 z-50 w-48 rounded-2xl p-2 shadow-2xl"
-                      style={{ background: "var(--bg-2)", border: "1px solid var(--border-2)" }}
+                      style={{ background: "var(--bg)", border: "1px solid var(--border-2)" }}
                     >
                       <Link
                         href="/submit"
                         onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all hover:[background:var(--bg-3)] hover:[color:var(--text-primary)]"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
                         style={{ color: "var(--text-secondary)" }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-2)"; (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)"; }}
                       >
                         List a Product
                       </Link>
                       <button
                         onClick={() => { signOut(); setUserMenuOpen(false); }}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all hover:[color:#ff6b6b] hover:[background:rgba(255,60,60,0.05)]"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
                         style={{ color: "var(--text-tertiary)" }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#dc2626"; (e.currentTarget as HTMLElement).style.background = "rgba(220,38,38,0.05)"; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)"; (e.currentTarget as HTMLElement).style.background = "transparent"; }}
                       >
                         <HiOutlineArrowRightOnRectangle className="w-3.5 h-3.5" />
                         Sign Out
@@ -196,7 +203,6 @@ export function Navbar() {
                 Get Started →
               </button>
             ) : null}
-
           </div>
 
           {/* Mobile toggle */}

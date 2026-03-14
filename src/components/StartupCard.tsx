@@ -29,10 +29,11 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
   if (variant === "ticker") {
     return (
       <div
-        className="rounded-[2rem] overflow-hidden group shadow-2xl"
+        className="rounded-[2rem] overflow-hidden group shadow-sm"
         style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
       >
         <div className="flex flex-col lg:flex-row">
+
           {/* Visual */}
           <div className="relative lg:w-1/2 h-[220px] lg:h-[380px] overflow-hidden">
             <Image
@@ -41,19 +42,23 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
               fill
               className="object-cover transition-transform duration-1000 group-hover:scale-105"
             />
+            {/* Light-theme gradient — fades into cream bg */}
             <div
               className="absolute inset-0 hidden lg:block"
-              style={{ background: "linear-gradient(to right, var(--bg-2), rgba(17,17,17,0.4), transparent)" }}
+              style={{
+                background: "linear-gradient(to right, var(--bg-2) 0%, rgba(239,237,230,0.5) 40%, transparent 100%)",
+              }}
             />
             <div
               className="absolute inset-0 lg:hidden"
-              style={{ background: "linear-gradient(to top, var(--bg-2), transparent)" }}
+              style={{
+                background: "linear-gradient(to top, var(--bg-2) 0%, transparent 60%)",
+              }}
             />
           </div>
 
           {/* Data */}
-          <div
-            className="flex-1 p-8 lg:p-14 flex flex-col justify-center"
+          <div className="flex-1 p-8 lg:p-14 flex flex-col justify-center"
             style={{ background: "var(--bg-2)" }}
           >
             <div className="flex items-center gap-3 mb-6">
@@ -95,14 +100,12 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
               </h3>
             </div>
 
-            <p
-              className="font-black text-xs mb-3 uppercase tracking-widest"
+            <p className="font-black text-xs mb-3 uppercase tracking-widest"
               style={{ color: "var(--accent)" }}
             >
               {startup.tagline}
             </p>
-            <p
-              className="text-sm font-medium line-clamp-2 mb-10 leading-relaxed"
+            <p className="text-sm font-medium line-clamp-2 mb-10 leading-relaxed"
               style={{ color: "var(--text-secondary)" }}
             >
               {startup.problemStatement}
@@ -125,7 +128,7 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
     );
   }
 
-  // Grid variant
+  // ── Grid variant ──────────────────────────────────────────────────────────
   return (
     <Link href={startupUrl}>
       <motion.div
@@ -141,17 +144,20 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
             src={startup.bannerUrl}
             alt={`${startup.name} banner`}
             fill
-            className="object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-110"
+            className="object-cover grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-110"
           />
+          {/* Light-theme gradient */}
           <div
             className="absolute inset-0"
-            style={{ background: "linear-gradient(to top, var(--bg-2), rgba(17,17,17,0.2), transparent)" }}
+            style={{
+              background: "linear-gradient(to top, var(--bg-2) 0%, rgba(239,237,230,0.3) 50%, transparent 100%)",
+            }}
           />
           <div className="absolute top-5 right-5">
             <span
               className="px-3 py-1 rounded-lg text-xs font-black uppercase tracking-widest"
               style={{
-                background: "rgba(10,10,10,0.8)",
+                background: "rgba(247,246,242,0.9)",
                 backdropFilter: "blur(8px)",
                 border: "1px solid var(--border)",
                 color: "var(--accent)",
@@ -179,14 +185,14 @@ export function StartupCard({ startup, variant }: StartupCardProps) {
               </div>
             )}
             <h4
-              className="font-black text-sm uppercase tracking-tighter truncate transition-colors"
+              className="font-black text-sm uppercase tracking-tighter truncate"
               style={{ color: "var(--text-primary)" }}
             >
               {startup.name}
             </h4>
           </div>
           <p
-            className="text-xs uppercase tracking-tight line-clamp-2 leading-relaxed transition-colors group-hover:text-[var(--text-secondary)]"
+            className="text-xs uppercase tracking-tight line-clamp-2 leading-relaxed"
             style={{ color: "var(--text-tertiary)" }}
           >
             {startup.problemStatement}

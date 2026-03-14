@@ -21,49 +21,33 @@ interface SuccessProps {
 }
 
 export function AscensionSuccess({
-  startupName,
-  expiresAt,
-  txHash,
-  duration,
-  startupSlug,
-  startupId,
-  onClose,
+  startupName, expiresAt, txHash, duration,
+  startupSlug, startupId, onClose,
 }: SuccessProps) {
-  const [timeLeft, setTimeLeft] = useState("");
+  const [timeLeft, setTimeLeft]   = useState("");
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
     setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-
     const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = new Date(expiresAt).getTime() - now;
-
-      if (distance < 0) {
-        setTimeLeft("EXPIRED");
-        clearInterval(timer);
-      } else {
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
-      }
+      const distance = new Date(expiresAt).getTime() - Date.now();
+      if (distance < 0) { setTimeLeft("EXPIRED"); clearInterval(timer); return; }
+      const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((distance % (1000 * 60)) / 1000);
+      setTimeLeft(`${h}h ${m}m ${s}s`);
     }, 1000);
-
     return () => clearInterval(timer);
   }, [expiresAt]);
 
   const startupPath = startupSlug ?? startupId;
-  const startupUrl = startupPath
+  const startupUrl  = startupPath
     ? `https://arcapush.com/startup/${startupPath}`
     : "https://arcapush.com/registry";
 
   const shareOnX = () => {
-    const text = `🚀 Just boosted ${startupName} to the top of @arcapush!\n\nDiscover it in the registry 👇\n${startupUrl}\n\n#Arcapush #VibeCoding #BuildInPublic`;
-    window.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
-      "_blank"
-    );
+    const text = `🚀 Just boosted ${startupName} to the top of @arcapush!\n\nDiscover it here 👇\n${startupUrl}\n\n#Arcapush #VibeCoding #BuildInPublic`;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
   };
 
   return (
@@ -75,7 +59,13 @@ export function AscensionSuccess({
         width={windowSize.width}
         height={windowSize.height}
         recycle={false}
-        colors={["#e8ff47", "#f0ede8", "#888580", "#111111"]}
+        colors={[
+          "var(--accent)" as string,
+          "#0A0A0F",
+          "#5B2BFF",
+          "#8A8580",
+          "#EFEDE6",
+        ]}
       />
 
       <motion.div
@@ -96,31 +86,25 @@ export function AscensionSuccess({
               className="w-24 h-24 rounded-full flex items-center justify-center"
               style={{
                 background: "var(--accent)",
-                boxShadow: "0 0 50px rgba(232,255,71,0.3)",
+                boxShadow: "0 0 50px rgba(91,43,255,0.2)",
               }}
             >
-              <HiOutlineRocketLaunch className="w-10 h-10" style={{ color: "#0a0a0a" }} />
+              <HiOutlineRocketLaunch className="w-10 h-10" style={{ color: "#fff" }} />
             </div>
           </div>
         </div>
 
-        <h1
-          className="text-5xl font-black italic tracking-tighter uppercase mb-2"
-          style={{ color: "var(--text-primary)" }}
-        >
+        <h1 className="ap-display mb-2" style={{ fontSize: "clamp(2.5rem,6vw,4rem)", color: "var(--text-primary)" }}>
           Boost <span style={{ color: "var(--accent)" }}>Active</span>
         </h1>
-        <p
-          className="text-xl mb-10"
-          style={{ color: "var(--text-secondary)", fontFamily: "Georgia, serif", fontStyle: "italic" }}
-        >
+        <p className="text-xl mb-10" style={{ color: "var(--text-secondary)", fontFamily: "Georgia, serif", fontStyle: "italic" }}>
           {startupName} is now pinned to the top of the registry.
         </p>
 
+        {/* Stats */}
         <div className="grid grid-cols-2 gap-4 mb-10">
-          <div
-            className="p-6 rounded-[2rem]"
-            style={{ background: "var(--bg-2)", border: "1px solid var(--border)", backdropFilter: "blur(12px)" }}
+          <div className="p-6 rounded-[2rem]"
+            style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
           >
             <HiOutlineClock className="w-5 h-5 mx-auto mb-2" style={{ color: "var(--accent)" }} />
             <p className="ap-label mb-1">Time Remaining</p>
@@ -128,23 +112,20 @@ export function AscensionSuccess({
               {timeLeft}
             </p>
           </div>
-          <div
-            className="p-6 rounded-[2rem]"
-            style={{ background: "var(--bg-2)", border: "1px solid var(--border)", backdropFilter: "blur(12px)" }}
+          <div className="p-6 rounded-[2rem]"
+            style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
           >
-            <HiOutlineShieldCheck className="w-5 h-5 mx-auto mb-2" style={{ color: "#4ade80" }} />
+            <HiOutlineShieldCheck className="w-5 h-5 mx-auto mb-2" style={{ color: "#16a34a" }} />
             <p className="ap-label mb-1">Status</p>
-            <p className="text-xl font-black uppercase italic tracking-tighter" style={{ color: "#4ade80" }}>
+            <p className="text-xl font-black uppercase italic tracking-tighter" style={{ color: "#16a34a" }}>
               Verified
             </p>
           </div>
         </div>
 
+        {/* Actions */}
         <div className="space-y-4">
-          <button
-            onClick={shareOnX}
-            className="ap-btn-primary w-full flex items-center justify-center gap-3"
-          >
+          <button onClick={shareOnX} className="ap-btn-primary w-full flex items-center justify-center gap-3">
             <HiOutlineShare className="w-5 h-5" /> Share on X
           </button>
           <button
@@ -156,7 +137,7 @@ export function AscensionSuccess({
         </div>
 
         <div className="mt-12">
-          <code className="text-xs font-mono break-all uppercase" style={{ color: "var(--text-tertiary)" }}>
+          <code style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.06em", color: "var(--text-tertiary)", wordBreak: "break-all", textTransform: "uppercase" }}>
             TX: {txHash}
           </code>
         </div>
