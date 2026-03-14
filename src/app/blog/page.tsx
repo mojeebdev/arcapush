@@ -107,13 +107,11 @@ export default function BlogPage() {
                   <p className="ap-label mb-4">Featured</p>
                   <Link href={`/blog/${featured.slug}`}>
                     <div
-                      className="group rounded-[2.5rem] overflow-hidden transition-all"
+                      className="group rounded-[2.5rem] overflow-hidden transition-all hover:[border-color:var(--accent)]"
                       style={{
                         background: "var(--bg-2)",
                         border: "1px solid var(--accent-border)",
                       }}
-                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--accent)")}
-                      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)")}
                     >
                       {/* Cover */}
                       <div className="relative h-[260px] w-full overflow-hidden">
@@ -190,10 +188,8 @@ export default function BlogPage() {
                   {rest.map((post) => (
                     <Link key={post.slug} href={`/blog/${post.slug}`}>
                       <div
-                        className="group rounded-[2rem] overflow-hidden transition-all h-full flex flex-col"
+                        className="group rounded-[2rem] overflow-hidden transition-all h-full flex flex-col hover:[border-color:var(--accent-border)]"
                         style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
-                        onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)")}
-                        onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--border)")}
                       >
                         {/* Thumbnail */}
                         <div className="relative h-[160px] w-full overflow-hidden">
