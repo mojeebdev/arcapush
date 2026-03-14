@@ -184,7 +184,7 @@ export function HeroSection({ totalCount }: { totalCount: string }) {
           <Link href="/submit" className="ap-btn-primary">
             List Your Product Free <span>→</span>
           </Link>
-          <a href="/content/blog/how-arcapush-works" className="ap-btn-ghost">
+          <a href="/blog/how-arcapush-works" className="ap-btn-ghost">
             ↓ See how it works
           </a>
         </motion.div>
@@ -225,8 +225,8 @@ export function HeroSection({ totalCount }: { totalCount: string }) {
         >
           {[
             { num: totalCount, label: "Products Listed" },
-            { num: "140+",    label: "Vibe Coders"     },
-            { num: "40+",     label: "VCs Browsing"    },
+            { num: "100+",    label: "Vibe Coders"     },
+            { num: "2+",     label: "VCs Browsing"    },
             { num: "48h",     label: "Avg Index Time"  },
           ].map((stat, i) => (
             <div key={i} className="flex items-center gap-8">
