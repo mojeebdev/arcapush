@@ -1,6 +1,6 @@
-import NextAuth from "next-auth"
-import Google from "next-auth/providers/google"
-import GitHub from "next-auth/providers/github"
+import NextAuth from "next-auth";
+import Google from "next-auth/providers/google";
+import GitHub from "next-auth/providers/github";
 
 export const { auth } = NextAuth({
   providers: [
@@ -13,4 +13,7 @@ export const { auth } = NextAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
   ],
-})
+  session: {
+    strategy: "jwt",
+  },
+});
