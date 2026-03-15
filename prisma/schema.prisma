@@ -10,17 +10,20 @@ model User {
   id                 String          @id @default(cuid())
   walletAddress      String?         @unique
   email              String?         @unique
+  emailVerified      DateTime?
   name               String?
+  image              String?
   role               String          @default("viewer")
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   onboardingComplete Boolean         @default(false)
   twitterHandle      String?
   bio                String?
-  accessRequests     AccessRequest[]
-  Account            Account[]
-  Session            Session[]
-  startups           Startup[]
+
+  accounts       Account[]
+  sessions       Session[]
+  accessRequests AccessRequest[]
+  startups       Startup[]
 }
 
 model Startup {
@@ -52,9 +55,10 @@ model Startup {
   metaTitle        String?
   metaDescription  String?
   canonicalUrl     String?
-  accessRequests   AccessRequest[]
-  reviews          Review[]
-  founder          User?           @relation(fields: [founderId], references: [id])
+
+  accessRequests AccessRequest[]
+  reviews        Review[]
+  founder        User?           @relation(fields: [founderId], references: [id])
 
   @@index([tier, pinnedUntil])
   @@index([createdAt])
@@ -75,8 +79,9 @@ model AccessRequest {
   requesterId       String?
   createdAt         DateTime      @default(now())
   reviewedAt        DateTime?
-  requester         User?         @relation(fields: [requesterId], references: [id])
-  startup           Startup       @relation(fields: [startupId], references: [id], onDelete: Cascade)
+
+  requester User?   @relation(fields: [requesterId], references: [id])
+  startup   Startup @relation(fields: [startupId], references: [id], onDelete: Cascade)
 
   @@unique([requesterEmail, startupId])
   @@index([startupId, status])
@@ -105,14 +110,15 @@ model Review {
   comment   String
   startupId String
   createdAt DateTime @default(now())
-  startup   Startup  @relation(fields: [startupId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  startup Startup @relation(fields: [startupId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([email, startupId])
   @@index([startupId])
 }
 
 model Account {
-  id                String  @id
+  id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
@@ -124,17 +130,19 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
 
 model Session {
-  id           String   @id
+  id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum StartupTier {
