@@ -9,11 +9,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientId:     process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     GitHub({
-      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientId:     process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
   ],
@@ -30,29 +30,30 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async session({ session, token }) {
       if (session.user && token.sub) {
-        session.user.id = token.sub;
-
         
+        session.user.id = (token.dbId as string) ?? token.sub;
+
         const dbUser = await prisma.user.findUnique({
-          where: { id: token.sub },
+          where: { id: session.user.id },
           select: { onboardingComplete: true, role: true },
         });
 
         (session.user as any).onboardingComplete = dbUser?.onboardingComplete ?? false;
-        (session.user as any).role = dbUser?.role ?? "USER";
+        (session.user as any).role               = dbUser?.role ?? "viewer";
       }
       return session;
     },
 
     async jwt({ token, user }) {
-      if (user) {
-        token.sub = user.id;
+      if (user?.id) {
+        
+        token.dbId = user.id;
+        token.sub  = user.id;
       }
       return token;
     },
 
     async redirect({ url, baseUrl }) {
-      
       if (url.startsWith(baseUrl)) return url;
       return `${baseUrl}/onboarding`;
     },
