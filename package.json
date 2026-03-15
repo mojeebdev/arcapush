@@ -15,7 +15,7 @@
     "@auth/prisma-adapter": "^2.11.1",
     "@dynamic-labs/ethers-v6": "^4.57.2",
     "@prisma/adapter-pg": "^7.4.0",
-    "@prisma/client": "^7.4.0",
+    "@prisma/client": "^7.5.0",
     "@solana/spl-token": "^0.4.14",
     "@solana/wallet-adapter-base": "^0.9.27",
     "@solana/wallet-adapter-react": "^0.15.39",
@@ -53,7 +53,7 @@
     "@types/react-dom": "^18.3.7",
     "autoprefixer": "^10.4.24",
     "postcss": "^8.5.6",
-    "prisma": "^7.4.0",
+    "prisma": "^7.5.0",
     "tailwindcss": "^3.4.19",
     "tsx": "^4.21.0",
     "typescript": "^5.6.0"
