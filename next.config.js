@@ -15,10 +15,12 @@ const nextConfig = {
 
   serverExternalPackages: ['@prisma/client', 'pg'],
 
-  
   experimental: {
     outputFileTracingIncludes: {
       "/blog/[slug]": ["./content/blog/**/*"],
+    },
+    serverActions: {
+      allowedOrigins: ["arcapush.com", "www.arcapush.com"],
     },
   },
 };
