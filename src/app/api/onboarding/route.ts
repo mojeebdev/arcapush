@@ -30,8 +30,17 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log("[api/onboarding] Updated user:", userId);
-    return NextResponse.json({ success: true }, { status: 200 });
+    
+    const res = NextResponse.json({ success: true }, { status: 200 });
+    res.cookies.set("onboarding_complete", "true", {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365, 
+    });
+
+    return res;
 
   } catch (err: any) {
     console.error("[api/onboarding] Error:", err);

@@ -35,8 +35,8 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
       if (!res.ok) throw new Error(data.error || "Something went wrong");
 
       toast.success("Profile saved. Let's list your product.");
-      // ✅ Go to /onboarding first — server will see onboardingComplete=true and redirect to /submit
-      window.location.href = "/onboarding";
+      
+      window.location.href = "/submit";
     } catch (err: any) {
       toast.error(err.message);
     } finally {
