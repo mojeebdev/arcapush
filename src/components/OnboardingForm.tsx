@@ -15,26 +15,35 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
   const router  = useRouter();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    name: defaultName,
+    name:          defaultName,
     twitterHandle: "",
-    bio: "",
-    role: "Solo Founder",
+    bio:           "",
+    role:          "Solo Founder",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim()) { toast.error("Name is required."); return; }
     setLoading(true);
+
     try {
       const res = await fetch("/api/onboarding", {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, userId }),
+        
+        body: JSON.stringify({
+          ...form,
+          userId,
+          email: defaultEmail,
+        }),
       });
+
+      const data = await res.json();
+
       if (!res.ok) {
-        const data = await res.json();
         throw new Error(data.error || "Something went wrong");
       }
+
       toast.success("Profile saved. Let's list your product.");
       router.push("/submit");
     } catch (err: any) {
@@ -55,7 +64,8 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
           <HiOutlineUser className="w-3 h-3" /> Display Name
         </label>
         <input
-          type="text" required className="ap-input" placeholder="Mojeeb"
+          type="text" required className="ap-input"
+          placeholder="Mojeeb"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
@@ -83,19 +93,21 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
         </div>
       </div>
 
-      {/* Twitter handle */}
+      {/* Twitter */}
       <div className="space-y-2">
         <label className="ap-label flex items-center gap-2">
           <HiOutlineLink className="w-3 h-3" /> X / Twitter Handle
         </label>
         <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black"
+          <span
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black"
             style={{ color: "var(--text-tertiary)" }}
           >
             @
           </span>
           <input
-            type="text" className="ap-input pl-8" placeholder="mojeebeth"
+            type="text" className="ap-input pl-8"
+            placeholder="mojeebeth"
             value={form.twitterHandle}
             onChange={(e) => setForm({ ...form, twitterHandle: e.target.value.replace("@", "") })}
           />
@@ -119,8 +131,9 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
         />
       </div>
 
-      {/* Email (read-only) */}
-      <div className="p-4 rounded-xl text-sm"
+      {/* Email display */}
+      <div
+        className="p-4 rounded-xl text-sm"
         style={{ background: "var(--bg-3)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
       >
         <span className="ap-label mr-2">Account</span>
