@@ -20,7 +20,8 @@ export default auth((req) => {
     return NextResponse.redirect(signInUrl);
   }
 
-  const onboardingComplete = req.cookies.get("onboarding_complete")?.value === "true";
+  
+  const onboardingComplete = (session.user as any)?.onboardingComplete === true;
 
   if (needsOnboarding && !onboardingComplete) {
     return NextResponse.redirect(new URL("/onboarding", nextUrl.origin));
