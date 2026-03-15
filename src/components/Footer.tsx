@@ -21,7 +21,7 @@ const FOOTER_LINKS: FooterLinks = {
     { href: "/investors", label: "VC Panel"       },
   ],
   Intelligence: [
-    { href: "/blog/what-is-vibe-coding",            label: "What is Vibe Coding?"     },
+    { href: "/blog/What-is-vibe-coding",            label: "What is Vibe Coding?"     },
     { href: "/blog/andrej-karpathy-vibe-coding",    label: "Origin of Vibe Coding"    },
     { href: "/blog/vc-backed-vibe-coding-startups", label: "VC-Backed Startups"       },
     { href: "/blog/best-vibe-coding-tools-2026",    label: "Best Tools 2026"          },
