@@ -25,10 +25,11 @@ const NAV_LINKS = [
 ];
 
 export function Navbar() {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [mounted, setMounted]       = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [scrolled, setScrolled]     = useState(false);
+  const [mobileOpen, setMobileOpen]       = useState(false);
+  const [mounted, setMounted]             = useState(false);
+  const [userMenuOpen, setUserMenuOpen]   = useState(false);
+  const [walletPickerOpen, setWalletPickerOpen] = useState(false);
+  const [scrolled, setScrolled]           = useState(false);
 
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -56,12 +57,12 @@ export function Navbar() {
       }
       return;
     }
-    if (connectors.length > 0) connectEvm({ connector: connectors[0] });
+    setWalletPickerOpen(true);
   };
 
   const walletDisplay = !mounted ? null
-    : isEvmConnected  ? `${evmAddress?.slice(0, 4)}…${evmAddress?.slice(-4)}`
-    : isSolConnected  ? `${publicKey?.toBase58().slice(0, 4)}…${publicKey?.toBase58().slice(-4)}`
+    : isEvmConnected ? `${evmAddress?.slice(0, 4)}…${evmAddress?.slice(-4)}`
+    : isSolConnected ? `${publicKey?.toBase58().slice(0, 4)}…${publicKey?.toBase58().slice(-4)}`
     : null;
 
   const isWalletConnected = mounted && (isEvmConnected || isSolConnected);
@@ -77,12 +78,12 @@ export function Navbar() {
       }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 gap-6">
+        <div className="flex items-center justify-between h-14 gap-4">
 
           {/* Logo */}
           <Link href="/" className="shrink-0">
             <Image
-              src="/arcapush_wordmark.png"
+              src="/arcapush-logo.png"
               alt="Arcapush"
               width={140}
               height={32}
@@ -92,7 +93,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-5">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -108,42 +109,70 @@ export function Navbar() {
           </div>
 
           {/* Search */}
-          <div className="flex-1 max-w-xs hidden md:block">
+          <div className="flex-1 hidden md:block">
             <GlobalSearch />
           </div>
 
           {/* Right side */}
           <div className="hidden md:flex items-center gap-3 shrink-0">
 
-            {/* Wallet */}
+            {/* Wallet button + picker */}
             {mounted && (
-              <div
-                className="flex items-center gap-2 pr-3"
-                style={{ borderRight: "1px solid var(--border)" }}
-              >
-                {!isEvmConnected && (
-                  <button
-                    onClick={() => setSolModalVisible(true)}
-                    className="text-xs font-black uppercase px-2 py-1 rounded-lg transition-colors"
-                    style={{
-                      color: isSolConnected ? "var(--accent)" : "var(--text-tertiary)",
-                      background: isSolConnected ? "var(--accent-dim)" : "transparent",
-                    }}
-                  >
-                    SOL
-                  </button>
-                )}
+              <div className="relative">
                 <button
                   onClick={handleWalletConnect}
-                  className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest transition-colors"
-                  style={{ color: isWalletConnected ? "var(--accent)" : "var(--text-tertiary)" }}
+                  className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-lg transition-colors"
+                  style={{
+                    color: isWalletConnected ? "var(--accent)" : "var(--text-tertiary)",
+                    background: isWalletConnected ? "var(--accent-dim)" : "transparent",
+                    border: "1px solid var(--border)",
+                  }}
                 >
                   <HiOutlineWallet className="w-3.5 h-3.5" />
                   {walletDisplay ?? "Wallet"}
                   {isWalletConnected && (
-                    <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--accent)" }} />
+                    <span
+                      className="w-1.5 h-1.5 rounded-full animate-pulse"
+                      style={{ background: "var(--accent)" }}
+                    />
                   )}
                 </button>
+
+                {/* Wallet picker dropdown */}
+                {walletPickerOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setWalletPickerOpen(false)} />
+                    <div
+                      className="absolute top-full right-0 mt-2 z-50 w-44 rounded-2xl p-2"
+                      style={{ background: "var(--bg)", border: "1px solid var(--border-2)" }}
+                    >
+                      <p
+                        className="px-4 pt-2 pb-1 text-xs uppercase tracking-widest"
+                        style={{ color: "var(--text-tertiary)" }}
+                      >
+                        Select Network
+                      </p>
+                      <button
+                        onClick={() => { setSolModalVisible(true); setWalletPickerOpen(false); }}
+                        className="w-full text-left px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+                        style={{ color: "var(--text-secondary)" }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-2)"; (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)"; }}
+                      >
+                        Solana
+                      </button>
+                      <button
+                        onClick={() => { connectEvm({ connector: connectors[0] }); setWalletPickerOpen(false); }}
+                        className="w-full text-left px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+                        style={{ color: "var(--text-secondary)" }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-2)"; (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)"; }}
+                      >
+                        EVM
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             )}
 
@@ -240,6 +269,24 @@ export function Navbar() {
             <GlobalSearch />
           </div>
           <div className="flex flex-col gap-3 pt-2">
+            {mounted && (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => { setSolModalVisible(true); setMobileOpen(false); }}
+                  className="flex-1 text-xs font-black uppercase tracking-widest py-3 px-4 rounded-xl"
+                  style={{ color: "var(--text-tertiary)", background: "var(--bg-3)", border: "1px solid var(--border)" }}
+                >
+                  Solana
+                </button>
+                <button
+                  onClick={() => { connectEvm({ connector: connectors[0] }); setMobileOpen(false); }}
+                  className="flex-1 text-xs font-black uppercase tracking-widest py-3 px-4 rounded-xl"
+                  style={{ color: "var(--text-tertiary)", background: "var(--bg-3)", border: "1px solid var(--border)" }}
+                >
+                  EVM
+                </button>
+              </div>
+            )}
             {status === "authenticated" ? (
               <button
                 onClick={() => signOut()}

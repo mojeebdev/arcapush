@@ -5,10 +5,10 @@ import { ProblemSection }   from "@/components/home/ProblemSection";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { ProofBar }         from "@/components/home/ProofBar";
 import { ProductsSection }  from "@/components/home/ProductsSection";
-import { PricingSection }   from "@/components/home/PricingSection";
 import { FinalCTA }         from "@/components/home/FinalCTA";
 import { HeroPin }          from "@/components/HeroPin";
 import { DiscoveryTicker }  from "@/components/DiscoveryTicker";
+import { CuratedToolsSection } from "@/components/CuratedToolsSection";
 
 export const revalidate = 0;
 
@@ -130,14 +130,14 @@ export default async function HomePage() {
         ecosystems={stats.ecosystems}
       />
 
-      {/* 7 ── Featured products grid (HTML design) */}
-      <ProductsSection startups={featuredStartups as any} />
+      
+      <CuratedToolsSection />
 
       
       
 
       
-      <PricingSection />
+     
 
       
       <div className="max-w-7xl mx-auto px-6 lg:px-8 pb-24">

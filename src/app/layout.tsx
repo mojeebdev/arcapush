@@ -39,9 +39,13 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/arcapush_logo.png",
-    shortcut: "/arcapush_logo.png",
-    apple: "/arcapush_logo.png",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
     title: `${AdminConfig.SITE_NAME} · ${AdminConfig.SITE_TAGLINE}`,
@@ -50,7 +54,7 @@ export const metadata: Metadata = {
     url: AdminConfig.SITE_URL,
     type: "website",
     locale: "en_US",
-    images: [{ url: AdminConfig.SITE_OG_IMAGE, width: 1200, height: 630, alt: `${AdminConfig.SITE_NAME} — ${AdminConfig.SITE_TAGLINE}` }],
+    images: [{ url: "/og-arcapush.png", width: 1200, height: 630, alt: `${AdminConfig.SITE_NAME} — ${AdminConfig.SITE_TAGLINE}` }],
   },
   twitter: {
     card: "summary_large_image",
@@ -58,7 +62,7 @@ export const metadata: Metadata = {
     creator: AdminConfig.FOUNDER_TWITTER,
     title: `${AdminConfig.SITE_NAME} · ${AdminConfig.SITE_TAGLINE}`,
     description: AdminConfig.SITE_DESCRIPTION,
-    images: [AdminConfig.SITE_OG_IMAGE],
+    images: ["/og-arcapush.png"],
   },
 };
 
@@ -70,7 +74,7 @@ const jsonLd = [
     name: "Arcapush",
     alternateName: ["arcapush", "Arca Push"],
     url: AdminConfig.SITE_URL,
-    logo: `${AdminConfig.SITE_URL}/arcapush_logo.png`,
+    logo: `${AdminConfig.SITE_URL}/arcapush-logo.png`,
     description: "Arcapush is the home of vibe-coded products. Solo founders list once. Google indexes it. VCs discover it.",
     foundingDate: "2026",
     founder: {
@@ -108,10 +112,14 @@ const jsonLd = [
     url: AdminConfig.SITE_URL,
     description: "Discovery and visibility platform for vibe-coded products. List once, get indexed, get found by VCs.",
     offers: [
-      { "@type": "Offer", price: "0",  priceCurrency: "USD", name: "Free — Permanent indexed listing" },
-      { "@type": "Offer", price: "29", priceCurrency: "USD", name: "Featured — Homepage placement + VC discovery panel" },
-      { "@type": "Offer", price: "99", priceCurrency: "USD", name: "Pro — Unlimited listings + investor intros" },
-    ],
+  { "@type": "Offer", price: "0",   priceCurrency: "USD", name: "Free — Permanent indexed listing" },
+  { "@type": "Offer", price: "5",   priceCurrency: "USD", name: "30 Minutes — Instant push at the top" },
+  { "@type": "Offer", price: "25",  priceCurrency: "USD", name: "1 Day — 24-hour featured placement + VC visibility" },
+  { "@type": "Offer", price: "60",  priceCurrency: "USD", name: "3 Days — Weekend domination, 3 days pinned" },
+  { "@type": "Offer", price: "100", priceCurrency: "USD", name: "1 Week — Full week push, maximum signal" },
+  { "@type": "Offer", price: "175", priceCurrency: "USD", name: "2 Weeks — Sustained exposure, 14 days" },
+  { "@type": "Offer", price: "299", priceCurrency: "USD", name: "1 Month — 30-day total domination, VC magnet" },
+],
   },
   {
     "@context": "https://schema.org",
@@ -151,7 +159,6 @@ const jsonLd = [
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // ── Removed "dark" class — site is now off-white light theme ──
     <html lang="en" className={`${syne.variable} ${dmMono.variable}`}>
       <head>
         {jsonLd.map((schema, i) => (
@@ -173,8 +180,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <SessionProvider>
           <Web3Provider>
-
-            {/* ── Atmospheric background — purple blobs on off-white ── */}
             <div
               className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden"
               style={{ background: "var(--bg)" }}
@@ -194,7 +199,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <main className="flex-grow pt-20">{children}</main>
               <Footer />
             </div>
-
           </Web3Provider>
         </SessionProvider>
 

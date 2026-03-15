@@ -9,10 +9,10 @@ type FooterLinks = { [section: string]: FooterLink[]; };
 const FOOTER_LINKS: FooterLinks = {
   Discover: [
     { href: "/how-it-works", label: "How It Works" },
-    { href: "/registry", label: "Registry" },
-    { href: "/blog",     label: "Blog"     },
-    { href: "/pricing",  label: "Boost Listing" },
-    { href: "/about",    label: "About"    },
+    { href: "/registry",     label: "Registry"     },
+    { href: "/blog",         label: "Blog"         },
+    { href: "/pricing",      label: "Boost Listing"},
+    { href: "/about",        label: "About"        },
   ],
   Founders: [
     { href: "/submit",    label: "List a Product" },
@@ -21,21 +21,21 @@ const FOOTER_LINKS: FooterLinks = {
     { href: "/investors", label: "VC Panel"       },
   ],
   Intelligence: [
-    { href: "/blog/What-is-vibe-coding",            label: "What is Vibe Coding?"     },
-    { href: "/blog/andrej-karpathy-vibe-coding",    label: "Origin of Vibe Coding"    },
-    { href: "/blog/vc-backed-vibe-coding-startups", label: "VC-Backed Startups"       },
-    { href: "/blog/best-vibe-coding-tools-2026",    label: "Best Tools 2026"          },
-    { href: "/blog/claude-vs-chatgpt-vibe-coding",  label: "Claude vs ChatGPT"        },
-    { href: "/blog/cursor-vs-github-copilot",       label: "Cursor vs Copilot"        },
+    { href: "/blog/What-is-vibe-coding",            label: "What is Vibe Coding?"  },
+    { href: "/blog/andrej-karpathy-vibe-coding",    label: "Origin of Vibe Coding" },
+    { href: "/blog/vc-backed-vibe-coding-startups", label: "VC-Backed Startups"    },
+    { href: "/blog/best-vibe-coding-tools-2026",    label: "Best Tools 2026"       },
+    { href: "/blog/claude-vs-chatgpt-vibe-coding",  label: "Claude vs ChatGPT"     },
+    { href: "/blog/cursor-vs-github-copilot",       label: "Cursor vs Copilot"     },
   ],
   Legal: [
     { href: "/privacy", label: "Privacy Policy"   },
     { href: "/terms",   label: "Terms of Service" },
   ],
   Connect: [
-    { href: "https://twitter.com/arcapush",   label: "X / Twitter",  external: true },
-    { href: "https://mojeeb.xyz",             label: "Founder",       external: true },
-    { href: "https://blindspotlab.xyz",       label: "BlindspotLab", external: true },
+    { href: "https://twitter.com/arcapush", label: "X / Twitter",  external: true },
+    { href: "https://mojeeb.xyz",           label: "Founder",       external: true },
+    { href: "https://blindspotlab.xyz",     label: "BlindspotLab", external: true },
   ],
 };
 
@@ -68,10 +68,38 @@ function FooterLink({ link }: { link: FooterLink }) {
 export function Footer() {
   return (
     <footer
-      className="w-full pt-20 pb-12"
+      className="w-full pt-20 pb-12 relative overflow-hidden"
       style={{ background: "var(--bg-2)", borderTop: "1px solid var(--border)" }}
     >
-      <div className="max-w-7xl mx-auto px-6">
+      {/* Grid background */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(var(--border) 1px, transparent 1px),
+            linear-gradient(90deg, var(--border) 1px, transparent 1px)
+          `,
+          backgroundSize: "60px 60px",
+          opacity: 0.4,
+        }}
+      />
+
+      {/* Fade grid out at top and bottom */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `
+            linear-gradient(to bottom,
+              var(--bg-2) 0%,
+              transparent 12%,
+              transparent 80%,
+              var(--bg-2) 100%
+            )
+          `,
+        }}
+      />
+
+      <div className="relative max-w-7xl mx-auto px-6">
 
         {/* Top — Brand + Links */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-12 mb-16">
@@ -80,14 +108,15 @@ export function Footer() {
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="inline-block mb-4">
               <Image
-                src="/arcapush_wordmark.png"
+                src="/arcapush-logo.png"
                 alt="Arcapush"
                 width={120}
                 height={32}
                 className="h-8 w-auto object-contain"
               />
             </Link>
-            <p className="text-xs font-black uppercase tracking-widest leading-relaxed"
+            <p
+              className="text-xs font-black uppercase tracking-widest leading-relaxed"
               style={{ color: "var(--text-tertiary)" }}
             >
               Where vibe-coded products get discovered.
@@ -119,14 +148,20 @@ export function Footer() {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
                 <img src="/base-logo.png" alt="Base" className="h-4 w-4 object-contain" />
-                <span className="text-xs font-black tracking-widest uppercase" style={{ color: "var(--text-secondary)" }}>
+                <span
+                  className="text-xs font-black tracking-widest uppercase"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   Base
                 </span>
               </div>
               <div style={{ width: 1, height: "0.75rem", background: "var(--border)" }} />
               <div className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
                 <img src="/solana-sol-logo.png" alt="Solana" className="h-4 w-4 object-contain" />
-                <span className="text-xs font-black tracking-widest uppercase" style={{ color: "var(--text-secondary)" }}>
+                <span
+                  className="text-xs font-black tracking-widest uppercase"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   Solana
                 </span>
               </div>
@@ -136,10 +171,16 @@ export function Footer() {
           {/* Copyright */}
           <div className="flex flex-col items-center md:items-end gap-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--text-tertiary)" }}>
+              <span
+                className="text-xs font-bold uppercase tracking-widest"
+                style={{ color: "var(--text-tertiary)" }}
+              >
                 Built by
               </span>
-              <a href="https://blindspotlab.xyz" target="_blank" rel="noopener noreferrer"
+              <a
+                href="https://blindspotlab.xyz"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-xs font-black uppercase tracking-widest transition-colors"
                 style={{ color: "var(--text-secondary)" }}
                 onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--accent)")}
@@ -148,7 +189,10 @@ export function Footer() {
                 BlindspotLab
               </a>
             </div>
-            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "var(--text-tertiary)" }}>
+            <p
+              className="text-xs font-bold uppercase tracking-widest"
+              style={{ color: "var(--text-tertiary)" }}
+            >
               © {new Date().getFullYear()} Arcapush. All rights reserved.
             </p>
           </div>

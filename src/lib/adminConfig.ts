@@ -83,12 +83,6 @@ export const AdminConfig = {
   PIN_PRICE_BASE_USDC: "5.00",
   PIN_PRICE_SOL: "0.04",
 
-  LISTING_TIERS: [
-    { name: "Free",     price: 0,  description: "Permanent indexed listing. Google finds you." },
-    { name: "Featured", price: 29, description: "Homepage placement + VC discovery panel." },
-    { name: "Pro",      price: 99, description: "Unlimited listings + investor intros." },
-  ],
-
   
   HERO_ROTATION_MS:   30 * 1000,
   TICKER_ROTATION_MS: 10 * 1000,
