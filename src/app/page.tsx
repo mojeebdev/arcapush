@@ -4,7 +4,6 @@ import { TickerSection }    from "@/components/home/TickerSection";
 import { ProblemSection }   from "@/components/home/ProblemSection";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { ProofBar }         from "@/components/home/ProofBar";
-import { ProductsSection }  from "@/components/home/ProductsSection";
 import { FinalCTA }         from "@/components/home/FinalCTA";
 import { HeroPin }          from "@/components/HeroPin";
 import { DiscoveryTicker }  from "@/components/DiscoveryTicker";
