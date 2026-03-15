@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth-middleware";
+import { auth } from "@/lib/auth-proxy";
 import { NextResponse } from "next/server";
 
 const PROTECTED_ROUTES = ["/submit", "/pricing", "/dashboard"];

@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-
   images: {
     remotePatterns: [{ protocol: 'https', hostname: '**' }],
   },
@@ -15,10 +14,12 @@ const nextConfig = {
 
   serverExternalPackages: ['@prisma/client', 'pg'],
 
+  
+  outputFileTracingIncludes: {
+    "/blog/[slug]": ["./content/blog/**/*"],
+  },
+
   experimental: {
-    outputFileTracingIncludes: {
-      "/blog/[slug]": ["./content/blog/**/*"],
-    },
     serverActions: {
       allowedOrigins: ["arcapush.com", "www.arcapush.com"],
     },
