@@ -1,24 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
-    
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-    }
-
     const body = await req.json();
-    const { name, twitterHandle, bio, role } = body;
+    const { name, twitterHandle, bio, role, userId } = body;
 
     if (!name?.trim()) {
       return NextResponse.json({ error: "Name is required." }, { status: 400 });
     }
 
+    if (!userId) {
+      return NextResponse.json({ error: "User ID is required." }, { status: 400 });
+    }
+
+    
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found." }, { status: 404 });
+    }
+
     await prisma.user.update({
-      where: { id: session.user.id },
+      where: { id: userId },
       data: {
         name:               name.trim(),
         twitterHandle:      twitterHandle?.replace("@", "").trim() || null,
@@ -28,7 +32,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log("[api/onboarding] Updated user:", session.user.id);
+    console.log("[api/onboarding] Updated user:", userId);
     return NextResponse.json({ success: true }, { status: 200 });
 
   } catch (err: any) {
