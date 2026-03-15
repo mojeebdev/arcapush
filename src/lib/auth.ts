@@ -19,7 +19,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
 
   session: {
-    strategy: "jwt",
+    strategy: "database", 
   },
 
   pages: {
@@ -28,29 +28,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 
   callbacks: {
-    async session({ session, token }) {
-      if (session.user && token.sub) {
-        
-        session.user.id = (token.dbId as string) ?? token.sub;
+    async session({ session, user }) {
+      if (session.user && user) {
+        session.user.id = user.id;
 
         const dbUser = await prisma.user.findUnique({
-          where: { id: session.user.id },
+          where: { id: user.id },
           select: { onboardingComplete: true, role: true },
         });
 
         (session.user as any).onboardingComplete = dbUser?.onboardingComplete ?? false;
-        (session.user as any).role               = dbUser?.role ?? "viewer";
+        (session.user as any).role = dbUser?.role ?? "viewer";
       }
       return session;
-    },
-
-    async jwt({ token, user }) {
-      if (user?.id) {
-        
-        token.dbId = user.id;
-        token.sub  = user.id;
-      }
-      return token;
     },
 
     async redirect({ url, baseUrl }) {
