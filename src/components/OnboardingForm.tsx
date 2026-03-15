@@ -32,14 +32,11 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
       });
 
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Something went wrong");
-      }
+      if (!res.ok) throw new Error(data.error || "Something went wrong");
 
       toast.success("Profile saved. Let's list your product.");
-     
-      window.location.href = "/submit";
+      // ✅ Go to /onboarding first — server will see onboardingComplete=true and redirect to /submit
+      window.location.href = "/onboarding";
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -141,7 +138,7 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
         className="ap-btn-primary w-full disabled:opacity-40"
         style={{ marginTop: "0.5rem" }}
       >
-        {loading ? "Saving..." : "Save Profile → List Your Product"}
+        {loading ? "Arcapushing..." : "Save Profile → List Your Product"}
       </button>
 
     </form>
