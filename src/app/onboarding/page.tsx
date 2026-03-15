@@ -5,12 +5,10 @@ import { OnboardingForm } from "@/components/OnboardingForm";
 export default async function OnboardingPage() {
   const session = await auth();
 
-  
   if (!session?.user) {
     redirect("/auth/signin");
   }
 
-  
   if ((session.user as any).onboardingComplete === true) {
     redirect("/submit");
   }
@@ -22,7 +20,6 @@ export default async function OnboardingPage() {
     >
       <div className="w-full max-w-lg space-y-8">
 
-        {/* Header */}
         <div
           className="pb-6"
           style={{ borderBottom: "1px solid var(--border)" }}

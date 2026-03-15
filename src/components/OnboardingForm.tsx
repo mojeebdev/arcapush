@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { HiOutlineUser, HiOutlineLink, HiOutlineDocumentText } from "react-icons/hi2";
 
@@ -12,7 +11,6 @@ interface Props {
 }
 
 export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
-  const router  = useRouter();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name:          defaultName,
@@ -30,12 +28,7 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
       const res = await fetch("/api/onboarding", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
-        
-        body: JSON.stringify({
-          ...form,
-          userId,
-          email: defaultEmail,
-        }),
+        body: JSON.stringify({ ...form, userId, email: defaultEmail }),
       });
 
       const data = await res.json();
@@ -45,7 +38,8 @@ export function OnboardingForm({ userId, defaultName, defaultEmail }: Props) {
       }
 
       toast.success("Profile saved. Let's list your product.");
-      router.push("/submit");
+     
+      window.location.href = "/submit";
     } catch (err: any) {
       toast.error(err.message);
     } finally {
