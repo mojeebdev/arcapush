@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { AdminConfig } from "@/lib/adminConfig";
 import { getPostBySlug, getAllSlugs } from "@/lib/blog";
 import { ShareBar } from "./share-bar";
@@ -85,7 +86,6 @@ export default async function BlogPostPage({ params }: Props) {
 
         {/* ── Header ────────────────────────────────────────────────────── */}
         <header className="pt-32 pb-10 px-6 max-w-3xl mx-auto">
-          {/* Back link — CSS hover only, no JS handlers */}
           <Link
             href="/blog"
             className="ap-link ap-label hover-accent inline-flex items-center gap-2 mb-10 transition-colors"
@@ -93,7 +93,6 @@ export default async function BlogPostPage({ params }: Props) {
             ← Back to The Signal
           </Link>
 
-          {/* Category + read time */}
           <div className="flex items-center gap-3 mb-6">
             <span
               className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border"
@@ -114,7 +113,6 @@ export default async function BlogPostPage({ params }: Props) {
             {post.description}
           </p>
 
-          {/* Author + share row */}
           <div
             className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 pb-10"
             style={{ borderBottom: "1px solid var(--border)" }}
@@ -136,7 +134,6 @@ export default async function BlogPostPage({ params }: Props) {
                 </div>
               )}
               <div>
-                {/* Author link — CSS hover via class, no JS handler */}
                 <a
                   href={post.authorUrl}
                   target="_blank"
@@ -167,6 +164,7 @@ export default async function BlogPostPage({ params }: Props) {
         {/* ── Article body ───────────────────────────────────────────────── */}
         <article className="px-6 max-w-3xl mx-auto pb-14">
           <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
             components={{
               h2: ({ children }) => (
                 <h2
@@ -193,7 +191,6 @@ export default async function BlogPostPage({ params }: Props) {
                 <strong className="font-black" style={{ color: "var(--text-primary)" }}>{children}</strong>
               ),
               a: ({ href, children }) => (
-                /* Markdown links — CSS hover only */
                 <a
                   href={href}
                   target="_blank"
@@ -242,8 +239,12 @@ export default async function BlogPostPage({ params }: Props) {
                 </div>
               ),
               thead: ({ children }) => <thead style={{ background: "var(--bg-3)" }}>{children}</thead>,
-              tbody: ({ children }) => <tbody className="divide-y" style={{ borderColor: "var(--border)" }}>{children}</tbody>,
-              tr:    ({ children }) => <tr style={{ color: "var(--text-secondary)" }}>{children}</tr>,
+              tbody: ({ children }) => <tbody>{children}</tbody>,
+              tr: ({ children }) => (
+                <tr style={{ borderBottom: "1px solid var(--border)", color: "var(--text-secondary)" }}>
+                  {children}
+                </tr>
+              ),
               th: ({ children }) => (
                 <th
                   className="text-left text-xs font-black uppercase tracking-widest px-6 py-4 whitespace-nowrap"

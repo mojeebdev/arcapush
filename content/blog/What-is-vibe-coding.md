@@ -68,7 +68,7 @@ The defining characteristic is not the absence of technical knowledge — many v
 Venture capital has taken notice. The numbers are significant:
 
 | Company | Valuation | Lead Investors |
-|---|---|---|
+| --- | --- | --- |
 | Cursor (Anysphere) | $29.3B | a16z, Accel |
 | Vercel | $9.3B | Accel, GV |
 | Lovable | $6.6B | CapitalG, Nvidia |

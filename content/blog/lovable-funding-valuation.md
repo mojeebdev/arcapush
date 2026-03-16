@@ -16,7 +16,7 @@ image: "/blog/lovable-funding-valuation.jpg"
 Lovable is the most highly valued pure-play vibe coding tool for non-technical founders. As of 2026:
 
 | Metric | Detail |
-|---|---|
+| --- | --- |
 | Valuation | $6.6 Billion |
 | Lead Investors | Alphabet (CapitalG), Nvidia |
 | Also Backed By | Accel, Khosla Ventures |
@@ -76,7 +76,7 @@ For founders building on top of Lovable — using it to create products — the 
 ## Lovable vs the Competition
 
 | Tool | Valuation | Target User | Strength |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Lovable | $6.6B | Non-technical founders | Full-stack output quality |
 | Cursor | $29.3B | Technical developers | Codebase-aware AI |
 | Replit | $3B | Learners, collaborators | Zero-setup environment |

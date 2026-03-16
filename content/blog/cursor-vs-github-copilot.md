@@ -66,7 +66,7 @@ Cursor is an AI-first code editor built from the ground up around the assumption
 ## Head-to-Head Comparison
 
 | Feature | Cursor | GitHub Copilot |
-|---|---|---|
+| --- | --- | --- |
 | Full codebase awareness | ✅ Yes | ⚠️ Limited |
 | Multi-file edits | ✅ Yes | ❌ No |
 | Natural language feature building | ✅ Yes | ⚠️ Basic |

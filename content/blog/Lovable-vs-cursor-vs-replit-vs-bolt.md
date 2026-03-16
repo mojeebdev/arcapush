@@ -22,7 +22,7 @@ The vibe coding ecosystem has four dominant tools. They are not interchangeable.
 ## The Quick Answer
 
 | Tool | Best For | Not Great For |
-|---|---|---|
+| --- | --- | --- |
 | **Lovable** | Non-technical founders building full apps | Complex backend logic, custom infrastructure |
 | **Cursor** | Technical developers accelerating output | Complete beginners with no coding knowledge |
 | **Replit** | Learners, experiments, quick prototypes | Production-scale apps with complex requirements |

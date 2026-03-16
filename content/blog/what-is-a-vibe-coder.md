@@ -35,8 +35,8 @@ A vibe coder is defined not by what they know, but by how they build.
 
 ## The Difference Between a Developer and a Vibe Coder
 
-| | Traditional Developer | Vibe Coder |
-|---|---|---|
+|  | Traditional Developer | Vibe Coder |
+| --- | --- | --- |
 | Primary tool | Code editor | AI prompt interface |
 | Starting point | Blank file | Natural language description |
 | Speed to MVP | Weeks to months | Hours to days |

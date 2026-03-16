@@ -60,7 +60,7 @@ Anthropic, the company behind Claude, has cultivated a reputation for stability,
 ## Head-to-Head: Code Generation
 
 | Task | Claude | ChatGPT |
-|---|---|---|
+| --- | --- | --- |
 | Complex backend logic | ✅ Better | ⚠️ Good |
 | Large codebase reasoning | ✅ Better (larger context) | ⚠️ Limited |
 | Simple code snippets | ✅ Equal | ✅ Equal |
