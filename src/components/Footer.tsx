@@ -8,10 +8,9 @@ type FooterLinks = { [section: string]: FooterLink[]; };
 
 const FOOTER_LINKS: FooterLinks = {
   Discover: [
-    { href: "/how-it-works", label: "How It Works"  },
+    { href: "//how-arcapush-works", label: "How It Works"  },
     { href: "/registry",     label: "Registry"      },
     { href: "/blog",         label: "Blog"          },
-    { href: "/pricing",      label: "Boost Listing" },
     { href: "/about",        label: "About"         },
   ],
   Founders: [
