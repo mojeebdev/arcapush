@@ -33,7 +33,7 @@ export function ProblemSection() {
   }, []);
 
   return (
-    <section ref={ref} className="px-6 lg:px-12 py-24" style={{ background: "var(--bg-2)" }}>
+    <section ref={ref} className="px-6 lg:px-12 py-24 relative">
       <style>{`
         .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
         .reveal.visible { opacity: 1; transform: translateY(0); }
@@ -52,7 +52,8 @@ export function ProblemSection() {
         .problem-card:hover::before { transform: scaleX(1); }
       `}</style>
 
-      <div className="max-w-6xl mx-auto">
+      {/* Cards get a very subtle bg tint so content stays readable over the grid */}
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="mb-3 flex items-center gap-3" style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>
           <span className="inline-block w-6 h-px" style={{ background: "var(--accent)" }} />
           The Reality
@@ -69,7 +70,11 @@ export function ProblemSection() {
             <div
               key={i}
               className={`problem-card reveal ${i > 0 ? `reveal-d${i}` : ""} relative p-10 overflow-hidden`}
-              style={{ background: "var(--bg-2)" }}
+              style={{
+                // semi-transparent so the grid behind shows through
+                background: "color-mix(in srgb, var(--bg-2) 80%, transparent)",
+                backdropFilter: "blur(0px)", // optional: add slight blur if grid feels too busy
+              }}
             >
               <div className="ap-display mb-5 select-none" style={{ fontSize: "4rem", color: "var(--border-2)", lineHeight: 1 }}>
                 {p.num}
