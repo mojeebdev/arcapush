@@ -36,8 +36,8 @@ export function HowItWorksSection() {
   }, []);
 
   return (
-    <section id="how" ref={ref} className="px-6 lg:px-12 py-24" style={{ background: "var(--bg-3)" }}>
-      <div className="max-w-6xl mx-auto">
+    <section id="how" ref={ref} className="px-6 lg:px-12 py-24 relative">
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="mb-3 flex items-center gap-3" style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>
           <span className="inline-block w-6 h-px" style={{ background: "var(--accent)" }} />
           How It Works
@@ -55,13 +55,12 @@ export function HowItWorksSection() {
               key={i}
               className={`reveal ${i > 0 ? `reveal-d${i}` : ""} relative p-10 rounded-2xl transition-all`}
               style={{
-                background: "var(--bg-2)",
+                background: "color-mix(in srgb, var(--bg-2) 80%, transparent)",
                 border: "1px solid var(--border)",
               }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)"; (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border)"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
             >
-              {/* Step number */}
               <div className="flex items-center gap-3 mb-6"
                 style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent)" }}
               >
@@ -69,7 +68,6 @@ export function HowItWorksSection() {
                 <span className="flex-1 h-px" style={{ background: "var(--accent-border)" }} />
               </div>
 
-              {/* Icon */}
               <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-6"
                 style={{ background: "var(--accent-dim)", border: "1px solid var(--accent-border)" }}
               >
@@ -83,7 +81,6 @@ export function HowItWorksSection() {
                 {step.body}
               </p>
 
-              {/* Connector arrow */}
               {i < STEPS.length - 1 && (
                 <div className="hidden md:block absolute top-1/2 -right-4 z-10 -translate-y-1/2"
                   style={{ fontFamily: "var(--font-mono)", fontSize: "1.25rem", color: "var(--border-2)" }}

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export function FinalCTA() {
   return (
-    <section className="relative px-6 lg:px-12 py-36 text-center overflow-hidden" style={{ background: "var(--bg)" }}>
+    <section className="relative px-6 lg:px-12 py-36 text-center overflow-hidden">
 
       {/* Watermark */}
       <div

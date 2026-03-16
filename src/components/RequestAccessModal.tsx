@@ -119,7 +119,7 @@ export function RequestAccessModal({ startupId, startupName, onClose, onSuccess 
             <button type="submit" disabled={loading} className="ap-btn-primary w-full disabled:opacity-40">
               {loading ? "Submitting..." : "Submit Access Request"}
             </button>
-            <p className="ap-label text-center">Reviewed within 24 hours.</p>
+            <p className="ap-label text-center">Reviewed within 6-24 hours.</p>
           </form>
         </motion.div>
       </motion.div>

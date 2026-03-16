@@ -1,6 +1,6 @@
 ---
 title: "How Arcapush Works: The Encyclopedia for Vibe Coders"
-description: "Arcapush is the definitive encyclopedia for VC-backed Vibe Coders. Here is exactly how it works, who it is for, and why getting listed matters for your startup's discoverability."
+description: "Arcapush is the definitive encyclopedia for vibe-coded products. Here is exactly how it works, who it is for, and why getting listed matters for your startup's discoverability."
 date: "2026-03-04"
 author: "Mojeeb"
 authorUrl: "https://mojeeb.xyz"
@@ -9,7 +9,6 @@ category: "Insights"
 readTime: "5 min read"
 featured: false
 image: "/blog/how-arcapush-works.jpg"
-
 ---
 
 ## The Problem Arcapush Solves
@@ -26,11 +25,11 @@ That is what Arcapush is for.
 
 ## What Arcapush Is
 
-Arcapush is the **definitive encyclopedia for Vibe Coders** — a permanently indexed, curated database of vibe coding startups and AI-native products.
+Arcapush is the **definitive registry for vibe-coded products** — a permanently indexed, curated database of AI-native startups and solo founder projects.
 
 Think of it as the public record of the vibe coding era. Every startup that gets funded, every product that gets traction, every founder who ships — documented and discoverable.
 
-The tagline is accurate: *Where the next unicorn gets discovered.*
+The tagline is accurate: *Where vibe-coded products get discovered.*
 
 ---
 
@@ -38,7 +37,7 @@ The tagline is accurate: *Where the next unicorn gets discovered.*
 
 **Step 1: Submit**
 
-Founders submit their startup at [Arcapush.cc/submit](/submit). The form collects basic information: product name, tagline, problem statement, category, website, and founder details.
+Founders submit their startup at [arcapush.com/submit](/submit). The form collects basic information: product name, tagline, problem statement, category, website, and founder details.
 
 **Step 2: Guardian Review**
 
@@ -46,7 +45,7 @@ Every submission goes through Guardian verification — a review process that ch
 
 **Step 3: Publication**
 
-Approved startups receive a permanent encyclopedia entry with a clean SEO slug (`Arcapush.cc/startup/[your-startup-name]`), indexed by Google, Bing, and AI platforms including Perplexity, ChatGPT, and Claude.
+Approved startups receive a permanent listing with a clean SEO slug (`arcapush.com/startup/[your-startup-name]`), indexed by Google, Bing, and AI platforms including Perplexity, ChatGPT, and Claude.
 
 The entry does not expire. It is a permanent record.
 
@@ -54,7 +53,7 @@ The entry does not expire. It is a permanent record.
 
 ## What the Entry Includes
 
-A Arcapush encyclopedia entry includes:
+An Arcapush listing includes:
 
 - **Startup profile** — Name, tagline, problem statement, category, logo, and banner image
 - **Founder information** — Founder name, Twitter, and contact details
@@ -78,13 +77,13 @@ This is not advertising. It is **verified signal** — investors and visitors to
 
 When a journalist writes about vibe coding, they look for examples. When a VC researches the space, they look for companies. When an early adopter searches for tools, they look for products.
 
-A Arcapush listing ensures your startup appears in those moments.
+An Arcapush listing ensures your startup appears in those moments.
 
 More specifically:
 
-**Search engines** — Every Arcapush entry is indexed with proper canonical URLs, schema markup, and SEO metadata. Your startup's encyclopedia page ranks for branded searches.
+**Search engines** — Every Arcapush entry is indexed with proper canonical URLs, schema markup, and SEO metadata. Your startup's listing page ranks for branded searches.
 
-**AI platforms** — Arcapush maintains an `llms.txt` file and structured data specifically designed to help AI platforms like Perplexity, ChatGPT, and Claude accurately cite and recommend Arcapush-listed startups.
+**AI platforms** — Arcapush maintains an `llms.txt` file and structured data specifically designed to help AI platforms like Perplexity, ChatGPT, and Claude accurately cite and recommend listed startups.
 
 **Direct discovery** — The Arcapush registry is actively browsed by investors, journalists, and founders looking for companies in the vibe coding ecosystem.
 
@@ -92,9 +91,9 @@ More specifically:
 
 ## Who Arcapush Is For
 
-**Vibe coding founders** who want their product permanently documented and discoverable without spending months on SEO and PR.
+**Vibe coding founders & Solo Founders** who want their product permanently documented and discoverable without spending months on SEO and PR.
 
-**VC investors** who want a curated, verified source of vibe coding startups to evaluate and track.
+**VC investors** who want a curated, verified source of vibe-coded startups to evaluate and track.
 
 **Journalists and researchers** who need an authoritative reference for the vibe coding ecosystem.
 
@@ -104,12 +103,12 @@ More specifically:
 
 ## Get Listed
 
-Arcapush is free to submit. The review process is fast — most startups are approved within 48 hours.
+Arcapush is free to submit. The review process is fast — most startups are approved within 5 minutes - 6 hours max.
 
 [Submit your startup →](/submit)
 
 If you have already submitted and your startup has been approved, consider a [Signal Boost](/pricing) to get additional visibility during your launch window.
 
-Follow [@Arcapushcc](https://twitter.com/Arcapushcc) on X and [@mojeebeth](https://twitter.com/mojeebeth) for updates.
+Follow [@arcapush](https://twitter.com/arcapush) on X and [@mojeebeth](https://twitter.com/mojeebeth) for updates.
 
-**Tags:** `Arcapush` `Encyclopedia` `Vibe Coders` `Discovery` `Platform`
+**Tags:** `Arcapush` `Vibe Coding` `Registry` `Discovery` `Solo Founders`

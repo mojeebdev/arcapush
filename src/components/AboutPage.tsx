@@ -11,7 +11,7 @@ import {
 
 export default function AboutPage() {
   return (
-    <main className="pt-32 pb-24 px-6 max-w-5xl mx-auto" style={{ background: "var(--bg)" }}>
+    <main className="pt-32 pb-24 px-6 max-w-5xl mx-auto relative z-10">
 
       {/* Hero */}
       <section className="mb-24">
@@ -42,31 +42,21 @@ export default function AboutPage() {
         className="grid grid-cols-1 md:grid-cols-2 gap-px mb-32 rounded-[3rem] overflow-hidden shadow-2xl"
         style={{ background: "var(--border)" }}
       >
-        {/* Mission */}
         <div
           className="p-12 flex flex-col justify-between group"
-          style={{ background: "var(--bg-2)" }}
+          style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)" }}
         >
           <div className="space-y-6">
             <div
               className="w-12 h-12 rounded-2xl flex items-center justify-center"
-              style={{
-                background: "var(--accent-dim)",
-                border: "1px solid var(--accent-border)",
-              }}
+              style={{ background: "var(--accent-dim)", border: "1px solid var(--accent-border)" }}
             >
               <HiOutlineRocketLaunch className="w-6 h-6" style={{ color: "var(--accent)" }} />
             </div>
             <p className="ap-label">Our Mission</p>
-            <p
-              className="text-3xl font-black uppercase tracking-tighter"
-              style={{ color: "var(--text-primary)" }}
-            >
+            <p className="text-3xl font-black uppercase tracking-tighter" style={{ color: "var(--text-primary)" }}>
               One Product <br />
-              <span
-                className="group-hover:text-[var(--accent)] transition-colors"
-                style={{ color: "var(--text-secondary)" }}
-              >
+              <span className="group-hover:text-[var(--accent)] transition-colors" style={{ color: "var(--text-secondary)" }}>
                 At A Time.
               </span>
             </p>
@@ -77,31 +67,21 @@ export default function AboutPage() {
           </p>
         </div>
 
-        {/* Vision */}
         <div
           className="p-12 flex flex-col justify-between group"
-          style={{ background: "var(--bg-2)" }}
+          style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)" }}
         >
           <div className="space-y-6">
             <div
               className="w-12 h-12 rounded-2xl flex items-center justify-center"
-              style={{
-                background: "var(--accent-dim)",
-                border: "1px solid var(--accent-border)",
-              }}
+              style={{ background: "var(--accent-dim)", border: "1px solid var(--accent-border)" }}
             >
               <HiOutlineSpeakerWave className="w-6 h-6" style={{ color: "var(--accent)" }} />
             </div>
             <p className="ap-label">Our Vision</p>
-            <p
-              className="text-3xl font-black uppercase tracking-tighter"
-              style={{ color: "var(--text-primary)" }}
-            >
+            <p className="text-3xl font-black uppercase tracking-tighter" style={{ color: "var(--text-primary)" }}>
               The Default<br />
-              <span
-                className="group-hover:text-[var(--accent)] transition-colors"
-                style={{ color: "var(--text-secondary)" }}
-              >
+              <span className="group-hover:text-[var(--accent)] transition-colors" style={{ color: "var(--text-secondary)" }}>
                 Vibe Registry.
               </span>
             </p>
@@ -140,7 +120,7 @@ export default function AboutPage() {
             transition={{ delay: i * 0.1 }}
             className="p-8 rounded-[2rem] space-y-4 transition-all group"
             style={{
-              background: "var(--bg-3)",
+              background: "color-mix(in srgb, var(--bg-3) 80%, transparent)",
               border: "1px solid var(--border)",
             }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)")}
@@ -149,10 +129,7 @@ export default function AboutPage() {
             <div style={{ color: "var(--accent)" }} className="group-hover:scale-110 transition-transform inline-block">
               {pillar.icon}
             </div>
-            <h3
-              className="text-lg font-black uppercase tracking-tighter"
-              style={{ color: "var(--text-primary)" }}
-            >
+            <h3 className="text-lg font-black uppercase tracking-tighter" style={{ color: "var(--text-primary)" }}>
               {pillar.title}
             </h3>
             <p className="text-xs uppercase leading-relaxed" style={{ color: "var(--text-tertiary)" }}>
@@ -165,7 +142,7 @@ export default function AboutPage() {
       {/* Founder note */}
       <section
         className="p-12 rounded-[2.5rem]"
-        style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+        style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)", border: "1px solid var(--border)" }}
       >
         <p className="ap-label mb-4">The Founder</p>
         <p className="text-2xl font-black uppercase tracking-tighter mb-6" style={{ color: "var(--text-primary)" }}>
@@ -176,31 +153,13 @@ export default function AboutPage() {
           Arcapush is a BlindspotLab product.
         </p>
         <div className="flex flex-wrap gap-4">
-          <a
-            href="https://mojeeb.xyz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ap-btn-ghost"
-            style={{ padding: "0.6rem 1.5rem" }}
-          >
+          <a href="https://mojeeb.xyz" target="_blank" rel="noopener noreferrer" className="ap-btn-ghost" style={{ padding: "0.6rem 1.5rem" }}>
             mojeeb.xyz
           </a>
-          <a
-            href="https://twitter.com/mojeebeth"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ap-btn-ghost"
-            style={{ padding: "0.6rem 1.5rem" }}
-          >
+          <a href="https://twitter.com/mojeebeth" target="_blank" rel="noopener noreferrer" className="ap-btn-ghost" style={{ padding: "0.6rem 1.5rem" }}>
             @mojeebeth
           </a>
-          <a
-            href="https://blindspotlab.xyz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ap-btn-ghost"
-            style={{ padding: "0.6rem 1.5rem" }}
-          >
+          <a href="https://blindspotlab.xyz" target="_blank" rel="noopener noreferrer" className="ap-btn-ghost" style={{ padding: "0.6rem 1.5rem" }}>
             BlindspotLab
           </a>
         </div>

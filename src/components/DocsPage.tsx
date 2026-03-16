@@ -54,7 +54,7 @@ const sections = [
 
 export default function DocsPage() {
   return (
-    <div className="max-w-4xl mx-auto py-20 px-6" style={{ color: "var(--text-primary)" }}>
+    <div className="max-w-4xl mx-auto py-20 px-6 relative z-10" style={{ color: "var(--text-primary)" }}>
 
       <div className="mb-20 text-center">
         <p className="ap-label mb-4">Documentation</p>
@@ -74,7 +74,7 @@ export default function DocsPage() {
           <div
             key={i}
             className="group relative p-8 rounded-[2rem] transition-all duration-500"
-            style={{ border: "1px solid var(--border)", background: "var(--bg-2)" }}
+            style={{ border: "1px solid var(--border)", background: "color-mix(in srgb, var(--bg-2) 80%, transparent)" }}
             onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)")}
             onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.borderColor = "var(--border)")}
           >
@@ -117,7 +117,7 @@ export default function DocsPage() {
       {/* Trust section */}
       <div
         className="mt-20 p-10 rounded-[3rem] relative overflow-hidden group"
-        style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+        style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)", border: "1px solid var(--border)" }}
       >
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
@@ -155,5 +155,3 @@ export default function DocsPage() {
     </div>
   );
 }
-
-

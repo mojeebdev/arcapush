@@ -89,7 +89,7 @@ The founders who raise are not always the ones with the best product. They are t
 
 That is what the playbook is for. Build fast. Speak clearly. Get funded.
 
-Submit your vibe coding startup to the encyclopedia at [Arcapush.cc](/submit).
+Submit your vibe coding startup to the encyclopedia at [Arcapush.com](/submit).
 
 ---
 

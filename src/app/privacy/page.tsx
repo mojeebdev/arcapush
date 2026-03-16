@@ -2,9 +2,8 @@ import React from "react";
 
 export default function PrivacyPolicy() {
   return (
-    <main className="min-h-screen pt-32 pb-24 px-6 md:px-24" style={{ background: "var(--bg)", color: "var(--text-primary)" }}>
+    <main className="min-h-screen pt-32 pb-24 px-6 md:px-24 relative z-10" style={{ color: "var(--text-primary)" }}>
       <div className="max-w-3xl mx-auto">
-
         <p className="ap-label mb-3">Legal</p>
         <h1 className="ap-display mb-2" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", color: "var(--accent)" }}>
           Privacy Policy
@@ -12,7 +11,6 @@ export default function PrivacyPolicy() {
         <p className="ap-label mb-16">Last Updated: March 14, 2026</p>
 
         <div className="space-y-12" style={{ borderTop: "1px solid var(--border)", paddingTop: "3rem" }}>
-
           {[
             {
               num: "01",
@@ -54,9 +52,7 @@ export default function PrivacyPolicy() {
                     {section.title}
                   </h2>
                   {section.body && (
-                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-                      {section.body}
-                    </p>
+                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{section.body}</p>
                   )}
                   {section.items && (
                     <ul className="space-y-3 mt-2">
@@ -73,7 +69,6 @@ export default function PrivacyPolicy() {
             </div>
           ))}
         </div>
-
       </div>
     </main>
   );

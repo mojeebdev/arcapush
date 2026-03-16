@@ -108,6 +108,6 @@ The best time to start building is now.
 
 ---
 
-Every major vibe coding product gets documented in the Arcapush encyclopedia. Browse the full registry at [Arcapush.cc/registry](/registry).
+Every major vibe coding product gets documented in the Arcapush encyclopedia. Browse the full registry at [Arcapush.com/registry](/registry).
 
 **Tags:** `Lovable` `Cursor` `Replit` `Bolt` `Comparison` `Vibe Coding Tools`

@@ -38,10 +38,9 @@ export default function SubmitStartup() {
 
   const [loading, setLoading] = useState(false);
 
-
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg)" }}>
+      <div className="min-h-screen flex items-center justify-center">
         <p className="ap-mono animate-pulse">Checking auth...</p>
       </div>
     );
@@ -49,7 +48,7 @@ export default function SubmitStartup() {
 
   if (status === "unauthenticated") {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6" style={{ background: "var(--bg)" }}>
+      <div className="min-h-screen flex items-center justify-center px-6">
         <div className="text-center max-w-md">
           <p className="ap-label mb-4">Sign In Required</p>
           <h1
@@ -130,12 +129,8 @@ export default function SubmitStartup() {
     }
   };
 
- 
   return (
-    <div
-      className="min-h-screen pt-32 pb-20 px-6 overflow-x-hidden"
-      style={{ background: "var(--bg)" }}
-    >
+    <div className="min-h-screen pt-32 pb-20 px-6 overflow-x-hidden relative z-10">
       <Toaster
         toastOptions={{
           style: {
@@ -169,7 +164,7 @@ export default function SubmitStartup() {
           {/* 01 — Identity */}
           <div
             className="space-y-5 p-8 rounded-2xl"
-            style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+            style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)", border: "1px solid var(--border)" }}
           >
             <h3 className="ap-label" style={{ borderBottom: "1px solid var(--border)", paddingBottom: "1rem" }}>
               01. Product Identity
@@ -198,7 +193,7 @@ export default function SubmitStartup() {
           {/* 02 — Classification */}
           <div
             className="space-y-5 p-8 rounded-2xl"
-            style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+            style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)", border: "1px solid var(--border)" }}
           >
             <h3 className="ap-label" style={{ borderBottom: "1px solid var(--border)", paddingBottom: "1rem" }}>
               02. Classification
@@ -244,7 +239,7 @@ export default function SubmitStartup() {
           {/* 03 — Founder Info */}
           <div
             className="md:col-span-2 space-y-5 p-8 rounded-2xl"
-            style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+            style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)", border: "1px solid var(--border)" }}
           >
             <h3 className="ap-label" style={{ borderBottom: "1px solid var(--border)", paddingBottom: "1rem" }}>
               03. Founder Contact

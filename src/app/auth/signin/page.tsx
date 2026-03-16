@@ -21,29 +21,17 @@ export default async function SignInPage({ searchParams }: Props) {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-6"
-      style={{ background: "var(--bg)" }}
-    >
+    <div className="min-h-screen flex items-center justify-center px-6 relative z-10">
       <div className="w-full max-w-sm">
 
-        {/* Brand */}
-        <div className="text-center mb-12">
-          <div className="flex justify-center mb-6">
-            <Image
-              src="/arcapush_wordmark.png"
-              alt="Arcapush"
-              width={160}
-              height={36}
-              className="h-9 w-auto object-contain"
-              style={{ filter: "brightness(0)" }}
-              priority
-            />
-          </div>
-          <h1
-            className="text-4xl font-black uppercase tracking-tighter leading-none mb-3"
-            style={{ color: "var(--text-primary)" }}
-          >
+        <div className="col-span-2 md:col-span-1">
+          <a href="/" className="inline-flex items-center gap-2.5 mb-4">
+            <Image src="/arcapush-logo.png" alt="Arcapush" width={120} height={32} className="h-7 w-auto object-contain" />
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-primary)" }}>
+              Arcapush
+            </span>
+          </a>
+          <h1 className="text-4xl font-black uppercase tracking-tighter leading-none mb-3" style={{ color: "var(--text-primary)" }}>
             Sign In to<br />
             <span style={{ color: "var(--accent)" }}>List Your Product</span>
           </h1>
@@ -52,28 +40,16 @@ export default async function SignInPage({ searchParams }: Props) {
           </p>
         </div>
 
-        {/* Error */}
         {params.error && (
           <div
             className="mb-6 px-5 py-4 rounded-xl border text-sm"
-            style={{
-              fontFamily:  "var(--font-mono)",
-              background:  "rgba(220,38,38,0.05)",
-              borderColor: "rgba(220,38,38,0.2)",
-              color:       "#dc2626",
-            }}
+            style={{ fontFamily: "var(--font-mono)", background: "rgba(220,38,38,0.05)", borderColor: "rgba(220,38,38,0.2)", color: "#dc2626" }}
           >
-            {params.error === "OAuthSignin"
-              ? "Something went wrong. Try again."
-              : params.error}
+            {params.error === "OAuthSignin" ? "Something went wrong. Try again." : params.error}
           </div>
         )}
 
-        {/* Client component for interactive buttons */}
-        <SignInButtons
-          googleAction={googleAction}
-          githubAction={githubAction}
-        />
+        <SignInButtons googleAction={googleAction} githubAction={githubAction} />
 
         <p className="text-center mt-8 text-xs" style={{ color: "var(--text-tertiary)" }}>
           Signing in creates your free founder account.<br />
@@ -85,7 +61,6 @@ export default async function SignInPage({ searchParams }: Props) {
           {" "}and{" "}
           <a href="/terms" style={{ color: "var(--accent)" }}>Terms</a>
         </p>
-
       </div>
     </div>
   );

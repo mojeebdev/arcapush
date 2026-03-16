@@ -45,10 +45,7 @@ const fallbackCategoryStyle: React.CSSProperties = {
 function CategoryBadge({ category }: { category: string }) {
   const style = CATEGORY_STYLE[category] ?? fallbackCategoryStyle;
   return (
-    <span
-      className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border"
-      style={style}
-    >
+    <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border" style={style}>
       {category}
     </span>
   );
@@ -72,19 +69,15 @@ function AuthorAvatar({ author, size = 28 }: { author: string; size?: number }) 
 }
 
 export default function BlogPage() {
-  const posts = getAllPosts();
+  const posts    = getAllPosts();
   const featured = posts.find((p) => p.featured);
-  const rest = posts.filter((p) => !p.featured);
+  const rest     = posts.filter((p) => !p.featured);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "var(--bg)", color: "var(--text-primary)" }}>
+    <div className="min-h-screen flex flex-col relative z-10" style={{ color: "var(--text-primary)" }}>
       <main className="flex-grow">
 
-        {/* Header */}
-        <div
-          className="pt-32 pb-16 px-6 max-w-5xl mx-auto"
-          style={{ borderBottom: "1px solid var(--border)" }}
-        >
+        <div className="pt-32 pb-16 px-6 max-w-5xl mx-auto" style={{ borderBottom: "1px solid var(--border)" }}>
           <p className="ap-label mb-2">Arcapush Intelligence</p>
           <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter mt-2" style={{ color: "var(--text-primary)" }}>
             The <span style={{ color: "var(--accent)" }}>Signal.</span>
@@ -101,7 +94,6 @@ export default function BlogPage() {
             </div>
           ) : (
             <>
-              {/* Featured Post */}
               {featured && (
                 <div className="mb-16">
                   <p className="ap-label mb-4">Featured</p>
@@ -109,11 +101,10 @@ export default function BlogPage() {
                     <div
                       className="group rounded-[2.5rem] overflow-hidden transition-all hover:[border-color:var(--accent)]"
                       style={{
-                        background: "var(--bg-2)",
+                        background: "color-mix(in srgb, var(--bg-2) 80%, transparent)",
                         border: "1px solid var(--accent-border)",
                       }}
                     >
-                      {/* Cover */}
                       <div className="relative h-[260px] w-full overflow-hidden">
                         <Image
                           src={featured.image}
@@ -127,30 +118,25 @@ export default function BlogPage() {
                         />
                       </div>
 
-                      {/* Body */}
                       <div className="p-10">
                         <div className="flex items-center gap-3 mb-6">
                           <CategoryBadge category={featured.category} />
                           <span className="ap-label">{featured.readTime}</span>
                         </div>
-
                         <h2
                           className="text-3xl md:text-4xl font-black uppercase tracking-tighter mb-4 leading-tight transition-colors"
                           style={{ color: "var(--text-primary)" }}
                         >
                           {featured.title}
                         </h2>
-
                         <p className="text-sm leading-relaxed mb-6 max-w-2xl" style={{ color: "var(--text-secondary)" }}>
                           {featured.description}
                         </p>
-
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             {featured.authorImage ? (
                               <Image
-                                src={featured.authorImage}
-                                alt={featured.author}
+                                src={featured.authorImage} alt={featured.author}
                                 width={28} height={28}
                                 className="rounded-full object-cover flex-shrink-0"
                                 style={{ border: "2px solid var(--accent-border)" }}
@@ -182,21 +168,17 @@ export default function BlogPage() {
                 </div>
               )}
 
-              {/* Post Grid */}
               {rest.length > 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {rest.map((post) => (
                     <Link key={post.slug} href={`/blog/${post.slug}`}>
                       <div
                         className="group rounded-[2rem] overflow-hidden transition-all h-full flex flex-col hover:[border-color:var(--accent-border)]"
-                        style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+                        style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)", border: "1px solid var(--border)" }}
                       >
-                        {/* Thumbnail */}
                         <div className="relative h-[160px] w-full overflow-hidden">
                           <Image
-                            src={post.image}
-                            alt={post.title}
-                            fill
+                            src={post.image} alt={post.title} fill
                             className="object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
                           />
                           <div
@@ -208,27 +190,22 @@ export default function BlogPage() {
                           </div>
                         </div>
 
-                        {/* Content */}
                         <div className="p-8 flex-grow flex flex-col">
                           <span className="ap-label mb-3">{post.readTime}</span>
-
                           <h2
                             className="text-xl font-black uppercase tracking-tighter mb-3 leading-tight flex-grow transition-colors"
                             style={{ color: "var(--text-primary)" }}
                           >
                             {post.title}
                           </h2>
-
                           <p className="text-xs leading-relaxed mb-6 line-clamp-2" style={{ color: "var(--text-secondary)" }}>
                             {post.description}
                           </p>
-
                           <div className="flex items-center justify-between mt-auto">
                             <div className="flex items-center gap-2">
                               {post.authorImage ? (
                                 <Image
-                                  src={post.authorImage}
-                                  alt={post.author}
+                                  src={post.authorImage} alt={post.author}
                                   width={20} height={20}
                                   className="rounded-full object-cover flex-shrink-0"
                                   style={{ border: "1px solid var(--accent-border)" }}
@@ -242,9 +219,7 @@ export default function BlogPage() {
                                 })}
                               </p>
                             </div>
-                            <span
-                              className="ap-label transition-colors group-hover:text-[var(--accent)]"
-                            >
+                            <span className="ap-label transition-colors group-hover:text-[var(--accent)]">
                               Read →
                             </span>
                           </div>

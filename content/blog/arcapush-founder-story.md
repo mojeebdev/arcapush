@@ -12,7 +12,7 @@ image: "/blog/why-i-built-arcapush.png"
 ---
 # Why I Built Arcapush: The Gap Nobody Was Filling in the Vibe Coding Era
 
-*By Mojeeb Adewale — Founder, Arcapush.cc | Follow me: [@mojeebeth](https://x.com/mojeebeth) | [mojeeb.xyz](https://mojeeb.xyz)*
+*By Mojeeb Adewale — Founder, Arcapush.com | Follow me: [@mojeebeth](https://x.com/mojeebeth) | [mojeeb.xyz](https://mojeeb.xyz)*
 
 ---
 
@@ -123,7 +123,7 @@ We're here to make sure they're found.
 
 ---
 
-*Mojeeb Adewale is the founder of [Arcapush.cc](https://arcapush.com) and [BlindspotLab](https://blindspotlab.xyz). He has 16 years of combined Web2 and Web3 marketing experience and ships products from Lagos, Nigeria. Follow him at [@mojeebeth](https://x.com/mojeebeth) and explore his work at [mojeeb.xyz](https://mojeeb.xyz).*
+*Mojeeb Adewale is the founder of [Arcapush.com](https://arcapush.com) and [BlindspotLab](https://blindspotlab.xyz). He has 16 years of combined Web2 and Web3 marketing experience and ships products from Lagos, Nigeria. Follow him at [@mojeebeth](https://x.com/mojeebeth) and explore his work at [mojeeb.xyz](https://mojeeb.xyz).*
 
 ---
 

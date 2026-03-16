@@ -58,24 +58,16 @@ export default async function RegistryPage() {
     },
   });
 
-  // Unique categories for filter pills
   const categories = Array.from(
     new Set(startups.map((s) => s.category).filter(Boolean))
   ).sort() as string[];
 
   return (
-    <main
-      className="min-h-screen pt-32 pb-20 px-6"
-      style={{ background: "var(--bg)" }}
-    >
+    <main className="min-h-screen pt-32 pb-20 px-6 relative z-10">
       <RegistryJsonLd count={startups.length} />
       <div className="max-w-7xl mx-auto">
 
-        {/* ── Header ──────────────────────────────────────────────────────── */}
-        <div
-          className="mb-12 pb-12"
-          style={{ borderBottom: "1px solid var(--border)" }}
-        >
+        <div className="mb-12 pb-12" style={{ borderBottom: "1px solid var(--border)" }}>
           <div
             className="mb-3 flex items-center gap-3"
             style={{
@@ -98,18 +90,15 @@ export default async function RegistryPage() {
                 <span style={{ color: "var(--accent)" }}>Products.</span>
               </h1>
               <p className="ap-mono">
-                <span style={{ color: "var(--accent)" }}>
-                  {startups.length}
-                </span>{" "}
+                <span style={{ color: "var(--accent)" }}>{startups.length}</span>{" "}
                 product{startups.length !== 1 ? "s" : ""} listed
               </p>
             </div>
 
-            {/* Live indicator */}
             <div
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full self-start md:self-auto"
               style={{
-                background: "var(--bg-2)",
+                background: "color-mix(in srgb, var(--bg-2) 80%, transparent)",
                 border: "1px solid var(--border)",
                 fontFamily: "var(--font-mono)",
                 fontSize: "0.6rem",
@@ -118,21 +107,13 @@ export default async function RegistryPage() {
                 color: "var(--text-tertiary)",
               }}
             >
-              <span
-                className="w-1.5 h-1.5 rounded-full animate-pulse"
-                style={{ background: "#16a34a" }}
-              />
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#16a34a" }} />
               Live · Updated in real-time
             </div>
           </div>
         </div>
 
-        {/* ── Search + Filter handler ──────────────────────────────────────── */}
-        <Suspense
-          fallback={
-            <p className="ap-label animate-pulse">Loading registry...</p>
-          }
-        >
+        <Suspense fallback={<p className="ap-label animate-pulse">Loading registry...</p>}>
           <RegistrySearchHandler
             initialStartups={startups}
             categories={categories}

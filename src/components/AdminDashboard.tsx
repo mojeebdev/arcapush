@@ -103,7 +103,6 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
     filter === "ALL" ? true : filter === "APPROVED" ? r.status === "APPROVED" : r.status === "PENDING"
   );
 
-  // ── Shared button hover helpers ──────────────────────────
   const hoverAccent = (e: React.MouseEvent) => {
     (e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)";
   };
@@ -117,7 +116,7 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
       {/* View toggle */}
       <div
         className="flex p-1 rounded-3xl w-fit"
-        style={{ background: "var(--bg-3)", border: "1px solid var(--border)" }}
+        style={{ background: "color-mix(in srgb, var(--bg-3) 80%, transparent)", border: "1px solid var(--border)" }}
       >
         {(["SUBMISSIONS", "SIGNALS"] as const).map((v) => (
           <button
@@ -148,7 +147,7 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
             onClick={() => setFilter(s)}
             className="px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all"
             style={{
-              background: filter === s ? "var(--accent)" : "var(--bg-3)",
+              background: filter === s ? "var(--accent)" : "color-mix(in srgb, var(--bg-3) 80%, transparent)",
               border: `1px solid ${filter === s ? "var(--accent)" : "var(--border)"}`,
               color: filter === s ? "#fff" : "var(--text-tertiary)",
             }}
@@ -157,11 +156,10 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
           </button>
         ))}
 
-        {/* Refresh */}
         <button
           onClick={fetchData}
           className="ml-auto p-3 rounded-full transition-all"
-          style={{ background: "var(--bg-3)", border: "1px solid var(--border)" }}
+          style={{ background: "color-mix(in srgb, var(--bg-3) 80%, transparent)", border: "1px solid var(--border)" }}
           onMouseEnter={hoverAccent}
           onMouseLeave={resetBorder}
         >
@@ -179,14 +177,13 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
             <div
               key={i}
               className="h-40 rounded-[2.5rem] animate-pulse"
-              style={{ background: "var(--bg-3)", border: "1px solid var(--border)" }}
+              style={{ background: "color-mix(in srgb, var(--bg-3) 80%, transparent)", border: "1px solid var(--border)" }}
             />
           ))}
         </div>
       ) : (
         <div className="grid gap-6">
 
-          {/* SUBMISSIONS tab */}
           {view === "SUBMISSIONS" ? (
             filteredStartups.length === 0 ? (
               <EmptyState message="No Submissions Found" />
@@ -195,14 +192,12 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
                 <div
                   key={startup.id}
                   className="group rounded-[2.5rem] p-8 transition-all"
-                  style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+                  style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)", border: "1px solid var(--border)" }}
                   onMouseEnter={hoverAccent}
                   onMouseLeave={resetBorder}
                 >
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                     <div className="space-y-3">
-
-                      {/* Status + category */}
                       <div className="flex items-center gap-4 flex-wrap">
                         <span
                           className="px-3 py-1 rounded-full border text-xs font-black uppercase"
@@ -217,7 +212,6 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
                           {startup.category}
                         </span>
                       </div>
-
                       <h4
                         className="text-3xl font-black italic tracking-tighter uppercase"
                         style={{ color: "var(--text-primary)" }}
@@ -242,7 +236,7 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
                           target="_blank"
                           className="p-4 rounded-2xl transition-all"
                           title="View live listing"
-                          style={{ background: "var(--bg-3)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
+                          style={{ background: "color-mix(in srgb, var(--bg-3) 80%, transparent)", border: "1px solid var(--border)", color: "var(--text-secondary)" }}
                           onMouseEnter={(e) => {
                             (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
                             (e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)";
@@ -270,7 +264,6 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
               ))
             )
 
-          /* SIGNALS tab */
           ) : (
             filteredRequests.length === 0 ? (
               <EmptyState message="No Investor Requests" />
@@ -279,14 +272,12 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
                 <div
                   key={req.id}
                   className="group rounded-[2.5rem] p-8 transition-all"
-                  style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+                  style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)", border: "1px solid var(--border)" }}
                   onMouseEnter={hoverAccent}
                   onMouseLeave={resetBorder}
                 >
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                     <div className="space-y-3">
-
-                      {/* Status */}
                       <div className="flex items-center gap-4">
                         <span
                           className="px-3 py-1 rounded-full border text-xs font-black uppercase"
@@ -299,14 +290,12 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
                         </span>
                         <span className="ap-label">Investor Request</span>
                       </div>
-
                       <h4
                         className="text-3xl font-black italic tracking-tighter uppercase"
                         style={{ color: "var(--text-primary)" }}
                       >
                         {req.requesterName} @ {req.requesterFirm}
                       </h4>
-
                       <div className="flex items-center gap-2 text-xs font-bold uppercase italic" style={{ color: "var(--text-secondary)" }}>
                         <HiOutlineBuildingOffice2 className="w-4 h-4" style={{ color: "var(--accent)" }} />
                         Target:{" "}
@@ -342,7 +331,7 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
                         <button
                           onClick={() => handleApproveInvestor(req.id, "REJECTED")}
                           className="p-4 rounded-2xl transition-colors"
-                          style={{ background: "var(--bg-3)", color: "var(--text-tertiary)", border: "1px solid var(--border)" }}
+                          style={{ background: "color-mix(in srgb, var(--bg-3) 80%, transparent)", color: "var(--text-tertiary)", border: "1px solid var(--border)" }}
                           onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#f87171")}
                           onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)")}
                         >
@@ -365,7 +354,7 @@ function EmptyState({ message }: { message: string }) {
   return (
     <div
       className="rounded-[3rem] p-32 text-center shadow-2xl"
-      style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+      style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)", border: "1px solid var(--border)" }}
     >
       <HiOutlineClock className="w-16 h-16 mx-auto mb-6" style={{ color: "var(--text-tertiary)" }} />
       <p className="ap-label">{message}</p>

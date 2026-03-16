@@ -68,7 +68,7 @@ export async function POST(
       } else {
         
         await resend.emails.send({
-          from: 'Guardian <system@Arcapush.cc>',
+          from: 'Guardian <system@Arcapush.com>',
           to: updatedRequest.requesterEmail,
           subject: '🚀 Signal Live: Terminal Access Authorized',
           html: `
@@ -87,7 +87,7 @@ export async function POST(
                 </tr>
               </table>
 
-              <p style="font-size: 10px; color: #666; letter-spacing: 0.3em; text-align: center;">Arcapush.CC </p>
+              <p style="font-size: 10px; color: #666; letter-spacing: 0.3em; text-align: center;">Arcapush.com </p>
             </div>
           `
         });

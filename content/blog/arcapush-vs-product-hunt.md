@@ -61,7 +61,7 @@ One is a moment. The other is infrastructure.
 
 If you built something real with AI tools, your product deserves to be findable permanently, not just for 24 hours.
 
-Submit for free at [Arcapush.cc](/submit).
+Submit for free at [Arcapush.com](/submit).
 
 ---
 

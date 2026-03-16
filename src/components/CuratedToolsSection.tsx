@@ -31,7 +31,7 @@ function ToolCard({ tool }: { tool: CuratedTool }) {
       rel="noopener noreferrer"
       className="block p-6 rounded-2xl transition-all group"
       style={{
-        background: "var(--bg-2)",
+        background: "color-mix(in srgb, var(--bg-2) 80%, transparent)",
         border: tool.builtByArcapush
           ? "1px solid var(--accent-border)"
           : "1px solid var(--border)",
@@ -64,7 +64,6 @@ function ToolCard({ tool }: { tool: CuratedTool }) {
         </div>
       )}
 
-      {/* Logo */}
       <div
         className="w-11 h-11 rounded-xl flex items-center justify-center overflow-hidden mb-4"
         style={{ background: "var(--bg-3)", border: "1px solid var(--border)", flexShrink: 0 }}
@@ -83,7 +82,6 @@ function ToolCard({ tool }: { tool: CuratedTool }) {
         )}
       </div>
 
-      {/* Name + category */}
       <div className="flex items-center justify-between mb-1">
         <span className="ap-display" style={{ fontSize: "1rem", color: "var(--text-primary)" }}>
           {tool.name}
@@ -104,7 +102,6 @@ function ToolCard({ tool }: { tool: CuratedTool }) {
         </span>
       </div>
 
-      {/* Description */}
       <p
         className="leading-relaxed line-clamp-2"
         style={{ fontSize: "0.82rem", color: "var(--text-secondary)" }}
@@ -112,7 +109,6 @@ function ToolCard({ tool }: { tool: CuratedTool }) {
         {description}
       </p>
 
-      {/* Footer */}
       <div
         className="flex items-center justify-between mt-4 pt-4"
         style={{ borderTop: "1px solid var(--border)" }}
@@ -135,10 +131,9 @@ export function CuratedToolsSection() {
   const communityTools = CURATED_TOOLS.filter((t) => !t.builtByArcapush);
 
   return (
-    <section className="px-6 lg:px-12 py-24" style={{ background: "var(--bg)" }}>
-      <div className="max-w-6xl mx-auto">
+    <section className="px-6 lg:px-12 py-24 relative">
+      <div className="max-w-6xl mx-auto relative z-10">
 
-        {/* Built by Arcapush */}
         {arcapushTools.length > 0 && (
           <div className="mb-16">
             <div
@@ -165,7 +160,6 @@ export function CuratedToolsSection() {
           </div>
         )}
 
-        {/* Curated vibe tools */}
         {communityTools.length > 0 && (
           <div>
             <div

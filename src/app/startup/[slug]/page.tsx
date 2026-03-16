@@ -83,18 +83,16 @@ export default async function StartupDetailsPage({ params }: PageProps) {
       />
 
       <div
-        className="min-h-screen pt-32 pb-20 px-6"
-        style={{ background: "var(--bg)", color: "var(--text-primary)" }}
+        className="min-h-screen pt-32 pb-20 px-6 relative z-10"
+        style={{ color: "var(--text-primary)" }}
       >
         <div className="max-w-6xl mx-auto relative">
 
-          {/* Ambient glow */}
           <div
             className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full pointer-events-none"
             style={{ background: "rgba(91,43,255,0.03)", filter: "blur(120px)" }}
           />
 
-          {/* ── Header ──────────────────────────────────────────────────── */}
           <div className="flex flex-col md:flex-row justify-between items-start mb-16 gap-8 relative z-10">
             <div className="space-y-6">
               <div className="flex items-center gap-3 flex-wrap">
@@ -129,22 +127,17 @@ export default async function StartupDetailsPage({ params }: PageProps) {
               </p>
             </div>
 
-            {/* VC interest count */}
             <div
               className="p-10 rounded-[3rem] text-center min-w-[200px] shadow-sm"
-              style={{ border: "1px solid var(--border)", background: "var(--bg-2)" }}
+              style={{ border: "1px solid var(--border)", background: "color-mix(in srgb, var(--bg-2) 80%, transparent)" }}
             >
               <p className="ap-label mb-2">VC Interest</p>
-              <p
-                className="text-5xl font-black italic tracking-tighter"
-                style={{ color: "var(--text-primary)" }}
-              >
+              <p className="text-5xl font-black italic tracking-tighter" style={{ color: "var(--text-primary)" }}>
                 {startup._count.accessRequests}
               </p>
             </div>
           </div>
 
-          {/* ── Banner ──────────────────────────────────────────────────── */}
           {startup.bannerUrl && (
             <div
               className="w-full aspect-[21/9] rounded-[3rem] overflow-hidden mb-16 shadow-sm"
@@ -158,14 +151,12 @@ export default async function StartupDetailsPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* ── Content grid ────────────────────────────────────────────── */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
 
-            {/* Main column */}
             <div className="lg:col-span-2 space-y-12">
               <section
                 className="p-10 rounded-[3rem] relative overflow-hidden"
-                style={{ border: "1px solid var(--border)", background: "var(--bg-2)" }}
+                style={{ border: "1px solid var(--border)", background: "color-mix(in srgb, var(--bg-2) 80%, transparent)" }}
               >
                 <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
                   <HiOutlineShieldCheck className="w-24 h-24" />
@@ -175,11 +166,7 @@ export default async function StartupDetailsPage({ params }: PageProps) {
                   {startup.problemStatement}
                 </p>
 
-                {/* Share row — CSS hover only, no JS handlers */}
-                <div
-                  className="flex gap-6 mt-12 pt-8"
-                  style={{ borderTop: "1px solid var(--border)" }}
-                >
+                <div className="flex gap-6 mt-12 pt-8" style={{ borderTop: "1px solid var(--border)" }}>
                   <p className="ap-label flex items-center gap-2">
                     <HiOutlineShare /> Share:
                   </p>
@@ -205,30 +192,25 @@ export default async function StartupDetailsPage({ params }: PageProps) {
               <ReviewSection startupId={startup.id} startupName={startup.name} />
             </div>
 
-            {/* Sidebar */}
             <aside className="space-y-8">
               <div
                 className="p-8 rounded-[3rem] space-y-4"
-                style={{ border: "1px solid var(--border)", background: "var(--bg-2)" }}
+                style={{ border: "1px solid var(--border)", background: "color-mix(in srgb, var(--bg-2) 80%, transparent)" }}
               >
                 <p className="ap-label mb-6">Links</p>
                 {[
-                  { href: startup.website      || "#", label: "Platform", Icon: HiOutlineGlobeAlt },
+                  { href: startup.website       || "#", label: "Platform", Icon: HiOutlineGlobeAlt },
                   { href: startup.founderTwitter || "#", label: "Founder",  Icon: HiOutlineLink    },
                 ].map(({ href, label, Icon }) => (
-                  /* CSS hover via Tailwind group — no JS handlers */
                   <a
                     key={label}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-5 rounded-2xl transition-all group hover-bg-accent-dim hover-border-accent"
-                    style={{ background: "var(--bg-3)", border: "1px solid var(--border)" }}
+                    className="flex items-center justify-between p-5 rounded-2xl transition-all group"
+                    style={{ background: "color-mix(in srgb, var(--bg-3) 80%, transparent)", border: "1px solid var(--border)" }}
                   >
-                    <span
-                      className="text-xs font-black uppercase tracking-widest"
-                      style={{ color: "var(--text-primary)" }}
-                    >
+                    <span className="text-xs font-black uppercase tracking-widest" style={{ color: "var(--text-primary)" }}>
                       {label}
                     </span>
                     <Icon className="w-4 h-4" style={{ color: "var(--text-tertiary)" }} />

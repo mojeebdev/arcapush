@@ -22,8 +22,8 @@ interface Props {
 }
 
 export function RegistrySearchHandler({ initialStartups, categories }: Props) {
-  const searchParams     = useSearchParams();
-  const [searchTerm, setSearchTerm]       = useState("");
+  const searchParams        = useSearchParams();
+  const [searchTerm, setSearchTerm]         = useState("");
   const [activeCategory, setActiveCategory] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -76,10 +76,10 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
             placeholder="Search products, categories..."
             className="w-full py-3 pl-11 pr-10 rounded-xl text-sm outline-none transition-all"
             style={{
-              background:    "#fff",
-              border:        "1px solid var(--border)",
-              color:         "var(--text-primary)",
-              fontFamily:    "var(--font-syne)",
+              background:  "#fff",
+              border:      "1px solid var(--border)",
+              color:       "var(--text-primary)",
+              fontFamily:  "var(--font-syne)",
             }}
             onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent-border)")}
             onBlur={(e)  => (e.currentTarget.style.borderColor = "var(--border)")}
@@ -99,16 +99,15 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
 
         {/* Category filter pills */}
         <div className="flex flex-wrap gap-2">
-          {/* All pill */}
           <button
             onClick={() => setActiveCategory("")}
             className="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all"
             style={{
-              fontFamily:  "var(--font-mono)",
-              fontSize:    "0.6rem",
-              background:  !activeCategory ? "var(--ink, #0A0A0F)" : "transparent",
-              color:       !activeCategory ? "#F7F6F2"             : "var(--text-tertiary)",
-              border:      `1px solid ${!activeCategory ? "var(--ink, #0A0A0F)" : "var(--border)"}`,
+              fontFamily: "var(--font-mono)",
+              fontSize:   "0.6rem",
+              background: !activeCategory ? "var(--ink, #0A0A0F)" : "transparent",
+              color:      !activeCategory ? "#F7F6F2"             : "var(--text-tertiary)",
+              border:     `1px solid ${!activeCategory ? "var(--ink, #0A0A0F)" : "var(--border)"}`,
             }}
           >
             All
@@ -122,11 +121,11 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
                 onClick={() => setActiveCategory(isActive ? "" : cat)}
                 className="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all"
                 style={{
-                  fontFamily:  "var(--font-mono)",
-                  fontSize:    "0.6rem",
-                  background:  isActive ? "var(--accent)" : "transparent",
-                  color:       isActive ? "#fff"           : "var(--text-tertiary)",
-                  border:      `1px solid ${isActive ? "var(--accent)" : "var(--border)"}`,
+                  fontFamily: "var(--font-mono)",
+                  fontSize:   "0.6rem",
+                  background: isActive ? "var(--accent)" : "transparent",
+                  color:      isActive ? "#fff"           : "var(--text-tertiary)",
+                  border:     `1px solid ${isActive ? "var(--accent)" : "var(--border)"}`,
                 }}
               >
                 {cat}
@@ -180,19 +179,19 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
               key={startup.id}
               className="group block p-7 rounded-2xl transition-all"
               style={{
-                background:  "var(--bg-2)",
-                border:      "1px solid var(--border)",
+                background:     "color-mix(in srgb, var(--bg-2) 80%, transparent)",
+                border:         "1px solid var(--border)",
                 textDecoration: "none",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.background   = "var(--bg-3)";
-                (e.currentTarget as HTMLElement).style.borderColor  = "var(--accent-border)";
-                (e.currentTarget as HTMLElement).style.transform    = "translateY(-2px)";
+                (e.currentTarget as HTMLElement).style.background  = "color-mix(in srgb, var(--bg-3) 85%, transparent)";
+                (e.currentTarget as HTMLElement).style.borderColor = "var(--accent-border)";
+                (e.currentTarget as HTMLElement).style.transform   = "translateY(-2px)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.background   = "var(--bg-2)";
-                (e.currentTarget as HTMLElement).style.borderColor  = "var(--border)";
-                (e.currentTarget as HTMLElement).style.transform    = "translateY(0)";
+                (e.currentTarget as HTMLElement).style.background  = "color-mix(in srgb, var(--bg-2) 80%, transparent)";
+                (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+                (e.currentTarget as HTMLElement).style.transform   = "translateY(0)";
               }}
             >
               {/* Card header */}
@@ -258,9 +257,9 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
                   <span
                     className="text-xs font-black uppercase tracking-widest"
                     style={{
-                      fontFamily:  "var(--font-mono)",
-                      fontSize:    "0.55rem",
-                      color:       "var(--accent)",
+                      fontFamily:    "var(--font-mono)",
+                      fontSize:      "0.55rem",
+                      color:         "var(--accent)",
                       letterSpacing: "0.08em",
                     }}
                   >
@@ -273,7 +272,7 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
         ) : (
           <div
             className="col-span-full py-24 text-center rounded-2xl border border-dashed"
-            style={{ borderColor: "var(--border)", background: "var(--bg-2)" }}
+            style={{ borderColor: "var(--border)", background: "color-mix(in srgb, var(--bg-2) 80%, transparent)" }}
           >
             <p className="ap-label mb-3">No products found</p>
             <button

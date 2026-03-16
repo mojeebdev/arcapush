@@ -79,20 +79,15 @@ export default async function BlogPostPage({ params }: Props) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "var(--bg)", color: "var(--text-primary)" }}>
+    <div className="min-h-screen flex flex-col relative z-10" style={{ color: "var(--text-primary)" }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <main className="flex-grow">
 
-        {/* ── Header ────────────────────────────────────────────────────── */}
         <header className="pt-32 pb-10 px-6 max-w-3xl mx-auto">
-          <Link
-            href="/blog"
-            className="ap-link ap-label hover-accent inline-flex items-center gap-2 mb-10 transition-colors"
-          >
+          <Link href="/blog" className="ap-link ap-label hover-accent inline-flex items-center gap-2 mb-10 transition-colors">
             ← Back to The Signal
           </Link>
-
           <div className="flex items-center gap-3 mb-6">
             <span
               className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border"
@@ -102,7 +97,6 @@ export default async function BlogPostPage({ params }: Props) {
             </span>
             <span className="ap-label">{post.readTime}</span>
           </div>
-
           <h1
             className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-[0.9] mb-6"
             style={{ color: "var(--text-primary)" }}
@@ -112,7 +106,6 @@ export default async function BlogPostPage({ params }: Props) {
           <p className="text-xl leading-relaxed mb-10" style={{ color: "var(--text-secondary)" }}>
             {post.description}
           </p>
-
           <div
             className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 pb-10"
             style={{ borderBottom: "1px solid var(--border)" }}
@@ -135,9 +128,7 @@ export default async function BlogPostPage({ params }: Props) {
               )}
               <div>
                 <a
-                  href={post.authorUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={post.authorUrl} target="_blank" rel="noopener noreferrer"
                   className="ap-link text-xs font-black uppercase tracking-widest hover-accent"
                   style={{ color: "var(--text-primary)" }}
                 >
@@ -154,14 +145,12 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </header>
 
-        {/* ── Cover image ────────────────────────────────────────────────── */}
         <div className="px-6 max-w-3xl mx-auto mb-14">
           <div className="relative w-full h-[320px] md:h-[460px] rounded-[2rem] overflow-hidden">
             <Image src={post.image} alt={post.title} fill priority className="object-cover" />
           </div>
         </div>
 
-        {/* ── Article body ───────────────────────────────────────────────── */}
         <article className="px-6 max-w-3xl mx-auto pb-14">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
@@ -175,29 +164,18 @@ export default async function BlogPostPage({ params }: Props) {
                 </h2>
               ),
               h3: ({ children }) => (
-                <h3
-                  className="text-xl font-black uppercase tracking-tighter mt-10 mb-4"
-                  style={{ color: "var(--text-primary)" }}
-                >
+                <h3 className="text-xl font-black uppercase tracking-tighter mt-10 mb-4" style={{ color: "var(--text-primary)" }}>
                   {children}
                 </h3>
               ),
               p: ({ children }) => (
-                <p className="text-base leading-[1.9] mb-6" style={{ color: "var(--text-secondary)" }}>
-                  {children}
-                </p>
+                <p className="text-base leading-[1.9] mb-6" style={{ color: "var(--text-secondary)" }}>{children}</p>
               ),
               strong: ({ children }) => (
                 <strong className="font-black" style={{ color: "var(--text-primary)" }}>{children}</strong>
               ),
               a: ({ href, children }) => (
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ap-link underline underline-offset-4 hover-accent"
-                  style={{ color: "var(--accent)" }}
-                >
+                <a href={href} target="_blank" rel="noopener noreferrer" className="ap-link underline underline-offset-4 hover-accent" style={{ color: "var(--accent)" }}>
                   {children}
                 </a>
               ),
@@ -228,7 +206,7 @@ export default async function BlogPostPage({ params }: Props) {
               pre: ({ children }) => (
                 <pre
                   className="rounded-2xl p-6 overflow-x-auto my-8 text-sm"
-                  style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
+                  style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)", border: "1px solid var(--border)" }}
                 >
                   {children}
                 </pre>
@@ -238,12 +216,10 @@ export default async function BlogPostPage({ params }: Props) {
                   <table className="w-full border-collapse text-sm">{children}</table>
                 </div>
               ),
-              thead: ({ children }) => <thead style={{ background: "var(--bg-3)" }}>{children}</thead>,
+              thead: ({ children }) => <thead style={{ background: "color-mix(in srgb, var(--bg-3) 80%, transparent)" }}>{children}</thead>,
               tbody: ({ children }) => <tbody>{children}</tbody>,
               tr: ({ children }) => (
-                <tr style={{ borderBottom: "1px solid var(--border)", color: "var(--text-secondary)" }}>
-                  {children}
-                </tr>
+                <tr style={{ borderBottom: "1px solid var(--border)", color: "var(--text-secondary)" }}>{children}</tr>
               ),
               th: ({ children }) => (
                 <th
@@ -254,9 +230,7 @@ export default async function BlogPostPage({ params }: Props) {
                 </th>
               ),
               td: ({ children }) => (
-                <td className="text-sm px-6 py-4 align-middle" style={{ color: "var(--text-secondary)" }}>
-                  {children}
-                </td>
+                <td className="text-sm px-6 py-4 align-middle" style={{ color: "var(--text-secondary)" }}>{children}</td>
               ),
               hr: () => <hr className="my-12" style={{ borderColor: "var(--border)" }} />,
             }}
@@ -265,23 +239,18 @@ export default async function BlogPostPage({ params }: Props) {
           </ReactMarkdown>
         </article>
 
-        {/* ── Bottom share bar ───────────────────────────────────────────── */}
         <div className="px-6 max-w-3xl mx-auto pb-10 pt-8" style={{ borderTop: "1px solid var(--border)" }}>
           <p className="ap-label mb-4">Found this useful? Pass it on.</p>
           <ShareBar title={post.title} slug={post.slug} />
         </div>
 
-        {/* ── CTA ────────────────────────────────────────────────────────── */}
         <div className="px-6 max-w-3xl mx-auto pb-20 pt-6">
           <div
             className="rounded-[2rem] p-10 text-center"
-            style={{ background: "var(--bg-2)", border: "1px solid var(--accent-border)" }}
+            style={{ background: "color-mix(in srgb, var(--bg-2) 80%, transparent)", border: "1px solid var(--accent-border)" }}
           >
             <p className="ap-label mb-3">Arcapush Registry</p>
-            <h3
-              className="text-2xl font-black uppercase tracking-tighter mb-4"
-              style={{ color: "var(--text-primary)" }}
-            >
+            <h3 className="text-2xl font-black uppercase tracking-tighter mb-4" style={{ color: "var(--text-primary)" }}>
               Is your product listed?
             </h3>
             <p className="text-sm mb-8 max-w-md mx-auto" style={{ color: "var(--text-secondary)" }}>
