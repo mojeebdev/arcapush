@@ -18,7 +18,7 @@ export const config = createConfig({
   connectors: [
     injected(),
     coinbaseWallet({
-      appName: "Arcapush", // ← updated
+      appName: "Arcapush", 
       preference: "all",
     }),
   ],

@@ -5,9 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Web3Provider } from "@/components/Web3Provider";
-import { SessionProvider } from "next-auth/react";
-import { Toaster } from "react-hot-toast";
+import { Providers } from "@/components/Providers";
 import "./globals.css";
 
 const syne = Syne({
@@ -112,14 +110,14 @@ const jsonLd = [
     url: AdminConfig.SITE_URL,
     description: "Discovery and visibility platform for vibe-coded products. List once, get indexed, get found by VCs.",
     offers: [
-  { "@type": "Offer", price: "0",   priceCurrency: "USD", name: "Free — Permanent indexed listing" },
-  { "@type": "Offer", price: "5",   priceCurrency: "USD", name: "30 Minutes — Instant push at the top" },
-  { "@type": "Offer", price: "25",  priceCurrency: "USD", name: "1 Day — 24-hour featured placement + VC visibility" },
-  { "@type": "Offer", price: "60",  priceCurrency: "USD", name: "3 Days — Weekend domination, 3 days pinned" },
-  { "@type": "Offer", price: "100", priceCurrency: "USD", name: "1 Week — Full week push, maximum signal" },
-  { "@type": "Offer", price: "175", priceCurrency: "USD", name: "2 Weeks — Sustained exposure, 14 days" },
-  { "@type": "Offer", price: "299", priceCurrency: "USD", name: "1 Month — 30-day total domination, VC magnet" },
-],
+      { "@type": "Offer", price: "0",   priceCurrency: "USD", name: "Free — Permanent indexed listing" },
+      { "@type": "Offer", price: "5",   priceCurrency: "USD", name: "30 Minutes — Instant push at the top" },
+      { "@type": "Offer", price: "25",  priceCurrency: "USD", name: "1 Day — 24-hour featured placement + VC visibility" },
+      { "@type": "Offer", price: "60",  priceCurrency: "USD", name: "3 Days — Weekend domination, 3 days pinned" },
+      { "@type": "Offer", price: "100", priceCurrency: "USD", name: "1 Week — Full week push, maximum signal" },
+      { "@type": "Offer", price: "175", priceCurrency: "USD", name: "2 Weeks — Sustained exposure, 14 days" },
+      { "@type": "Offer", price: "299", priceCurrency: "USD", name: "1 Month — 30-day total domination, VC magnet" },
+    ],
   },
   {
     "@context": "https://schema.org",
@@ -178,46 +176,31 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className="min-h-screen antialiased"
         style={{ background: "var(--bg)", color: "var(--text-primary)" }}
       >
-        <SessionProvider>
-          <Web3Provider>
+        <Providers>
+          {/* Background glow blobs */}
+          <div
+            className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden"
+            style={{ background: "var(--bg)" }}
+          >
             <div
-              className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden"
-              style={{ background: "var(--bg)" }}
-            >
-              <div
-                className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full"
-                style={{ background: "rgba(91,43,255,0.04)", filter: "blur(140px)" }}
-              />
-              <div
-                className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full"
-                style={{ background: "rgba(91,43,255,0.025)", filter: "blur(120px)" }}
-              />
-            </div>
+              className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full"
+              style={{ background: "rgba(91,43,255,0.04)", filter: "blur(140px)" }}
+            />
+            <div
+              className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full"
+              style={{ background: "rgba(91,43,255,0.025)", filter: "blur(120px)" }}
+            />
+          </div>
 
-            <div className="relative flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-grow pt-20">{children}</main>
-              <Footer />
-            </div>
-          </Web3Provider>
-        </SessionProvider>
+          <div className="relative flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-grow pt-20">{children}</main>
+            <Footer />
+          </div>
+        </Providers>
 
         <Analytics />
         <SpeedInsights />
-        <Toaster
-          position="bottom-center"
-          toastOptions={{
-            style: {
-              background:    "var(--bg)",
-              color:         "var(--text-primary)",
-              border:        "1px solid var(--border)",
-              fontFamily:    "var(--font-mono)",
-              fontSize:      "0.72rem",
-              letterSpacing: "0.04em",
-              boxShadow:     "0 4px 24px rgba(10,10,15,0.08)",
-            },
-          }}
-        />
       </body>
     </html>
   );
