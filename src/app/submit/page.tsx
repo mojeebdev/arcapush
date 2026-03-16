@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import SubmitForm from "./SubmitForm";
+import SubmitForm from "../../components/SubmitForm";
 
 export default async function SubmitPage() {
   const session = await auth();

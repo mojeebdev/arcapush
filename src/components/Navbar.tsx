@@ -25,11 +25,11 @@ const NAV_LINKS = [
 ];
 
 export function Navbar() {
-  const [mobileOpen, setMobileOpen]       = useState(false);
-  const [mounted, setMounted]             = useState(false);
-  const [userMenuOpen, setUserMenuOpen]   = useState(false);
+  const [mobileOpen, setMobileOpen]             = useState(false);
+  const [mounted, setMounted]                   = useState(false);
+  const [userMenuOpen, setUserMenuOpen]         = useState(false);
   const [walletPickerOpen, setWalletPickerOpen] = useState(false);
-  const [scrolled, setScrolled]           = useState(false);
+  const [scrolled, setScrolled]                 = useState(false);
 
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -80,26 +80,45 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 gap-4">
 
-          {/* Logo */}
-          <Link href="/" className="shrink-0">
+          {/* Logo + Wordmark */}
+          <Link href="/" className="shrink-0 flex items-center gap-2.5">
             <Image
               src="/arcapush-logo.png"
               alt="Arcapush"
               width={140}
               height={32}
-              className="h-8 w-auto object-contain"
+              className="h-7 w-auto object-contain"
               priority
             />
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.7rem",
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "var(--text-primary)",
+              }}
+            >
+              Arcapush
+            </span>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-5">
+          <div className="hidden lg:flex items-center gap-4">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs font-black uppercase tracking-widest transition-colors"
-                style={{ color: "var(--text-tertiary)" }}
+                className="transition-colors"
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.58rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "var(--text-tertiary)",
+                }}
                 onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)")}
               >
@@ -121,8 +140,13 @@ export function Navbar() {
               <div className="relative">
                 <button
                   onClick={handleWalletConnect}
-                  className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-lg transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors"
                   style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.58rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
                     color: isWalletConnected ? "var(--accent)" : "var(--text-tertiary)",
                     background: isWalletConnected ? "var(--accent-dim)" : "transparent",
                     border: "1px solid var(--border)",
@@ -147,29 +171,39 @@ export function Navbar() {
                       style={{ background: "var(--bg)", border: "1px solid var(--border-2)" }}
                     >
                       <p
-                        className="px-4 pt-2 pb-1 text-xs uppercase tracking-widest"
-                        style={{ color: "var(--text-tertiary)" }}
+                        className="px-4 pt-2 pb-1"
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          fontSize: "0.55rem",
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          color: "var(--text-tertiary)",
+                        }}
                       >
                         Select Network
                       </p>
-                      <button
-                        onClick={() => { setSolModalVisible(true); setWalletPickerOpen(false); }}
-                        className="w-full text-left px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
-                        style={{ color: "var(--text-secondary)" }}
-                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-2)"; (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
-                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)"; }}
-                      >
-                        Solana
-                      </button>
-                      <button
-                        onClick={() => { connectEvm({ connector: connectors[0] }); setWalletPickerOpen(false); }}
-                        className="w-full text-left px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
-                        style={{ color: "var(--text-secondary)" }}
-                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-2)"; (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
-                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)"; }}
-                      >
-                        EVM
-                      </button>
+                      {[
+                        { label: "Solana", onClick: () => { setSolModalVisible(true); setWalletPickerOpen(false); } },
+                        { label: "EVM",    onClick: () => { connectEvm({ connector: connectors[0] }); setWalletPickerOpen(false); } },
+                      ].map((opt) => (
+                        <button
+                          key={opt.label}
+                          onClick={opt.onClick}
+                          className="w-full text-left px-4 py-3 rounded-xl transition-all"
+                          style={{
+                            fontFamily: "var(--font-mono)",
+                            fontSize: "0.58rem",
+                            fontWeight: 700,
+                            letterSpacing: "0.14em",
+                            textTransform: "uppercase",
+                            color: "var(--text-secondary)",
+                          }}
+                          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-2)"; (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
+                          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)"; }}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
                     </div>
                   </>
                 )}
@@ -181,8 +215,13 @@ export function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all"
                   style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.58rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
                     background: "var(--bg-3)",
                     border: "1px solid var(--border)",
                     color: "var(--text-primary)",
@@ -202,8 +241,15 @@ export function Navbar() {
                       <Link
                         href="/submit"
                         onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
-                        style={{ color: "var(--text-secondary)" }}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all"
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          fontSize: "0.58rem",
+                          fontWeight: 700,
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          color: "var(--text-secondary)",
+                        }}
                         onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--bg-2)"; (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
                         onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)"; }}
                       >
@@ -211,8 +257,15 @@ export function Navbar() {
                       </Link>
                       <button
                         onClick={() => { signOut(); setUserMenuOpen(false); }}
-                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
-                        style={{ color: "var(--text-tertiary)" }}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all"
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          fontSize: "0.58rem",
+                          fontWeight: 700,
+                          letterSpacing: "0.14em",
+                          textTransform: "uppercase",
+                          color: "var(--text-tertiary)",
+                        }}
                         onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#dc2626"; (e.currentTarget as HTMLElement).style.background = "rgba(220,38,38,0.05)"; }}
                         onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)"; (e.currentTarget as HTMLElement).style.background = "transparent"; }}
                       >
@@ -259,8 +312,14 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="text-sm font-black uppercase tracking-widest transition-colors"
-              style={{ color: "var(--text-secondary)" }}
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.65rem",
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "var(--text-secondary)",
+              }}
             >
               {link.label}
             </Link>
@@ -271,27 +330,43 @@ export function Navbar() {
           <div className="flex flex-col gap-3 pt-2">
             {mounted && (
               <div className="flex gap-2">
-                <button
-                  onClick={() => { setSolModalVisible(true); setMobileOpen(false); }}
-                  className="flex-1 text-xs font-black uppercase tracking-widest py-3 px-4 rounded-xl"
-                  style={{ color: "var(--text-tertiary)", background: "var(--bg-3)", border: "1px solid var(--border)" }}
-                >
-                  Solana
-                </button>
-                <button
-                  onClick={() => { connectEvm({ connector: connectors[0] }); setMobileOpen(false); }}
-                  className="flex-1 text-xs font-black uppercase tracking-widest py-3 px-4 rounded-xl"
-                  style={{ color: "var(--text-tertiary)", background: "var(--bg-3)", border: "1px solid var(--border)" }}
-                >
-                  EVM
-                </button>
+                {[
+                  { label: "Solana", onClick: () => { setSolModalVisible(true); setMobileOpen(false); } },
+                  { label: "EVM",    onClick: () => { connectEvm({ connector: connectors[0] }); setMobileOpen(false); } },
+                ].map((opt) => (
+                  <button
+                    key={opt.label}
+                    onClick={opt.onClick}
+                    className="flex-1 py-3 px-4 rounded-xl"
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "0.58rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      color: "var(--text-tertiary)",
+                      background: "var(--bg-3)",
+                      border: "1px solid var(--border)",
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
               </div>
             )}
             {status === "authenticated" ? (
               <button
                 onClick={() => signOut()}
-                className="text-xs font-black uppercase tracking-widest py-3 rounded-xl text-left px-4"
-                style={{ color: "var(--text-tertiary)", background: "var(--bg-3)" }}
+                className="text-left px-4 py-3 rounded-xl"
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.58rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "var(--text-tertiary)",
+                  background: "var(--bg-3)",
+                }}
               >
                 Sign Out ({session?.user?.name?.split(" ")[0]})
               </button>

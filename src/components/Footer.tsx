@@ -8,15 +8,15 @@ type FooterLinks = { [section: string]: FooterLink[]; };
 
 const FOOTER_LINKS: FooterLinks = {
   Discover: [
-    { href: "/how-it-works", label: "How It Works" },
-    { href: "/registry",     label: "Registry"     },
-    { href: "/blog",         label: "Blog"         },
-    { href: "/pricing",      label: "Boost Listing"},
-    { href: "/about",        label: "About"        },
+    { href: "/how-it-works", label: "How It Works"  },
+    { href: "/registry",     label: "Registry"      },
+    { href: "/blog",         label: "Blog"          },
+    { href: "/pricing",      label: "Boost Listing" },
+    { href: "/about",        label: "About"         },
   ],
   Founders: [
     { href: "/submit",    label: "List a Product" },
-    { href: "/pricing",   label: "Pricing"        },
+    { href: "/pricing",   label: "Boost"          },
     { href: "/docs",      label: "Docs"           },
     { href: "/investors", label: "VC Panel"       },
   ],
@@ -34,31 +34,42 @@ const FOOTER_LINKS: FooterLinks = {
   ],
   Connect: [
     { href: "https://twitter.com/arcapush", label: "X / Twitter",  external: true },
-    { href: "https://mojeeb.xyz",           label: "Founder",       external: true },
+    { href: "https://mojeeb.xyz",           label: "Founder",      external: true },
     { href: "https://blindspotlab.xyz",     label: "BlindspotLab", external: true },
   ],
 };
 
-function FooterLink({ link }: { link: FooterLink }) {
-  const cls = "text-xs font-bold uppercase tracking-widest transition-colors";
-  const style = { color: "var(--text-tertiary)" as string };
-  const hoverStyle = { color: "var(--text-primary)" as string };
+const linkStyle = {
+  fontFamily:     "var(--font-mono)",
+  fontSize:       "0.58rem",
+  fontWeight:     700,
+  letterSpacing:  "0.13em",
+  textTransform:  "uppercase" as const,
+  color:          "var(--text-tertiary)",
+};
+const linkHover = { color: "var(--text-primary)" };
 
+function FooterLink({ link }: { link: FooterLink }) {
   if (link.external) {
     return (
-      <a href={link.href} target="_blank" rel="noopener noreferrer"
-        className={cls} style={style}
-        onMouseEnter={(e) => Object.assign((e.currentTarget as HTMLElement).style, hoverStyle)}
-        onMouseLeave={(e) => Object.assign((e.currentTarget as HTMLElement).style, style)}
+      <a
+        href={link.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={linkStyle}
+        onMouseEnter={(e) => Object.assign((e.currentTarget as HTMLElement).style, linkHover)}
+        onMouseLeave={(e) => Object.assign((e.currentTarget as HTMLElement).style, linkStyle)}
       >
         {link.label}
       </a>
     );
   }
   return (
-    <Link href={link.href} className={cls} style={style}
-      onMouseEnter={(e) => Object.assign((e.currentTarget as HTMLElement).style, hoverStyle)}
-      onMouseLeave={(e) => Object.assign((e.currentTarget as HTMLElement).style, style)}
+    <Link
+      href={link.href}
+      style={linkStyle}
+      onMouseEnter={(e) => Object.assign((e.currentTarget as HTMLElement).style, linkHover)}
+      onMouseLeave={(e) => Object.assign((e.currentTarget as HTMLElement).style, linkStyle)}
     >
       {link.label}
     </Link>
@@ -84,7 +95,7 @@ export function Footer() {
         }}
       />
 
-      {/* Fade grid out at top and bottom */}
+      {/* Fade grid at top + bottom */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -106,18 +117,37 @@ export function Footer() {
 
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="inline-block mb-4">
+            <Link href="/" className="inline-flex items-center gap-2.5 mb-4">
               <Image
                 src="/arcapush-logo.png"
                 alt="Arcapush"
                 width={120}
                 height={32}
-                className="h-8 w-auto object-contain"
+                className="h-7 w-auto object-contain"
               />
+              <span
+                style={{
+                  fontFamily:    "var(--font-mono)",
+                  fontSize:      "0.7rem",
+                  fontWeight:    700,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color:         "var(--text-primary)",
+                }}
+              >
+                Arcapush
+              </span>
             </Link>
             <p
-              className="text-xs font-black uppercase tracking-widest leading-relaxed"
-              style={{ color: "var(--text-tertiary)" }}
+              style={{
+                fontFamily:    "var(--font-mono)",
+                fontSize:      "0.58rem",
+                fontWeight:    700,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                lineHeight:    1.7,
+                color:         "var(--text-tertiary)",
+              }}
             >
               Where vibe-coded products get discovered.
             </p>
@@ -126,10 +156,24 @@ export function Footer() {
           {/* Link columns */}
           {Object.entries(FOOTER_LINKS).map(([section, links]) => (
             <div key={section}>
-              <p className="ap-label mb-5">{section}</p>
+              <p
+                style={{
+                  fontFamily:    "var(--font-mono)",
+                  fontSize:      "0.55rem",
+                  fontWeight:    700,
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  color:         "var(--accent)",
+                  marginBottom:  "1.25rem",
+                }}
+              >
+                {section}
+              </p>
               <ul className="space-y-3">
                 {links.map((link) => (
-                  <li key={link.href}><FooterLink link={link} /></li>
+                  <li key={link.href}>
+                    <FooterLink link={link} />
+                  </li>
                 ))}
               </ul>
             </div>
@@ -144,27 +188,44 @@ export function Footer() {
 
           {/* Powered by */}
           <div className="flex items-center gap-5">
-            <p className="ap-label">Powered by</p>
+            <p
+              style={{
+                fontFamily:    "var(--font-mono)",
+                fontSize:      "0.55rem",
+                fontWeight:    700,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color:         "var(--text-tertiary)",
+              }}
+            >
+              Powered by
+            </p>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
-                <img src="/base-logo.png" alt="Base" className="h-4 w-4 object-contain" />
-                <span
-                  className="text-xs font-black tracking-widest uppercase"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  Base
-                </span>
-              </div>
-              <div style={{ width: 1, height: "0.75rem", background: "var(--border)" }} />
-              <div className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
-                <img src="/solana-sol-logo.png" alt="Solana" className="h-4 w-4 object-contain" />
-                <span
-                  className="text-xs font-black tracking-widest uppercase"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  Solana
-                </span>
-              </div>
+              {[
+                { src: "/base-logo.png",       alt: "Base",   label: "Base"   },
+                { src: "/solana-sol-logo.png",  alt: "Solana", label: "Solana" },
+              ].map((chain, i) => (
+                <div key={chain.alt} className="flex items-center gap-4">
+                  {i > 0 && (
+                    <div style={{ width: 1, height: "0.75rem", background: "var(--border)" }} />
+                  )}
+                  <div className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
+                    <img src={chain.src} alt={chain.alt} className="h-4 w-4 object-contain" />
+                    <span
+                      style={{
+                        fontFamily:    "var(--font-mono)",
+                        fontSize:      "0.58rem",
+                        fontWeight:    700,
+                        letterSpacing: "0.13em",
+                        textTransform: "uppercase",
+                        color:         "var(--text-secondary)",
+                      }}
+                    >
+                      {chain.label}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -172,8 +233,14 @@ export function Footer() {
           <div className="flex flex-col items-center md:items-end gap-1">
             <div className="flex items-center gap-2">
               <span
-                className="text-xs font-bold uppercase tracking-widest"
-                style={{ color: "var(--text-tertiary)" }}
+                style={{
+                  fontFamily:    "var(--font-mono)",
+                  fontSize:      "0.55rem",
+                  fontWeight:    700,
+                  letterSpacing: "0.13em",
+                  textTransform: "uppercase",
+                  color:         "var(--text-tertiary)",
+                }}
               >
                 Built by
               </span>
@@ -181,8 +248,14 @@ export function Footer() {
                 href="https://blindspotlab.xyz"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-black uppercase tracking-widest transition-colors"
-                style={{ color: "var(--text-secondary)" }}
+                style={{
+                  fontFamily:    "var(--font-mono)",
+                  fontSize:      "0.55rem",
+                  fontWeight:    700,
+                  letterSpacing: "0.13em",
+                  textTransform: "uppercase",
+                  color:         "var(--text-secondary)",
+                }}
                 onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--accent)")}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-secondary)")}
               >
@@ -190,8 +263,14 @@ export function Footer() {
               </a>
             </div>
             <p
-              className="text-xs font-bold uppercase tracking-widest"
-              style={{ color: "var(--text-tertiary)" }}
+              style={{
+                fontFamily:    "var(--font-mono)",
+                fontSize:      "0.55rem",
+                fontWeight:    700,
+                letterSpacing: "0.13em",
+                textTransform: "uppercase",
+                color:         "var(--text-tertiary)",
+              }}
             >
               © {new Date().getFullYear()} Arcapush. All rights reserved.
             </p>
