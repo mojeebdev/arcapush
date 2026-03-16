@@ -16,7 +16,7 @@ export function SignalsGrid({ startups }: { startups: Startup[] }) {
       {startups.map((startup) => (
         <a
           key={startup.id}
-          href={`/startups/${startup.slug ?? startup.id}`}
+          href={`/startup/${startup.slug ?? startup.id}`}
           className="group flex flex-col gap-3 p-6 rounded-2xl transition-all"
           style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
           onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--accent-border)")}
