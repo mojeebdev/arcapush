@@ -1,3 +1,5 @@
+import { url } from "inspector/promises";
+
 export type CuratedTool = {
   url: string;
   name: string;
@@ -14,7 +16,18 @@ export const CURATED_TOOLS: CuratedTool[] = [
     category: "Directory",
     builtByArcapush: true,
   },
-
+  {
+    url: "https://arcaprompt.arcapush.com",
+    name: "ArcaPrompt",
+    category: "AI Prompt Engineering",
+    builtByArcapush: true,
+  },
+  {
+    url: "https://promptrank.arcapush.com",
+    name: "PromptRank",
+    category: "AI Prompt Ranking",
+    builtByArcapush: true,
+  },
   {
     url: "https://claude.ai",
     name: "Claude",
