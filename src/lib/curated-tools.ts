@@ -15,7 +15,18 @@ export const CURATED_TOOLS: CuratedTool[] = [
     builtByArcapush: true,
   },
 
-  
+  {
+    url: "https://claude.ai",
+    name: "Claude",
+    category: "AI Assistant",
+  },
+
+  {
+    url: "https://gemini.google.com",
+    name: "Gemini",
+    category: "AI Assistant",
+  },
+
   {
     url: "https://cursor.sh",
     name: "Cursor",

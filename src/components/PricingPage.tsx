@@ -22,11 +22,11 @@ const USDC_ABI = [
 
 const BOOST_PERKS: Record<string, string[]> = {
   "30m": ["Permanent indexed listing", "Search engine indexed", "90 rotations"],
-  "1d":  ["Everything in 30m", "X storytelling post", "Discovery feed priority", "Featured badge"],
-  "3d":  ["Everything in 1d", "Priority support", "3-day featured badge"],
-  "1w":  ["Everything in 3d", "1-on-1 strategy call", "Verified badge"],
-  "2w":  ["Everything in 1w", "2× X posts", "Partner network intro"],
-  "1m":  ["Everything in 2w", "VC access channel", "Founder strategy retainer"],
+  "1d":  ["Everything in 30m", "2,880 rotations", "X storytelling post", "Pinned to the Hero", "Featured badge"],
+  "3d":  ["Everything in 1d", "8,640 rotations", "Priority support", "3-day featured badge"],
+  "1w":  ["Everything in 3d", "20,160 rotations", "1-on-1 strategy call", "Verified badge"],
+  "2w":  ["Everything in 1w", "40,320 rotations", "2× X posts", "Partner network intro"],
+  "1m":  ["Everything in 2w", "86,400 rotations", "VC access channel", "Founder strategy retainer"],
 };
 
 export default function PricingPage() {
