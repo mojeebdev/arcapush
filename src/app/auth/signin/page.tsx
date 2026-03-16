@@ -1,6 +1,6 @@
 import { signIn } from "@/lib/auth";
 import Image from "next/image";
-import { SignInButtons } from "./SignInButtons";
+import { SignInButtons } from "../../../components/SignInButtons";
 
 interface Props {
   searchParams: Promise<{ callbackUrl?: string; error?: string }>;

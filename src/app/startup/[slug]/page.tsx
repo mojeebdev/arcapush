@@ -6,7 +6,7 @@ import {
   HiOutlineGlobeAlt, HiOutlineLink,
   HiOutlineShieldCheck, HiOutlineArrowUpRight, HiOutlineShare,
 } from "react-icons/hi2";
-import { ClientDetails } from "./ClientDetails";
+import { ClientDetails } from "../../../components/ClientDetails";
 import { ReviewSection } from "@/components/ReviewSection";
 import { AdminConfig } from "@/lib/adminConfig";
 

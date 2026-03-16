@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { RegistrySearchHandler } from "./RegistrySearchHandler";
+import { RegistrySearchHandler } from "../../components/RegistrySearchHandler";
 import { AdminConfig } from "@/lib/adminConfig";
 
 export const revalidate = 0;
