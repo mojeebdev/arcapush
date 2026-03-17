@@ -1,5 +1,7 @@
 "use client";
 
+import { incrementStartupView } from "@/app/actions/startup";
+
 type Startup = {
   id: string;
   slug: string | null;
@@ -17,6 +19,10 @@ export function SignalsGrid({ startups }: { startups: Startup[] }) {
         <a
           key={startup.id}
           href={`/startup/${startup.slug ?? startup.id}`}
+          onClick={() => {
+            
+            incrementStartupView(startup.id);
+          }}
           className="group flex flex-col gap-3 p-6 rounded-2xl transition-all"
           style={{ background: "var(--bg-2)", border: "1px solid var(--border)" }}
           onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--accent-border)")}
@@ -35,8 +41,11 @@ export function SignalsGrid({ startups }: { startups: Startup[] }) {
               <div
                 className="w-9 h-9 rounded-lg flex-shrink-0 flex items-center justify-center"
                 style={{
-                  background: "var(--accent)", color: "#fff",
-                  fontFamily: "var(--font-mono)", fontSize: "0.65rem", fontWeight: 700,
+                  background: "var(--accent)", 
+                  color: "#fff",
+                  fontFamily: "var(--font-mono)", 
+                  fontSize: "0.65rem", 
+                  fontWeight: 700,
                 }}
               >
                 {startup.name[0]}
