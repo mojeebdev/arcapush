@@ -29,6 +29,12 @@ export const CURATED_TOOLS: CuratedTool[] = [
     builtByArcapush: true,
   },
   {
+    url: "https://xunfollow.xyz",
+    name: "Xunfollow",
+    category: "Social Media",
+    builtByArcapush: true,
+  },
+  {
     url: "https://claude.ai",
     name: "Claude",
     category: "AI Assistant",

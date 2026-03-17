@@ -21,6 +21,7 @@ const FOOTER_LINKS: FooterLinks = {
   Products: [  
     { href: "https://promptrank.arcapush.com", label: "PromptRank" },
     { href: "https://arcaprompt.arcapush.com", label: "ArcaPrompt" },
+    { href: "https://xunfollow.xyz", label: "Xunfollow" },
   ],
   Intelligence: [
     { href: "/blog/What-is-vibe-coding",            label: "What is Vibe Coding?"  },
