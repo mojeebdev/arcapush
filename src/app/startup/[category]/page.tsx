@@ -1,3 +1,4 @@
+// app/startup/[category]/page.tsx
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
@@ -12,23 +13,25 @@ function categoryToSlug(category: string): string {
   return category.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 }
 
-async function resolveCategory(slug: string) {
-  const all = await prisma.startup.findMany({
-    where:  { approved: true },
-    select: { category: true },
+async function getStartupsByCategory(categorySlug: string) {
+  // fetch all distinct categories and find the matching one
+  const allCategories = await prisma.startup.findMany({
+    where:    { approved: true },
+    select:   { category: true },
     distinct: ["category"],
   });
-  return all.find(
-    (s) => categoryToSlug(s.category) === slug.toLowerCase()
-  )?.category ?? null;
-}
 
-async function getStartupsByCategory(categorySlug: string) {
-  const realCategory = await resolveCategory(categorySlug);
-  if (!realCategory) return null;
+  const match = allCategories.find(
+    (row) => row.category != null &&
+             categoryToSlug(row.category) === categorySlug.toLowerCase()
+  );
+
+  if (!match) return null;
+
+  const realCategory = match.category;
 
   const startups = await prisma.startup.findMany({
-    where: { approved: true, category: realCategory },
+    where:   { approved: true, category: realCategory },
     orderBy: [{ tier: "desc" }, { pinnedAt: "desc" }, { createdAt: "desc" }],
     select: {
       id: true, slug: true, name: true, tagline: true,
@@ -41,7 +44,7 @@ async function getStartupsByCategory(categorySlug: string) {
   return { startups, realCategory };
 }
 
-
+// ── metadata ──────────────────────────────────────────────────────────────────
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getStartupsByCategory(params.category);
@@ -58,19 +61,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     alternates: { canonical: pageUrl },
     openGraph: {
-      title,
-      description,
+      title, description,
       url:      pageUrl,
       siteName: AdminConfig.SITE_NAME,
       images:   [{ url: AdminConfig.SITE_OG_IMAGE, width: 1200, height: 630 }],
       type:     "website",
     },
     twitter: {
-      card:        "summary_large_image",
-      site:        AdminConfig.BRAND_TWITTER,
-      title,
-      description,
-      images:      [AdminConfig.SITE_OG_IMAGE],
+      card: "summary_large_image",
+      site: AdminConfig.BRAND_TWITTER,
+      title, description,
+      images: [AdminConfig.SITE_OG_IMAGE],
     },
   };
 }
@@ -84,9 +85,9 @@ export async function generateStaticParams() {
     distinct: ["category"],
   });
 
-  return categories.map((c) => ({
-    category: categoryToSlug(c.category),
-  }));
+  return categories
+    .filter((c) => c.category != null)
+    .map((c) => ({ category: categoryToSlug(c.category) }));
 }
 
 export const revalidate = 3600;
@@ -104,13 +105,12 @@ export default async function CategoryPage({ params }: Props) {
     categorySlug: categoryToSlug(s.category),
   }));
 
- 
   const jsonLd = {
-    "@context": "https://schema.org",
-    "@type":    "CollectionPage",
-    name:       `${realCategory} Products · Arcapush`,
-    description: `Vibe-coded ${realCategory} products indexed on Arcapush.`,
-    url:        `${AdminConfig.SITE_URL}/startup/${params.category}`,
+    "@context":    "https://schema.org",
+    "@type":       "CollectionPage",
+    name:          `${realCategory} Products · Arcapush`,
+    description:   `Vibe-coded ${realCategory} products indexed on Arcapush.`,
+    url:           `${AdminConfig.SITE_URL}/startup/${params.category}`,
     numberOfItems: startups.length,
     publisher: {
       "@type": "Organization",
@@ -128,7 +128,6 @@ export default async function CategoryPage({ params }: Props) {
 
       <div className="max-w-7xl mx-auto">
 
-        {/* header */}
         <div className="mb-12 pb-12" style={{ borderBottom: "1px solid var(--border)" }}>
           <div
             className="mb-3 flex items-center gap-3"
@@ -140,10 +139,7 @@ export default async function CategoryPage({ params }: Props) {
               color:         "var(--accent)",
             }}
           >
-            <span
-              className="inline-block w-6 h-px"
-              style={{ background: "var(--accent)" }}
-            />
+            <span className="inline-block w-6 h-px" style={{ background: "var(--accent)" }} />
             Registry · {realCategory}
           </div>
 
@@ -151,10 +147,7 @@ export default async function CategoryPage({ params }: Props) {
             <div>
               <h1
                 className="ap-display mb-3"
-                style={{
-                  fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
-                  color:    "var(--text-primary)",
-                }}
+                style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)", color: "var(--text-primary)" }}
               >
                 {realCategory}{" "}
                 <span style={{ color: "var(--accent)" }}>Products.</span>
@@ -186,7 +179,6 @@ export default async function CategoryPage({ params }: Props) {
           </div>
         </div>
 
-        {/* grid */}
         <CategoryGrid
           startups={enriched}
           categorySlug={params.category}
