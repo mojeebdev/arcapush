@@ -5,6 +5,9 @@ import type { Metadata } from "next";
 import { AdminConfig } from "@/lib/adminConfig";
 import { CategoryGrid } from "@/components/CategoryGrid";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 interface Props {
   params: { category: string };
 }
@@ -15,7 +18,6 @@ function categoryToSlug(cat: string | null | undefined): string {
 }
 
 async function getStartupsByCategory(categorySlug: string) {
-
   const all = await prisma.startup.findMany({
     where:   { approved: true },
     orderBy: [{ tier: "desc" }, { pinnedAt: "desc" }, { createdAt: "desc" }],
@@ -27,9 +29,10 @@ async function getStartupsByCategory(categorySlug: string) {
     },
   });
 
-  const matching = all.filter(
-    (s) => s.category != null && categoryToSlug(s.category) === categorySlug.toLowerCase()
-  );
+  const matching = all.filter((s) => {
+    if (!s.category) return false;
+    return categoryToSlug(s.category) === categorySlug.toLowerCase();
+  });
 
   if (matching.length === 0) return null;
 
@@ -38,8 +41,6 @@ async function getStartupsByCategory(categorySlug: string) {
     realCategory: matching[0].category as string,
   };
 }
-
-
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getStartupsByCategory(params.category);
@@ -65,25 +66,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
   };
 }
-
-
-
-export async function generateStaticParams() {
-  const rows = await prisma.startup.findMany({
-    where:    { approved: true },
-    select:   { category: true },
-    distinct: ["category"],
-  });
-
-  return rows
-    .filter((r) => r.category != null && r.category.trim() !== "")
-    .map((r) => ({ category: categoryToSlug(r.category) }))
-    .filter((r) => r.category !== ""); 
-}
-
-export const revalidate = 3600;
-
-
 
 export default async function CategoryPage({ params }: Props) {
   const data = await getStartupsByCategory(params.category);
@@ -116,9 +98,7 @@ export default async function CategoryPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-
       <div className="max-w-7xl mx-auto">
-
         <div className="mb-12 pb-12" style={{ borderBottom: "1px solid var(--border)" }}>
           <div
             className="mb-3 flex items-center gap-3"
@@ -131,7 +111,6 @@ export default async function CategoryPage({ params }: Props) {
             <span className="inline-block w-6 h-px" style={{ background: "var(--accent)" }} />
             Registry · {realCategory}
           </div>
-
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <h1
@@ -146,7 +125,6 @@ export default async function CategoryPage({ params }: Props) {
                 product{startups.length !== 1 ? "s" : ""} indexed
               </p>
             </div>
-
             <div
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full self-start md:self-auto"
               style={{
@@ -161,13 +139,11 @@ export default async function CategoryPage({ params }: Props) {
             </div>
           </div>
         </div>
-
         <CategoryGrid
           startups={enriched}
           categorySlug={params.category}
           realCategory={realCategory}
         />
-
       </div>
     </main>
   );
