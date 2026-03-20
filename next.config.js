@@ -1,15 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async redirects() {
-    return [
-      {
-        source:      "/startup/:slug",
-        destination: "/registry",
-        permanent:   false,
-      },
-    ];
-  },
-
   images: {
     remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
