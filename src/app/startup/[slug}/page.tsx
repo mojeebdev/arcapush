@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
-import StartupPageClient from "./StartupPageClient";
+import StartupPageClient from "@/components/StartupPageClient";
+
+
 
 interface Props {
   params: { category: string; slug: string };
