@@ -1,4 +1,3 @@
-
 import { prisma } from "@/lib/prisma";
 
 export function categoryToSlug(cat: string | null | undefined): string {
