@@ -1,7 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source:      "/startup/:slug",
+        destination: "/registry",
+        permanent:   false,
+      },
+    ];
+  },
+
   images: {
-    remotePatterns: [{ protocol: 'https', hostname: '**' }],
+    remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
 
   transpilePackages: [
@@ -12,9 +22,8 @@ const nextConfig = {
     "@solana/web3.js",
   ],
 
-  serverExternalPackages: ['@prisma/client', 'pg'],
+  serverExternalPackages: ["@prisma/client", "pg"],
 
-  
   outputFileTracingIncludes: {
     "/blog/[slug]": ["./content/blog/**/*"],
   },
