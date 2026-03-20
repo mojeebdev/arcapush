@@ -1,28 +1,30 @@
-/** @type {import('next').NextConfig} */
+/** @type {import(‘next’).NextConfig} */
 const nextConfig = {
-  images: {
-    remotePatterns: [{ protocol: "https", hostname: "**" }],
-  },
+generateBuildId: async () => `build-${Date.now()}`,
 
-  transpilePackages: [
-    "@solana/wallet-adapter-base",
-    "@solana/wallet-adapter-react",
-    "@solana/wallet-adapter-react-ui",
-    "@solana/wallet-adapter-wallets",
-    "@solana/web3.js",
-  ],
+images: {
+remotePatterns: [{ protocol: “https”, hostname: “**” }],
+},
 
-  serverExternalPackages: ["@prisma/client", "pg"],
+transpilePackages: [
+“@solana/wallet-adapter-base”,
+“@solana/wallet-adapter-react”,
+“@solana/wallet-adapter-react-ui”,
+“@solana/wallet-adapter-wallets”,
+“@solana/web3.js”,
+],
 
-  outputFileTracingIncludes: {
-    "/blog/[slug]": ["./content/blog/**/*"],
-  },
+serverExternalPackages: [”@prisma/client”, “pg”],
 
-  experimental: {
-    serverActions: {
-      allowedOrigins: ["arcapush.com", "www.arcapush.com"],
-    },
-  },
+outputFileTracingIncludes: {
+“/blog/[slug]”: [”./content/blog/**/*”],
+},
+
+experimental: {
+serverActions: {
+allowedOrigins: [“arcapush.com”, “www.arcapush.com”],
+},
+},
 };
 
 module.exports = nextConfig;
