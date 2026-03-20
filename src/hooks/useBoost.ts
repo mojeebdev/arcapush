@@ -66,7 +66,7 @@ export function useBoost() {
     const toastId = toast.loading("Preparing boost...");
 
     try {
-      // ── Step 0: ensure Base chain ──────────────────────────────────────────
+    
       if (chainId !== base.id) {
         toast.loading("Switching to Base...", { id: toastId });
         await switchChainAsync({ chainId: base.id });
@@ -74,7 +74,7 @@ export function useBoost() {
 
       const amount = parseUnits(String(price), 6);
 
-      // ── Step 1: approve USDC ──────────────────────────────────────────────
+      
       toast.loading("Step 1/2 — Approve USDC...", { id: toastId });
 
       const approveTx = await writeContractAsync({
@@ -88,7 +88,7 @@ export function useBoost() {
       toast.loading("Confirming approval...", { id: toastId });
       await waitForTx(approveTx);
 
-      // ── Step 2: call boost() ──────────────────────────────────────────────
+      
       toast.loading("Step 2/2 — Activating boost...", { id: toastId });
 
       const boostTx = await writeContractAsync({
@@ -101,7 +101,7 @@ export function useBoost() {
 
       toast.loading("Syncing with registry...", { id: toastId });
 
-      // ── Step 3: notify backend ────────────────────────────────────────────
+    
       const res = await fetch("/api/pin", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
@@ -132,18 +132,19 @@ export function useBoost() {
   return { purchaseBoost, isProcessing };
 }
 
-// ─── Poll helper ──────────────────────────────────────────────────────────────
+
 
 async function waitForTx(hash: string, attempts = 15): Promise<void> {
   const rpc = process.env.NEXT_PUBLIC_ALCHEMY_RPC_BASE || "https://mainnet.base.org";
   for (let i = 0; i < attempts; i++) {
     await new Promise((r) => setTimeout(r, 2000));
     try {
-      const res  = await fetch(rpc, {
+      const res = await fetch(rpc, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({
-          jsonrpc: "2.0", id: 1,
+          jsonrpc: "2.0",
+          id:      1,
           method:  "eth_getTransactionReceipt",
           params:  [hash],
         }),
