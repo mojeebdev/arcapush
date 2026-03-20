@@ -1,4 +1,4 @@
-// app/startup/[category]/page.tsx
+
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
@@ -9,29 +9,15 @@ interface Props {
   params: { category: string };
 }
 
-function categoryToSlug(category: string): string {
-  return category.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+function categoryToSlug(cat: string | null | undefined): string {
+  if (!cat) return "";
+  return cat.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 }
 
 async function getStartupsByCategory(categorySlug: string) {
-  // fetch all distinct categories and find the matching one
-  const allCategories = await prisma.startup.findMany({
-    where:    { approved: true },
-    select:   { category: true },
-    distinct: ["category"],
-  });
 
-  const match = allCategories.find(
-    (row) => row.category != null &&
-             categoryToSlug(row.category) === categorySlug.toLowerCase()
-  );
-
-  if (!match) return null;
-
-  const realCategory = match.category;
-
-  const startups = await prisma.startup.findMany({
-    where:   { approved: true, category: realCategory },
+  const all = await prisma.startup.findMany({
+    where:   { approved: true },
     orderBy: [{ tier: "desc" }, { pinnedAt: "desc" }, { createdAt: "desc" }],
     select: {
       id: true, slug: true, name: true, tagline: true,
@@ -41,10 +27,19 @@ async function getStartupsByCategory(categorySlug: string) {
     },
   });
 
-  return { startups, realCategory };
+  const matching = all.filter(
+    (s) => s.category != null && categoryToSlug(s.category) === categorySlug.toLowerCase()
+  );
+
+  if (matching.length === 0) return null;
+
+  return {
+    startups:     matching,
+    realCategory: matching[0].category as string,
+  };
 }
 
-// ── metadata ──────────────────────────────────────────────────────────────────
+
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getStartupsByCategory(params.category);
@@ -52,26 +47,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const { realCategory, startups } = data;
   const pageUrl = `${AdminConfig.SITE_URL}/startup/${params.category}`;
-
-  const title       = `${realCategory} Products · Arcapush`;
-  const description = `${startups.length} vibe-coded ${realCategory} product${startups.length !== 1 ? "s" : ""} indexed on Arcapush — discovered by VCs.`;
+  const title   = `${realCategory} Products · Arcapush`;
+  const desc    = `${startups.length} vibe-coded ${realCategory} product${startups.length !== 1 ? "s" : ""} indexed on Arcapush — discovered by VCs.`;
 
   return {
     title,
-    description,
-    alternates: { canonical: pageUrl },
+    description: desc,
+    alternates:  { canonical: pageUrl },
     openGraph: {
-      title, description,
-      url:      pageUrl,
-      siteName: AdminConfig.SITE_NAME,
-      images:   [{ url: AdminConfig.SITE_OG_IMAGE, width: 1200, height: 630 }],
-      type:     "website",
+      title, description: desc,
+      url: pageUrl, siteName: AdminConfig.SITE_NAME, type: "website",
+      images: [{ url: AdminConfig.SITE_OG_IMAGE, width: 1200, height: 630 }],
     },
     twitter: {
-      card: "summary_large_image",
-      site: AdminConfig.BRAND_TWITTER,
-      title, description,
-      images: [AdminConfig.SITE_OG_IMAGE],
+      card: "summary_large_image", site: AdminConfig.BRAND_TWITTER,
+      title, description: desc, images: [AdminConfig.SITE_OG_IMAGE],
     },
   };
 }
@@ -79,15 +69,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 
 export async function generateStaticParams() {
-  const categories = await prisma.startup.findMany({
+  const rows = await prisma.startup.findMany({
     where:    { approved: true },
     select:   { category: true },
     distinct: ["category"],
   });
 
-  return categories
-    .filter((c) => c.category != null)
-    .map((c) => ({ category: categoryToSlug(c.category) }));
+  return rows
+    .filter((r) => r.category != null && r.category.trim() !== "")
+    .map((r) => ({ category: categoryToSlug(r.category) }))
+    .filter((r) => r.category !== ""); 
 }
 
 export const revalidate = 3600;
@@ -132,11 +123,9 @@ export default async function CategoryPage({ params }: Props) {
           <div
             className="mb-3 flex items-center gap-3"
             style={{
-              fontFamily:    "var(--font-mono)",
-              fontSize:      "0.6rem",
-              letterSpacing: "0.16em",
-              textTransform: "uppercase",
-              color:         "var(--accent)",
+              fontFamily: "var(--font-mono)", fontSize: "0.6rem",
+              letterSpacing: "0.16em", textTransform: "uppercase",
+              color: "var(--accent)",
             }}
           >
             <span className="inline-block w-6 h-px" style={{ background: "var(--accent)" }} />
@@ -161,19 +150,13 @@ export default async function CategoryPage({ params }: Props) {
             <div
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full self-start md:self-auto"
               style={{
-                background:    "color-mix(in srgb, var(--bg-2) 80%, transparent)",
-                border:        "1px solid var(--border)",
-                fontFamily:    "var(--font-mono)",
-                fontSize:      "0.6rem",
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color:         "var(--text-tertiary)",
+                background: "color-mix(in srgb, var(--bg-2) 80%, transparent)",
+                border: "1px solid var(--border)", fontFamily: "var(--font-mono)",
+                fontSize: "0.6rem", letterSpacing: "0.1em",
+                textTransform: "uppercase", color: "var(--text-tertiary)",
               }}
             >
-              <span
-                className="w-1.5 h-1.5 rounded-full animate-pulse"
-                style={{ background: "#16a34a" }}
-              />
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#16a34a" }} />
               Live · Updated in real-time
             </div>
           </div>
