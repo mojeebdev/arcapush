@@ -1,45 +1,15 @@
 
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
 import { AdminConfig } from "@/lib/adminConfig";
 import { CategoryGrid } from "@/components/CategoryGrid";
+import { getStartupsByCategory, categoryToSlug } from "@/lib/getStartupsByCategory";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 interface Props {
   params: { category: string };
-}
-
-function categoryToSlug(cat: string | null | undefined): string {
-  if (!cat) return "";
-  return cat.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-}
-
-async function getStartupsByCategory(categorySlug: string) {
-  const all = await prisma.startup.findMany({
-    where:   { approved: true },
-    orderBy: [{ tier: "desc" }, { pinnedAt: "desc" }, { createdAt: "desc" }],
-    select: {
-      id: true, slug: true, name: true, tagline: true,
-      category: true, tier: true, logoUrl: true,
-      faviconUrl: true, bannerUrl: true, ogImage: true,
-      viewCount: true, scrapedAt: true, createdAt: true,
-    },
-  });
-
-  const matching = all.filter((s) => {
-    if (!s.category) return false;
-    return categoryToSlug(s.category) === categorySlug.toLowerCase();
-  });
-
-  if (matching.length === 0) return null;
-
-  return {
-    startups:     matching,
-    realCategory: matching[0].category as string,
-  };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
