@@ -1,4 +1,3 @@
-// app/startup/[category]/[slug]/page.tsx
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
@@ -8,27 +7,24 @@ interface Props {
   params: { category: string; slug: string };
 }
 
-
-function normaliseCategory(raw: string): string {
-  return decodeURIComponent(raw).toLowerCase().replace(/-/g, " ");
-}
-
 async function getStartup(category: string, slug: string) {
+
   const startup = await prisma.startup.findFirst({
-    where: {
-      slug,
-      approved: true,
-      category: {
-       
-        contains: normaliseCategory(category),
-        mode: "insensitive",
-      },
-    },
+    where: { slug, approved: true },
   });
+
+  if (!startup) return null;
+
+  
+  const expectedCat = startup.category
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-");
+  const incomingCat = decodeURIComponent(category).toLowerCase();
+
+  if (expectedCat !== incomingCat) return null;
+
   return startup;
 }
-
-
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const startup = await getStartup(params.category, params.slug);
@@ -56,14 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: startup.tagline,
       url:         pageUrl,
       siteName:    "Arcapush",
-      images: [
-        {
-          url:    ogImageUrl,
-          width:  1200,
-          height: 630,
-          alt:    `${startup.name} on Arcapush`,
-        },
-      ],
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `${startup.name} on Arcapush` }],
       type: "website",
     },
     twitter: {
@@ -72,17 +61,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: startup.tagline,
       images:      [ogImageUrl],
     },
-    alternates: {
-      canonical: pageUrl,
-    },
+    alternates: { canonical: pageUrl },
   };
 }
 
-
-
 export async function generateStaticParams() {
   const startups = await prisma.startup.findMany({
-    where: { approved: true, slug: { not: null } },
+    where:  { approved: true, slug: { not: null } },
     select: { slug: true, category: true },
   });
 
@@ -92,20 +77,14 @@ export async function generateStaticParams() {
   }));
 }
 
-
-
-export const revalidate = 3600; 
+export const revalidate = 3600;
 
 export default async function StartupPage({ params }: Props) {
   const startup = await getStartup(params.category, params.slug);
   if (!startup) notFound();
 
-  
   prisma.startup
-    .update({
-      where: { id: startup.id },
-      data:  { viewCount: { increment: 1 } },
-    })
+    .update({ where: { id: startup.id }, data: { viewCount: { increment: 1 } } })
     .catch(() => {});
 
   return <StartupPageClient startup={startup} />;
