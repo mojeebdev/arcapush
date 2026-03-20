@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useState } from "react";
@@ -8,14 +6,30 @@ import { HiOutlineShare, HiOutlineClipboardDocument } from "react-icons/hi2";
 import { FaXTwitter } from "react-icons/fa6";
 
 interface ShareButtonProps {
-  startup: { id: string; name: string; tagline: string };
+  startup: {
+    id:            string;
+    slug?:         string | null;
+    categorySlug?: string;
+    name:          string;
+    tagline:       string;
+    category?:     string;
+  };
+}
+
+function buildShareUrl(startup: ShareButtonProps["startup"]): string {
+  const base = process.env.NEXT_PUBLIC_APP_URL || "https://arcapush.com";
+  const cat  = startup.categorySlug
+    ?? startup.category?.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    ?? "startup";
+  const path = startup.slug ?? startup.id;
+  return `${base}/startup/${cat}/${path}`;
 }
 
 export function ShareButton({ startup }: ShareButtonProps) {
   const [open, setOpen] = useState(false);
 
-  const url = `${process.env.NEXT_PUBLIC_APP_URL || "https://arcapush.com"}/startup/${startup.id}`;
-  const text = `🚀 Check out ${startup.name} on @arcapush — ${startup.tagline}`;
+  const url  = buildShareUrl(startup);
+  const text = `Check out ${startup.name} on @arcapush — ${startup.tagline}`;
 
   const copyLink = () => {
     navigator.clipboard.writeText(url);

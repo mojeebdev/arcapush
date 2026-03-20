@@ -47,7 +47,7 @@ No VC meeting before you have a product. A working application with real users �
 
 **Step 3: Build in public**
 
-Document your journey on X. Share your metrics, your failures, your product updates. Vibe coding is inherently visual — show your process. Tag [@Arcapushcc](https://twitter.com/Arcapushcc). Build an audience of early users and potential investors simultaneously.
+Document your journey on X. Share your metrics, your failures, your product updates. Vibe coding is inherently visual — show your process. Tag [@Arcapush](https://twitter.com/Arcapush). Build an audience of early users and potential investors simultaneously.
 
 **Step 4: Warm introductions over cold outreach**
 

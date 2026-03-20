@@ -97,7 +97,7 @@ This list is the most complete public record of VC-backed vibe coding companies.
 - A **VC** mapping the landscape — [request access](/request) to the full Arcapush dataset
 - A **funded vibe coding startup** not yet listed — [submit your startup](/submit)
 
-We update this list as new rounds close. Follow [@Arcapushcc](https://twitter.com/Arcapushcc) on X for real-time updates.
+We update this list as new rounds close. Follow [@Arcapush](https://twitter.com/Arcapush) on X for real-time updates.
 
 ---
 
