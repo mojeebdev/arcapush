@@ -8,103 +8,57 @@ import {
   HiOutlineXMark,
   HiOutlineBolt,
   HiOutlineShieldCheck,
-  HiOutlineGlobeAlt
+  HiOutlineGlobeAlt,
 } from "react-icons/hi2";
-import { useWriteContract, useAccount, useSwitchChain } from "wagmi";
-import { parseUnits } from "viem";
-import { base } from "wagmi/chains";
+import { useAccount } from "wagmi";
+import { useBoost } from "@/hooks/useBoost";
 import {
-  Connection,
-  PublicKey,
-  Transaction,
-  SystemProgram,
-  LAMPORTS_PER_SOL,
-  ComputeBudgetProgram
+  Connection, PublicKey, Transaction,
+  SystemProgram, LAMPORTS_PER_SOL, ComputeBudgetProgram,
 } from "@solana/web3.js";
-
-const USDC_ABI = [
-  {
-    name: "transfer",
-    type: "function",
-    stateMutability: "nonpayable",
-    inputs: [
-      { name: "recipient", type: "address" },
-      { name: "amount",    type: "uint256" },
-    ],
-    outputs: [{ name: "", type: "bool" }],
-  },
-] as const;
 
 interface PaymentModalProps {
   startupId: string;
-  status: string;
-  onClose: () => void;
+  status:    string;
+  onClose:   () => void;
   onSuccess?: (data: any) => void;
 }
 
 export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentModalProps) {
-  const [mounted, setMounted]               = useState(false);
-  const [loading, setLoading]               = useState(false);
-  const [step, setStep]                     = useState<"package" | "chain">("package");
-  const [selectedPackage, setSelectedPackage] = useState(AdminConfig.PIN_PACKAGES[0]);
+  const [mounted, setMounted]                   = useState(false);
+  const [step, setStep]                         = useState<"package" | "chain">("package");
+  const [selectedPackage, setSelectedPackage]   = useState(AdminConfig.PIN_PACKAGES[0]);
 
-  const { isConnected, chainId } = useAccount();
-  const { switchChainAsync }     = useSwitchChain();
-  const { writeContractAsync }   = useWriteContract();
+  const { isConnected } = useAccount();
+  const { purchaseBoost, isProcessing: loading } = useBoost();
 
   useEffect(() => { setMounted(true); }, []);
 
+  
   const handleBasePay = async () => {
-    if (!isConnected) return toast.error("Please connect your wallet.");
-    setLoading(true);
-    const toastId = toast.loading("Preparing Base USDC...");
-    try {
-      if (chainId !== base.id) {
-        toast.loading("Switching to Base...", { id: toastId });
-        await switchChainAsync({ chainId: base.id });
-      }
-      const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_BASE;
-      if (!destination) throw new Error("Base destination wallet missing.");
-      const hash = await writeContractAsync({
-        chainId: base.id,
-        address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as `0x${string}`,
-        abi: USDC_ABI,
-        functionName: "transfer",
-        args: [destination as `0x${string}`, parseUnits(selectedPackage.price.toString(), 6)],
-      });
-      toast.loading("Syncing with registry...", { id: toastId });
-      const res = await fetch("/api/pin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ startupId, chain: "base", txHash: hash, packageValue: selectedPackage.value }),
-      });
-      if (!res.ok) throw new Error("Database sync failed.");
-      toast.success("🚀 Base boost active!", { id: toastId });
-      onSuccess?.(await res.json());
-      onClose();
-    } catch (err: any) {
-      const msg = err.message?.includes("insufficient funds")
-        ? "Insufficient USDC on Base."
-        : (err.shortMessage || "Base payment failed.");
-      toast.error(msg, { id: toastId });
-    } finally { setLoading(false); }
+    await purchaseBoost({
+      startupId,
+      packageValue: selectedPackage.value,
+      price:        selectedPackage.price,
+      onSuccess:    (data) => { onSuccess?.(data); onClose(); },
+    });
   };
 
+  
   const handleSolanaPay = async () => {
-    const provider = (window as any)?.solana;
-    if (!provider?.isPhantom) return toast.error("Phantom wallet not detected.");
+    const provider    = (window as any)?.solana;
     const destination = process.env.NEXT_PUBLIC_PAYMENT_WALLET_SOLANA;
     const solanaRpc   = process.env.NEXT_PUBLIC_ALCHEMY_RPC_SOLANA || "https://api.mainnet-beta.solana.com";
-    if (!destination) return toast.error("Solana config missing.");
-    setLoading(true);
+    if (!provider?.isPhantom) return toast.error("Phantom wallet not detected.");
+    if (!destination)         return toast.error("Solana config missing.");
+
     const toastId = toast.loading("Connecting to Solana...");
     try {
       const resp       = await provider.connect();
       const connection = new Connection(solanaRpc, "confirmed");
       const priceRes   = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
       const priceData  = await priceRes.json();
-      const solAmount  = selectedPackage.price / priceData.solana.usd;
-      const lamports   = Math.floor(solAmount * LAMPORTS_PER_SOL);
+      const lamports   = Math.floor((selectedPackage.price / priceData.solana.usd) * LAMPORTS_PER_SOL);
       const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash("finalized");
       const transaction = new Transaction({
         recentBlockhash: blockhash,
@@ -121,24 +75,23 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
       toast.loading("Verifying on ledger...", { id: toastId });
       await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
       const res = await fetch("/api/pin", {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ startupId, chain: "solana", txHash: signature, packageValue: selectedPackage.value }),
+        body:    JSON.stringify({ startupId, chain: "solana", txHash: signature, packageValue: selectedPackage.value }),
       });
       if (!res.ok) throw new Error("Database sync failed.");
       toast.success("🔥 Solana boost active!", { id: toastId });
       onSuccess?.(await res.json());
       onClose();
-    } catch (err: any) {
+    } catch {
       toast.error("Payment failed. Check your SOL balance.", { id: toastId });
-    } finally { setLoading(false); }
+    }
   };
 
   if (!mounted) return null;
 
   return (
     <AnimatePresence>
-      
       <motion.div
         className="fixed inset-0 z-[100] flex items-center justify-center p-4"
         style={{ background: "rgba(10,10,15,0.92)", backdropFilter: "blur(16px)" }}
@@ -174,7 +127,8 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
                 </p>
               </div>
             </div>
-            <button onClick={onClose}
+            <button
+              onClick={onClose}
               className="p-2 rounded-full transition-colors"
               style={{ color: "rgba(255,255,255,0.3)" }}
               onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#fff")}
@@ -196,7 +150,7 @@ export function PaymentModal({ startupId, status, onClose, onSuccess }: PaymentM
                     <button
                       key={pkg.value}
                       onClick={() => { setSelectedPackage(pkg); setStep("chain"); }}
-                      className="p-4 rounded-2xl text-left transition-all group"
+                      className="p-4 rounded-2xl text-left transition-all"
                       style={{ border: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)" }}
                       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--accent)"; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.06)"; }}

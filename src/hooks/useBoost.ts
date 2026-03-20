@@ -1,0 +1,159 @@
+"use client";
+
+import { useState } from "react";
+import { useWriteContract, useAccount, useSwitchChain } from "wagmi";
+import { parseUnits } from "viem";
+import { base } from "wagmi/chains";
+import toast from "react-hot-toast";
+
+// ─── ABIs ─────────────────────────────────────────────────────────────────────
+
+const USDC_ABI = [
+  {
+    name: "approve",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "spender", type: "address" },
+      { name: "amount",  type: "uint256" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
+  },
+] as const;
+
+const ARCAPUSH_BOOST_ABI = [
+  {
+    name: "boost",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "startupId",    type: "string" },
+      { name: "packageValue", type: "string" },
+    ],
+    outputs: [],
+  },
+] as const;
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const USDC_BASE       = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as const;
+const BOOST_CONTRACT  = "0x4A3cbd8a1e21ef21C55e43BA4ff7BD2Bf84b8009" as `0x${string}`;
+
+// ─── Hook ─────────────────────────────────────────────────────────────────────
+
+export function useBoost() {
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const { isConnected, chainId } = useAccount();
+  const { switchChainAsync }     = useSwitchChain();
+  const { writeContractAsync }   = useWriteContract();
+
+  const purchaseBoost = async ({
+    startupId,
+    packageValue,
+    price,
+    onSuccess,
+  }: {
+    startupId:    string;
+    packageValue: string;
+    price:        number;
+    onSuccess?:   (data: any) => void;
+  }) => {
+    if (!isConnected)  return toast.error("Connect your wallet.");
+    if (!startupId)    return toast.error("Select your product first.");
+
+    setIsProcessing(true);
+    const toastId = toast.loading("Preparing boost...");
+
+    try {
+      // ── Step 0: ensure Base chain ──────────────────────────────────────────
+      if (chainId !== base.id) {
+        toast.loading("Switching to Base...", { id: toastId });
+        await switchChainAsync({ chainId: base.id });
+      }
+
+      const amount = parseUnits(String(price), 6);
+
+      // ── Step 1: approve USDC ──────────────────────────────────────────────
+      toast.loading("Step 1/2 — Approve USDC...", { id: toastId });
+
+      const approveTx = await writeContractAsync({
+        chainId:      base.id,
+        address:      USDC_BASE,
+        abi:          USDC_ABI,
+        functionName: "approve",
+        args:         [BOOST_CONTRACT, amount],
+      });
+
+      toast.loading("Confirming approval...", { id: toastId });
+      await waitForTx(approveTx);
+
+      // ── Step 2: call boost() ──────────────────────────────────────────────
+      toast.loading("Step 2/2 — Activating boost...", { id: toastId });
+
+      const boostTx = await writeContractAsync({
+        chainId:      base.id,
+        address:      BOOST_CONTRACT,
+        abi:          ARCAPUSH_BOOST_ABI,
+        functionName: "boost",
+        args:         [startupId, packageValue],
+      });
+
+      toast.loading("Syncing with registry...", { id: toastId });
+
+      // ── Step 3: notify backend ────────────────────────────────────────────
+      const res = await fetch("/api/pin", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({
+          startupId,
+          chain:        "base",
+          txHash:       boostTx,
+          packageValue,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Registry sync failed.");
+
+      toast.success("🚀 Boost active!", { id: toastId });
+      onSuccess?.(await res.json());
+
+    } catch (err: any) {
+      const msg =
+        err?.message?.includes("User rejected")  ? "Transaction cancelled."       :
+        err?.message?.includes("insufficient")   ? "Insufficient USDC balance."   :
+        err?.shortMessage                        ?? "Boost failed. Try again.";
+      toast.error(msg, { id: toastId });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return { purchaseBoost, isProcessing };
+}
+
+// ─── Poll helper ──────────────────────────────────────────────────────────────
+
+async function waitForTx(hash: string, attempts = 15): Promise<void> {
+  const rpc = process.env.NEXT_PUBLIC_ALCHEMY_RPC_BASE || "https://mainnet.base.org";
+  for (let i = 0; i < attempts; i++) {
+    await new Promise((r) => setTimeout(r, 2000));
+    try {
+      const res  = await fetch(rpc, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({
+          jsonrpc: "2.0", id: 1,
+          method:  "eth_getTransactionReceipt",
+          params:  [hash],
+        }),
+      });
+      const data = await res.json();
+      if (data?.result?.status === "0x1") return;
+      if (data?.result?.status === "0x0") throw new Error("Approval tx reverted.");
+    } catch (e: any) {
+      if (e.message?.includes("reverted")) throw e;
+    }
+  }
+  throw new Error("Approval tx timed out.");
+}

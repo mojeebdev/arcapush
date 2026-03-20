@@ -3,22 +3,13 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
-import { useWriteContract, useAccount, useSwitchChain } from "wagmi";
-import { parseUnits } from "viem";
-import { base } from "wagmi/chains";
+import { useAccount } from "wagmi";
 import { AdminConfig } from "@/lib/adminConfig";
+import { useBoost } from "@/hooks/useBoost";
 import {
   Connection, PublicKey, Transaction,
   SystemProgram, LAMPORTS_PER_SOL, ComputeBudgetProgram,
 } from "@solana/web3.js";
-
-const USDC_ABI = [
-  {
-    name: "transfer", type: "function", stateMutability: "nonpayable",
-    inputs: [{ name: "recipient", type: "address" }, { name: "amount", type: "uint256" }],
-    outputs: [{ name: "", type: "bool" }],
-  },
-] as const;
 
 const BOOST_PERKS: Record<string, string[]> = {
   "30m": ["Permanent indexed listing", "Search engine indexed", "90 rotations"],
@@ -30,62 +21,44 @@ const BOOST_PERKS: Record<string, string[]> = {
 };
 
 export default function PricingPage() {
-  const [isProcessing, setIsProcessing]           = useState(false);
   const [selectedStartupId, setSelectedStartupId] = useState("");
   const [approvedStartups, setApprovedStartups]   = useState<any[]>([]);
   const [gridVisible, setGridVisible]             = useState(false);
 
-  const { isConnected, chainId } = useAccount();
-  const { switchChainAsync }     = useSwitchChain();
-  const { writeContractAsync }   = useWriteContract();
+  const { isConnected } = useAccount();
+  const { purchaseBoost, isProcessing } = useBoost();
 
   useEffect(() => {
     fetch("/api/startups?status=APPROVED")
       .then((r) => r.json())
       .then((d) => setApprovedStartups(d.startups || []));
-
     const t = setTimeout(() => setGridVisible(true), 300);
     return () => clearTimeout(t);
   }, []);
 
+  // ── Base: two-step approve → boost via contract ────────────────────────────
   const handleBasePayment = async (plan: typeof AdminConfig.PIN_PACKAGES[number]) => {
-    if (!selectedStartupId) return toast.error("Select your product first.");
-    if (!isConnected)       return toast.error("Connect your wallet.");
-    setIsProcessing(true);
-    const toastId = toast.loading("Processing Base USDC...");
-    try {
-      if (chainId !== base.id) await switchChainAsync({ chainId: base.id });
-      const hash = await writeContractAsync({
-        address:      AdminConfig.USDC_CONTRACT_BASE,
-        abi:          USDC_ABI,
-        functionName: "transfer",
-        args: [
-          AdminConfig.PAYMENT_WALLET_BASE as `0x${string}`,
-          parseUnits(String(plan.price), 6),
-        ],
-      });
-      await fetch("/api/pin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ startupId: selectedStartupId, chain: "base", txHash: hash, packageValue: plan.value }),
-      });
-      toast.success("🚀 Boost active!", { id: toastId });
-    } catch {
-      toast.error("Payment failed.", { id: toastId });
-    } finally { setIsProcessing(false); }
+    await purchaseBoost({
+      startupId:    selectedStartupId,
+      packageValue: plan.value,
+      price:        plan.price,
+    });
   };
 
+  // ── Solana: direct SOL transfer (unchanged) ────────────────────────────────
   const handleSolanaPayment = async (plan: typeof AdminConfig.PIN_PACKAGES[number]) => {
     if (!selectedStartupId || !(window as any).solana)
       return toast.error("Check selection / wallet.");
-    setIsProcessing(true);
     const toastId = toast.loading("Processing SOL...");
     try {
       const priceRes  = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
       const priceData = await priceRes.json();
       const lamports  = Math.floor((plan.price / priceData.solana.usd) * LAMPORTS_PER_SOL);
       const resp      = await (window as any).solana.connect();
-      const connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
+      const connection = new Connection(
+        process.env.NEXT_PUBLIC_ALCHEMY_RPC_SOLANA || "https://api.mainnet-beta.solana.com",
+        "confirmed"
+      );
       const { blockhash } = await connection.getLatestBlockhash();
       const transaction = new Transaction({
         recentBlockhash: blockhash,
@@ -107,7 +80,7 @@ export default function PricingPage() {
       toast.success("🔥 SOL boost active!", { id: toastId });
     } catch {
       toast.error("Payment failed.", { id: toastId });
-    } finally { setIsProcessing(false); }
+    }
   };
 
   return (
@@ -115,7 +88,6 @@ export default function PricingPage() {
       className="relative min-h-screen pt-32 pb-24 px-6 overflow-hidden"
       style={{ background: "var(--bg)", color: "var(--text-primary)" }}
     >
-      {/* ── Hero grid ───────────────────────────────────────────────────────── */}
       <div
         className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000"
         style={{
@@ -125,16 +97,12 @@ export default function PricingPage() {
           backgroundSize: "64px 64px",
         }}
       />
-
-      {/* ── Glow blobs ──────────────────────────────────────────────────────── */}
       <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full pointer-events-none z-0"
         style={{ background: "rgba(91,43,255,0.06)", filter: "blur(100px)", animation: "drift 12s ease-in-out infinite alternate" }}
       />
       <div className="absolute bottom-0 left-[20%] w-[400px] h-[400px] rounded-full pointer-events-none z-0"
         style={{ background: "rgba(91,43,255,0.04)", filter: "blur(80px)", animation: "drift 12s ease-in-out infinite alternate", animationDelay: "-4s" }}
       />
-
-      {/* ── Top + bottom fades ──────────────────────────────────────────────── */}
       <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-0"
         style={{ background: "linear-gradient(to bottom, var(--bg), transparent)" }} />
       <div className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none z-0"
@@ -155,8 +123,6 @@ export default function PricingPage() {
       />
 
       <div className="max-w-6xl mx-auto relative z-10">
-
-        {/* ── Page header ─────────────────────────────────────────────────── */}
         <div className="text-center mb-20">
           <motion.div
             initial={{ opacity: 0, y: -16 }}
@@ -186,11 +152,10 @@ export default function PricingPage() {
             className="text-lg max-w-xl mx-auto"
             style={{ color: "var(--text-secondary)", fontFamily: "var(--font-syne)" }}
           >
-           Boost your product to the hero slot for a limited time — verified on-chain instantly. Pay with USDC on Base or SOL on Solana.
+            Boost your product to the hero slot for a limited time — verified on-chain instantly. Pay with USDC on Base or SOL on Solana.
           </motion.p>
         </div>
 
-        {/* ── Product selector ────────────────────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -221,7 +186,6 @@ export default function PricingPage() {
           )}
         </motion.div>
 
-        {/* ── Boost packages grid ─────────────────────────────────────────── */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {AdminConfig.PIN_PACKAGES.map((plan, i) => (
             <motion.div
@@ -246,12 +210,10 @@ export default function PricingPage() {
                   Most Popular
                 </span>
               )}
-
               <h3 className="ap-display mb-1" style={{ fontSize: "1.25rem", color: "var(--text-primary)" }}>
                 {plan.label}
               </h3>
               <p className="ap-label mb-5">{plan.description}</p>
-
               <div className="flex items-baseline gap-2 mb-1">
                 <span
                   className="ap-display"
@@ -273,7 +235,6 @@ export default function PricingPage() {
                   : "30 days"
                 } pinned
               </p>
-
               <ul className="space-y-2.5 mb-8 flex-grow">
                 {(BOOST_PERKS[plan.value] || []).map((perk, j) => (
                   <li key={j} className="flex items-start gap-2.5 text-xs"
@@ -284,17 +245,16 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
-
               <div className="space-y-2 mt-auto">
                 <button
                   onClick={() => handleBasePayment(plan)}
                   disabled={isProcessing || !selectedStartupId}
                   className="w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                   style={{
-                    fontFamily:  "var(--font-mono)",
-                    background:  "rgba(37,99,235,0.08)",
-                    border:      "1px solid rgba(37,99,235,0.2)",
-                    color:       "#2563eb",
+                    fontFamily: "var(--font-mono)",
+                    background: "rgba(37,99,235,0.08)",
+                    border:     "1px solid rgba(37,99,235,0.2)",
+                    color:      "#2563eb",
                   }}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#2563eb"; (e.currentTarget as HTMLElement).style.color = "#fff"; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(37,99,235,0.08)"; (e.currentTarget as HTMLElement).style.color = "#2563eb"; }}
@@ -324,7 +284,6 @@ export default function PricingPage() {
         <p className="ap-label text-center mt-12">
           On-chain verified · Free permanent listing · Boost duration varies by package
         </p>
-
       </div>
     </main>
   );
