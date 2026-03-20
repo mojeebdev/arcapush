@@ -7,22 +7,24 @@ import Image from "next/image";
 import { HiOutlineMagnifyingGlass, HiOutlineXMark } from "react-icons/hi2";
 
 interface Startup {
-  id: string;
-  slug?: string | null;
-  name: string;
-  tagline: string;
-  category: string;
-  tier: string;
-  logoUrl?: string | null;
+  id:           string;
+  slug?:        string | null;
+  categorySlug: string;
+  name:         string;
+  tagline:      string;
+  category:     string;
+  tier:         string;
+  logoUrl?:     string | null;
+  scrapedAt?:   string | Date | null;
 }
 
 interface Props {
   initialStartups: Startup[];
-  categories: string[];
+  categories:      string[];
 }
 
 export function RegistrySearchHandler({ initialStartups, categories }: Props) {
-  const searchParams        = useSearchParams();
+  const searchParams                        = useSearchParams();
   const [searchTerm, setSearchTerm]         = useState("");
   const [activeCategory, setActiveCategory] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -34,11 +36,12 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
 
   const filteredStartups = useMemo(() =>
     initialStartups.filter((item) => {
-      const matchesSearch = !searchTerm || (
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())     ||
-        item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.tagline.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      const matchesSearch =
+        !searchTerm || (
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())     ||
+          item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.tagline.toLowerCase().includes(searchTerm.toLowerCase())
+        );
       const matchesCategory =
         !activeCategory ||
         item.category.toLowerCase() === activeCategory.toLowerCase();
@@ -59,10 +62,8 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
   return (
     <div className="space-y-8">
 
-      {/* ── Search + category filters ──────────────────────────────────────── */}
+      {/* Search + category filters */}
       <div className="flex flex-col gap-4">
-
-        {/* Search input */}
         <div className="relative max-w-md">
           <HiOutlineMagnifyingGlass
             className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
@@ -76,10 +77,10 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
             placeholder="Search products, categories..."
             className="w-full py-3 pl-11 pr-10 rounded-xl text-sm outline-none transition-all"
             style={{
-              background:  "#fff",
-              border:      "1px solid var(--border)",
-              color:       "var(--text-primary)",
-              fontFamily:  "var(--font-syne)",
+              background: "#fff",
+              border:     "1px solid var(--border)",
+              color:      "var(--text-primary)",
+              fontFamily: "var(--font-syne)",
             }}
             onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent-border)")}
             onBlur={(e)  => (e.currentTarget.style.borderColor = "var(--border)")}
@@ -97,7 +98,7 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
           )}
         </div>
 
-        {/* Category filter pills */}
+        {/* Category pills */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveCategory("")}
@@ -112,7 +113,6 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
           >
             All
           </button>
-
           {categories.map((cat) => {
             const isActive = activeCategory === cat;
             return (
@@ -134,7 +134,6 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
           })}
         </div>
 
-        {/* Active filter label + clear */}
         {hasFilters && (
           <div className="flex items-center gap-4 ap-label">
             {searchTerm && (
@@ -149,10 +148,7 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
                 <span style={{ color: "var(--accent)" }}>{activeCategory}</span>
               </span>
             )}
-            <span
-              className="flex items-center gap-1"
-              style={{ color: "var(--text-tertiary)" }}
-            >
+            <span className="flex items-center gap-1" style={{ color: "var(--text-tertiary)" }}>
               —{" "}
               <span style={{ color: "var(--accent)" }}>{filteredStartups.length}</span>
               {" "}result{filteredStartups.length !== 1 ? "s" : ""}
@@ -170,12 +166,12 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
         )}
       </div>
 
-      {/* ── Products grid ─────────────────────────────────────────────────── */}
+      {/* Products grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredStartups.length > 0 ? (
           filteredStartups.map((startup) => (
             <Link
-              href={`/startup/${startup.slug ?? startup.id}`}
+              href={`/startup/${startup.categorySlug}/${startup.slug ?? startup.id}`}
               key={startup.id}
               className="group block p-7 rounded-2xl transition-all"
               style={{
@@ -230,10 +226,11 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
                   </span>
                 </div>
 
-                {/* Live dot */}
+                {/* indexed dot — green if scraped, grey pulse if not */}
                 <div
-                  className="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0 mt-1"
-                  style={{ background: "#16a34a" }}
+                  className={`w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1 ${startup.scrapedAt ? "" : "animate-pulse"}`}
+                  style={{ background: startup.scrapedAt ? "#4ade80" : "#16a34a" }}
+                  title={startup.scrapedAt ? "Indexed" : "Pending index"}
                 />
               </div>
 
@@ -251,19 +248,13 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
                 {startup.tagline}
               </p>
 
-              {/* Featured badge */}
               {startup.tier === "PINNED" && (
                 <div className="mt-4 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
                   <span
                     className="text-xs font-black uppercase tracking-widest"
-                    style={{
-                      fontFamily:    "var(--font-mono)",
-                      fontSize:      "0.55rem",
-                      color:         "var(--accent)",
-                      letterSpacing: "0.08em",
-                    }}
+                    style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "var(--accent)" }}
                   >
-                    ⭐ Boosted
+                    Boosted
                   </span>
                 </div>
               )}
@@ -285,7 +276,6 @@ export function RegistrySearchHandler({ initialStartups, categories }: Props) {
           </div>
         )}
       </div>
-
     </div>
   );
 }

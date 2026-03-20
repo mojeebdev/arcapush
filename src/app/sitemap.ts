@@ -6,43 +6,65 @@ import { AdminConfig } from "@/lib/adminConfig";
 
 const base = AdminConfig.SITE_URL;
 
+function categoryToSlug(category: string): string {
+  return category.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  
+
+ 
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: base, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
-    { url: `${base}/registry`, lastModified: new Date(), changeFrequency: "hourly", priority: 0.9 },
-    { url: `${base}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${base}/pricing`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/docs`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/blog/how-arcapush-works`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/blog/What-is-vibe-coding`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: base,                                        lastModified: new Date(), changeFrequency: "daily",   priority: 1.0 },
+    { url: `${base}/registry`,                          lastModified: new Date(), changeFrequency: "hourly",  priority: 0.9 },
+    { url: `${base}/about`,                             lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${base}/pricing`,                           lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/docs`,                              lastModified: new Date(), changeFrequency: "weekly",  priority: 0.9 },
+    { url: `${base}/submit`,                            lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/blog/how-arcapush-works`,           lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/blog/What-is-vibe-coding`,          lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
   ];
 
-  
+ 
   const externalProducts: MetadataRoute.Sitemap = [
     { url: "https://promptrank.arcapush.com", lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
     { url: "https://arcaprompt.arcapush.com", lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
   ];
 
-  
-  let startupRoutes: MetadataRoute.Sitemap = [];
+
+  let startupRoutes:  MetadataRoute.Sitemap = [];
+  let categoryRoutes: MetadataRoute.Sitemap = [];
+
   try {
     const startups = await prisma.startup.findMany({
-      where: { approved: true },
-      select: { id: true, slug: true, updatedAt: true },
+      where:  { approved: true },
+      select: { id: true, slug: true, category: true, updatedAt: true },
     });
 
+
     startupRoutes = startups.map((s) => ({
-      url: `${base}/startup/${s.slug ?? s.id}`,
-      lastModified: s.updatedAt ?? new Date(),
+      url:             `${base}/startup/${categoryToSlug(s.category)}/${s.slug ?? s.id}`,
+      lastModified:    s.updatedAt ?? new Date(),
       changeFrequency: "daily",
-      priority: 0.8,
+      priority:        0.8,
     }));
+
+   
+    const uniqueCategories = Array.from(
+      new Set(startups.map((s) => s.category))
+    );
+
+    categoryRoutes = uniqueCategories.map((cat) => ({
+      url:             `${base}/startup/${categoryToSlug(cat)}`,
+      lastModified:    new Date(),
+      changeFrequency: "daily",
+      priority:        0.75,
+    }));
+
   } catch (error) {
-    console.error("Sitemap Startup fetch failed:", error);
+    console.error("Sitemap startup fetch failed:", error);
   }
 
-  
+
   const blogDirectory = path.join(process.cwd(), "content/blog");
   let blogRoutes: MetadataRoute.Sitemap = [];
 
@@ -52,19 +74,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       blogRoutes = files
         .filter((file) => file.endsWith(".md") || file.endsWith(".mdx"))
         .map((file) => {
-          const slug = file.replace(/\.mdx?$/, "");
+          const slug  = file.replace(/\.mdx?$/, "");
           const stats = fs.statSync(path.join(blogDirectory, file));
           return {
-            url: `${base}/blog/${slug}`,
-            lastModified: stats.mtime,
-            changeFrequency: "hourly",
-            priority: 0.9,
+            url:             `${base}/blog/${slug}`,
+            lastModified:    stats.mtime,
+            changeFrequency: "hourly" as const,
+            priority:        0.9,
           };
         });
     } catch (error) {
-      console.error("Sitemap Blog file reading failed:", error);
+      console.error("Sitemap blog file reading failed:", error);
     }
   }
 
-  return [...staticRoutes, ...externalProducts, ...startupRoutes, ...blogRoutes];
+  return [
+    ...staticRoutes,
+    ...externalProducts,
+    ...categoryRoutes,   
+    ...startupRoutes,    
+    ...blogRoutes,
+  ];
 }

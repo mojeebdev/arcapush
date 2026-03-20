@@ -49,17 +49,23 @@ function RegistryJsonLd({ count }: { count: number }) {
 }
 
 export default async function RegistryPage() {
-  const startups = await prisma.startup.findMany({
-    where: { approved: true },
+  const raw = await prisma.startup.findMany({
+    where:   { approved: true },
     orderBy: [{ tier: "desc" }, { pinnedAt: "desc" }, { createdAt: "desc" }],
     select: {
       id: true, slug: true, name: true, tagline: true,
-      category: true, tier: true, logoUrl: true,
+      category: true, tier: true, logoUrl: true, scrapedAt: true,
     },
   });
 
+  // attach categorySlug so the client never has to derive it
+  const startups = raw.map((s) => ({
+    ...s,
+    categorySlug: s.category.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+  }));
+
   const categories = Array.from(
-    new Set(startups.map((s) => s.category).filter(Boolean))
+    new Set(raw.map((s) => s.category).filter(Boolean))
   ).sort() as string[];
 
   return (
@@ -98,13 +104,13 @@ export default async function RegistryPage() {
             <div
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full self-start md:self-auto"
               style={{
-                background: "color-mix(in srgb, var(--bg-2) 80%, transparent)",
-                border: "1px solid var(--border)",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.6rem",
+                background:    "color-mix(in srgb, var(--bg-2) 80%, transparent)",
+                border:        "1px solid var(--border)",
+                fontFamily:    "var(--font-mono)",
+                fontSize:      "0.6rem",
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
-                color: "var(--text-tertiary)",
+                color:         "var(--text-tertiary)",
               }}
             >
               <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#16a34a" }} />
