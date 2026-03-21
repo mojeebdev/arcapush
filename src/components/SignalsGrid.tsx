@@ -16,40 +16,27 @@ type SignalStartup = {
   scrapedAt?:    string | Date | null;
 };
 
-const CAT_COLORS: Record<string, string> = {
-  "Productivity":    "#e6ff00",
-  "Developer Tools": "#60a5fa",
-  "Fintech":         "#a78bfa",
-  "Gaming / GameFi": "#fb923c",
-  "Lifestyle":       "#f472b6",
-  "HealthTech":      "#34d399",
-  "COMMUNITY":       "#94a3b8",
-  "Infrastructure":  "#38bdf8",
-  "AI / ML":         "#c084fc",
-  "Web3":            "#fb923c",
-  "Other":           "#888780",
+const CAT_CONFIG: Record<string, {
+  color:       string;
+  bg:          string;
+  badgeBg:     string;
+  badgeColor:  string;
+}> = {
+  "Productivity":    { color: "#8a9900", bg: "#f0f5d6", badgeBg: "#eaf2b0", badgeColor: "#5a6600" },
+  "Developer Tools": { color: "#2563eb", bg: "#dbeafe", badgeBg: "#dbeafe", badgeColor: "#1e3a8a" },
+  "Fintech":         { color: "#7c3aed", bg: "#ede9fe", badgeBg: "#ede9fe", badgeColor: "#4c1d95" },
+  "Gaming / GameFi": { color: "#ea580c", bg: "#ffedd5", badgeBg: "#ffedd5", badgeColor: "#7c2d12" },
+  "Lifestyle":       { color: "#db2777", bg: "#fce7f3", badgeBg: "#fce7f3", badgeColor: "#831843" },
+  "HealthTech":      { color: "#059669", bg: "#d1fae5", badgeBg: "#d1fae5", badgeColor: "#064e3b" },
+  "COMMUNITY":       { color: "#6b7280", bg: "#f3f4f6", badgeBg: "#f3f4f6", badgeColor: "#374151" },
+  "Infrastructure":  { color: "#0284c7", bg: "#e0f2fe", badgeBg: "#e0f2fe", badgeColor: "#0c4a6e" },
+  "AI / ML":         { color: "#9333ea", bg: "#f3e8ff", badgeBg: "#f3e8ff", badgeColor: "#581c87" },
+  "Web3":            { color: "#d97706", bg: "#fef3c7", badgeBg: "#fef3c7", badgeColor: "#78350f" },
+  "Other":           { color: "#6b7280", bg: "#f3f4f6", badgeBg: "#f3f4f6", badgeColor: "#374151" },
 };
 
-const CAT_BANNER_BG: Record<string, [string, string]> = {
-  "Productivity":    ["#0e1205", "#1a1f0a"],
-  "Developer Tools": ["#05080f", "#0a0f1a"],
-  "Fintech":         ["#0a0514", "#12081e"],
-  "Gaming / GameFi": ["#0f0803", "#1e0f08"],
-  "Lifestyle":       ["#0f0409", "#1e0812"],
-  "HealthTech":      ["#040f09", "#081e12"],
-  "COMMUNITY":       ["#0a0a0a", "#121212"],
-  "Infrastructure":  ["#040a0f", "#081218"],
-  "AI / ML":         ["#080414", "#110820"],
-  "Web3":            ["#0a0805", "#1a100a"],
-};
-
-function getCatColor(category: string): string {
-  return CAT_COLORS[category] ?? "#e6ff00";
-}
-
-function getBannerBg(category: string): string {
-  const pair = CAT_BANNER_BG[category] ?? ["#080807", "#111110"];
-  return `linear-gradient(135deg, ${pair[0]} 0%, ${pair[1]} 100%)`;
+function getCatConfig(category: string) {
+  return CAT_CONFIG[category] ?? CAT_CONFIG["Other"];
 }
 
 export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
@@ -60,14 +47,13 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
         style={{
           display:             "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
-          gap:                 "16px",
+          gap:                 "12px",
         }}
       >
         {startups.map((startup) => {
           const isIndexed   = !!startup.scrapedAt;
           const displayLogo = startup.logoUrl || startup.faviconUrl || null;
-          const catColor    = getCatColor(startup.category);
-          const bannerBg    = getBannerBg(startup.category);
+          const cat         = getCatConfig(startup.category);
           const initial     = startup.name[0]?.toUpperCase() ?? "?";
 
           return (
@@ -77,84 +63,73 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
               onClick={() => incrementStartupView(startup.id)}
               className="signal-card"
               style={{
-                background:     "#13130f",
-                border:         "1px solid rgba(255,255,255,0.06)",
-                borderRadius:   "24px",
+                background:     "#f7f6f2",
+                border:         "1px solid #e2e0d8",
+                borderRadius:   "18px",
                 overflow:       "hidden",
                 display:        "flex",
                 flexDirection:  "column",
                 cursor:         "pointer",
                 textDecoration: "none",
-                transition:     "border-color 0.2s, transform 0.2s",
+                transition:     "transform 0.18s, border-color 0.18s",
                 position:       "relative",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = `${catColor}55`;
-                e.currentTarget.style.transform   = "translateY(-4px)";
+                e.currentTarget.style.borderColor = `${cat.color}55`;
+                e.currentTarget.style.transform   = "translateY(-3px)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
+                e.currentTarget.style.borderColor = "#e2e0d8";
                 e.currentTarget.style.transform   = "translateY(0)";
               }}
             >
-              {/* Banner — always dark, hardcoded bg ignores theme */}
+              {/* Banner */}
               <div
                 style={{
-                  position:        "relative",
-                  height:          "90px",
-                  overflow:        "hidden",
-                  background:      bannerBg,
-                  flexShrink:      0,
-                  backgroundColor: "#0a0a08",
+                  position:   "relative",
+                  height:     "88px",
+                  overflow:   "hidden",
+                  background: cat.bg,
+                  flexShrink: 0,
                 }}
               >
-                {/* Ghost name watermark */}
+                {/* Ghost watermark — tinted to banner color */}
                 <div
                   style={{
                     position:      "absolute",
-                    bottom:        "8px",
-                    left:          "14px",
+                    bottom:        "-4px",
+                    left:          "12px",
                     fontFamily:    "var(--font-syne)",
-                    fontSize:      "24px",
+                    fontSize:      "38px",
                     fontWeight:    800,
-                    color:         catColor,
-                    opacity:       0.08,
-                    letterSpacing: "-0.04em",
+                    letterSpacing: "-0.05em",
                     textTransform: "uppercase",
                     lineHeight:    1,
-                    userSelect:    "none",
+                    color:         cat.color,
+                    opacity:       0.12,
                     pointerEvents: "none",
+                    userSelect:    "none",
+                    whiteSpace:    "nowrap",
                   }}
                 >
                   {startup.name}
                 </div>
 
-                {/* Dark overlay */}
-                <div
-                  style={{
-                    position:   "absolute",
-                    inset:      0,
-                    background: "linear-gradient(to top, rgba(10,10,8,0.95) 0%, rgba(10,10,8,0.3) 60%, rgba(10,10,8,0.1) 100%)",
-                  }}
-                />
-
                 {/* Category badge */}
                 <span
                   style={{
-                    position:       "absolute",
-                    top:            "10px",
-                    left:           "10px",
-                    fontFamily:     "var(--font-mono)",
-                    fontSize:       "9px",
-                    fontWeight:     500,
-                    letterSpacing:  "0.12em",
-                    textTransform:  "uppercase",
-                    color:          catColor,
-                    background:     "rgba(8,8,6,0.9)",
-                    border:         `1px solid ${catColor}33`,
-                    padding:        "4px 8px",
-                    borderRadius:   "6px",
-                    backdropFilter: "blur(8px)",
+                    position:      "absolute",
+                    top:           "10px",
+                    left:          "10px",
+                    fontFamily:    "var(--font-mono)",
+                    fontSize:      "8.5px",
+                    fontWeight:    500,
+                    letterSpacing: "0.13em",
+                    textTransform: "uppercase",
+                    padding:       "3px 8px",
+                    borderRadius:  "5px",
+                    background:    cat.badgeBg,
+                    color:         cat.badgeColor,
                   }}
                 >
                   {startup.category}
@@ -165,13 +140,12 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                   <div
                     style={{
                       position:     "absolute",
-                      top:          "12px",
+                      top:          "13px",
                       right:        "12px",
-                      width:        "6px",
-                      height:       "6px",
+                      width:        "5px",
+                      height:       "5px",
                       borderRadius: "50%",
-                      background:   "#4ade80",
-                      boxShadow:    "0 0 0 3px rgba(74,222,128,0.15)",
+                      background:   "#22c55e",
                     }}
                   />
                 )}
@@ -180,45 +154,43 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
               {/* Content */}
               <div
                 style={{
-                  padding:       "14px 16px 16px",
+                  padding:       "12px 14px 14px",
                   flex:          1,
                   display:       "flex",
                   flexDirection: "column",
-                  gap:           "10px",
-                  background:    "#13130f",
+                  gap:           "8px",
                 }}
               >
-                {/* Header: logo + name */}
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                {/* Logo + name */}
+                <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
                   {displayLogo ? (
                     <img
                       src={displayLogo}
                       alt={startup.name}
                       style={{
-                        width:        "34px",
-                        height:       "34px",
-                        borderRadius: "10px",
+                        width:        "28px",
+                        height:       "28px",
+                        borderRadius: "7px",
                         objectFit:    "cover",
-                        border:       "1px solid rgba(255,255,255,0.08)",
                         flexShrink:   0,
-                        background:   "#1a1a16",
+                        border:       "1px solid rgba(0,0,0,0.07)",
                       }}
                       onError={(e) => (e.currentTarget.style.display = "none")}
                     />
                   ) : (
                     <div
                       style={{
-                        width:          "34px",
-                        height:         "34px",
-                        borderRadius:   "10px",
-                        background:     catColor,
+                        width:          "28px",
+                        height:         "28px",
+                        borderRadius:   "7px",
+                        background:     cat.color,
                         display:        "flex",
                         alignItems:     "center",
                         justifyContent: "center",
                         fontFamily:     "var(--font-syne)",
-                        fontSize:       "13px",
+                        fontSize:       "11px",
                         fontWeight:     800,
-                        color:          "#0e0e0c",
+                        color:          "#fff",
                         flexShrink:     0,
                       }}
                     >
@@ -226,27 +198,26 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                     </div>
                   )}
 
-                  <p
+                  <span
                     style={{
                       fontFamily:    "var(--font-syne)",
-                      fontSize:      "13px",
+                      fontSize:      "12.5px",
                       fontWeight:    800,
-                      color:         "#f0efe8",
-                      letterSpacing: "-0.02em",
+                      letterSpacing: "-0.025em",
                       textTransform: "uppercase",
-                      lineHeight:    1.2,
-                      margin:        0,
+                      color:         "#1c1b18",
+                      lineHeight:    1.15,
                     }}
                   >
                     {startup.name}
-                  </p>
+                  </span>
                 </div>
 
                 {/* Tagline */}
                 <p
                   style={{
                     fontFamily:      "var(--font-syne)",
-                    fontSize:        "11px",
+                    fontSize:        "10px",
                     fontWeight:      700,
                     color:           "#888780",
                     lineHeight:      1.55,
@@ -267,16 +238,16 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                     display:        "flex",
                     alignItems:     "center",
                     justifyContent: "space-between",
-                    borderTop:      "1px solid rgba(255,255,255,0.06)",
-                    paddingTop:     "10px",
-                    marginTop:      "auto",
+                    borderTop:      "1px solid #e2e0d8",
+                    paddingTop:     "8px",
+                    marginTop:      "4px",
                   }}
                 >
                   <span
                     style={{
                       fontFamily:    "var(--font-mono)",
-                      fontSize:      "9px",
-                      color:         "#4a4945",
+                      fontSize:      "8px",
+                      color:         "#c0bdb5",
                       letterSpacing: "0.08em",
                     }}
                   >
@@ -286,11 +257,12 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                     className="view-arrow"
                     style={{
                       fontFamily:    "var(--font-mono)",
-                      fontSize:      "9px",
-                      color:         catColor,
+                      fontSize:      "8px",
+                      color:         cat.color,
                       letterSpacing: "0.05em",
                       opacity:       0,
-                      transition:    "opacity 0.2s",
+                      transition:    "opacity 0.18s, transform 0.18s",
+                      transform:     "translateX(-4px)",
                     }}
                   >
                     VIEW →
@@ -304,8 +276,8 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                 style={{
                   height:     "2px",
                   width:      "0%",
-                  background: catColor,
-                  transition: "width 0.4s ease",
+                  background: cat.color,
+                  transition: "width 0.35s ease",
                   flexShrink: 0,
                 }}
               />
@@ -315,8 +287,13 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
       </div>
 
       <style>{`
-        .signal-card:hover .view-arrow { opacity: 1 !important; }
-        .signal-card:hover .accent-line { width: 100% !important; }
+        .signal-card:hover .view-arrow {
+          opacity: 1 !important;
+          transform: translateX(0) !important;
+        }
+        .signal-card:hover .accent-line {
+          width: 100% !important;
+        }
 
         @media (max-width: 1024px) {
           .signals-grid { grid-template-columns: repeat(2, 1fr) !important; }
