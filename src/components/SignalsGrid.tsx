@@ -31,16 +31,16 @@ const CAT_COLORS: Record<string, string> = {
 };
 
 const CAT_BANNER_BG: Record<string, [string, string]> = {
-  "Productivity":    ["#1a1f0a", "#2a3010"],
-  "Developer Tools": ["#0a0f1a", "#0f1a2a"],
-  "Fintech":         ["#12081e", "#1a0f2e"],
-  "Gaming / GameFi": ["#1e0f08", "#2e1a0a"],
-  "Lifestyle":       ["#1e0812", "#2e0f1e"],
-  "HealthTech":      ["#081e12", "#0f2e1a"],
-  "COMMUNITY":       ["#121212", "#1e1e1e"],
-  "Infrastructure":  ["#081218", "#0f1e2a"],
-  "AI / ML":         ["#110820", "#1c1030"],
-  "Web3":            ["#1a100a", "#2a1a0e"],
+  "Productivity":    ["#0e1205", "#1a1f0a"],
+  "Developer Tools": ["#05080f", "#0a0f1a"],
+  "Fintech":         ["#0a0514", "#12081e"],
+  "Gaming / GameFi": ["#0f0803", "#1e0f08"],
+  "Lifestyle":       ["#0f0409", "#1e0812"],
+  "HealthTech":      ["#040f09", "#081e12"],
+  "COMMUNITY":       ["#0a0a0a", "#121212"],
+  "Infrastructure":  ["#040a0f", "#081218"],
+  "AI / ML":         ["#080414", "#110820"],
+  "Web3":            ["#0a0805", "#1a100a"],
 };
 
 function getCatColor(category: string): string {
@@ -48,7 +48,7 @@ function getCatColor(category: string): string {
 }
 
 function getBannerBg(category: string): string {
-  const pair = CAT_BANNER_BG[category] ?? ["#111110", "#191918"];
+  const pair = CAT_BANNER_BG[category] ?? ["#080807", "#111110"];
   return `linear-gradient(135deg, ${pair[0]} 0%, ${pair[1]} 100%)`;
 }
 
@@ -97,27 +97,28 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                 e.currentTarget.style.transform   = "translateY(0)";
               }}
             >
-              {/* Banner */}
+              {/* Banner — always dark, hardcoded bg ignores theme */}
               <div
                 style={{
-                  position:   "relative",
-                  height:     "110px",
-                  overflow:   "hidden",
-                  background: bannerBg,
-                  flexShrink: 0,
+                  position:        "relative",
+                  height:          "90px",
+                  overflow:        "hidden",
+                  background:      bannerBg,
+                  flexShrink:      0,
+                  backgroundColor: "#0a0a08", // fallback dark
                 }}
               >
                 {/* Ghost name watermark */}
                 <div
                   style={{
                     position:      "absolute",
-                    bottom:        "10px",
-                    left:          "16px",
+                    bottom:        "8px",
+                    left:          "14px",
                     fontFamily:    "var(--font-syne)",
-                    fontSize:      "26px",
+                    fontSize:      "24px",
                     fontWeight:    800,
                     color:         catColor,
-                    opacity:       0.1,
+                    opacity:       0.15,
                     letterSpacing: "-0.04em",
                     textTransform: "uppercase",
                     lineHeight:    1,
@@ -128,12 +129,12 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                   {startup.name}
                 </div>
 
-                {/* Overlay gradient */}
+                {/* Dark overlay — forces banner to stay dark over any bg */}
                 <div
                   style={{
                     position:   "absolute",
                     inset:      0,
-                    background: "linear-gradient(to top, var(--bg-2) 0%, transparent 60%)",
+                    background: "linear-gradient(to top, rgba(10,10,8,0.95) 0%, rgba(10,10,8,0.3) 60%, rgba(10,10,8,0.1) 100%)",
                   }}
                 />
 
@@ -149,8 +150,8 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                     letterSpacing:  "0.12em",
                     textTransform:  "uppercase",
                     color:          catColor,
-                    background:     "rgba(14,14,12,0.85)",
-                    border:         `1px solid ${catColor}22`,
+                    background:     "rgba(8,8,6,0.9)",
+                    border:         `1px solid ${catColor}33`,
                     padding:        "4px 8px",
                     borderRadius:   "6px",
                     backdropFilter: "blur(8px)",
