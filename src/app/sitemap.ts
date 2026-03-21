@@ -21,7 +21,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/docs`,                              lastModified: new Date(), changeFrequency: "weekly",  priority: 0.9 },
     { url: `${base}/submit`,                            lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/blog/how-arcapush-works`,           lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/blog/What-is-vibe-coding`,          lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
   ];
 
  
