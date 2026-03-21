@@ -77,8 +77,8 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
               onClick={() => incrementStartupView(startup.id)}
               className="signal-card"
               style={{
-                background:     "var(--bg-2)",
-                border:         "1px solid var(--border)",
+                background:     "#13130f",
+                border:         "1px solid rgba(255,255,255,0.06)",
                 borderRadius:   "24px",
                 overflow:       "hidden",
                 display:        "flex",
@@ -93,7 +93,7 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                 e.currentTarget.style.transform   = "translateY(-4px)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "var(--border)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
                 e.currentTarget.style.transform   = "translateY(0)";
               }}
             >
@@ -105,7 +105,7 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                   overflow:        "hidden",
                   background:      bannerBg,
                   flexShrink:      0,
-                  backgroundColor: "#0a0a08", // fallback dark
+                  backgroundColor: "#0a0a08",
                 }}
               >
                 {/* Ghost name watermark */}
@@ -118,7 +118,7 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                     fontSize:      "24px",
                     fontWeight:    800,
                     color:         catColor,
-                    opacity:       0.15,
+                    opacity:       0.08,
                     letterSpacing: "-0.04em",
                     textTransform: "uppercase",
                     lineHeight:    1,
@@ -129,7 +129,7 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                   {startup.name}
                 </div>
 
-                {/* Dark overlay — forces banner to stay dark over any bg */}
+                {/* Dark overlay */}
                 <div
                   style={{
                     position:   "absolute",
@@ -185,6 +185,7 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                   display:       "flex",
                   flexDirection: "column",
                   gap:           "10px",
+                  background:    "#13130f",
                 }}
               >
                 {/* Header: logo + name */}
@@ -198,9 +199,9 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                         height:       "34px",
                         borderRadius: "10px",
                         objectFit:    "cover",
-                        border:       "1px solid var(--border)",
+                        border:       "1px solid rgba(255,255,255,0.08)",
                         flexShrink:   0,
-                        background:   "var(--bg)",
+                        background:   "#1a1a16",
                       }}
                       onError={(e) => (e.currentTarget.style.display = "none")}
                     />
@@ -230,7 +231,7 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                       fontFamily:    "var(--font-syne)",
                       fontSize:      "13px",
                       fontWeight:    800,
-                      color:         "var(--text-primary)",
+                      color:         "#f0efe8",
                       letterSpacing: "-0.02em",
                       textTransform: "uppercase",
                       lineHeight:    1.2,
@@ -247,7 +248,7 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                     fontFamily:      "var(--font-syne)",
                     fontSize:        "11px",
                     fontWeight:      700,
-                    color:           "var(--text-secondary)",
+                    color:           "#888780",
                     lineHeight:      1.55,
                     flex:            1,
                     margin:          0,
@@ -266,7 +267,7 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                     display:        "flex",
                     alignItems:     "center",
                     justifyContent: "space-between",
-                    borderTop:      "1px solid var(--border)",
+                    borderTop:      "1px solid rgba(255,255,255,0.06)",
                     paddingTop:     "10px",
                     marginTop:      "auto",
                   }}
@@ -275,7 +276,7 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                     style={{
                       fontFamily:    "var(--font-mono)",
                       fontSize:      "9px",
-                      color:         "var(--text-tertiary)",
+                      color:         "#4a4945",
                       letterSpacing: "0.08em",
                     }}
                   >
