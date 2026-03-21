@@ -1,4 +1,3 @@
-
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
@@ -8,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 interface Props {
-  params: { category: string; slug: string };
+  params: Promise<{ category: string; slug: string }>;
 }
 
 async function getStartup(category: string, slug: string) {
@@ -27,7 +26,8 @@ async function getStartup(category: string, slug: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const startup = await getStartup(params.category, params.slug);
+  const { category, slug } = await params;
+  const startup = await getStartup(category, slug);
   if (!startup) return { title: "Not found — Arcapush" };
 
   const base = process.env.NEXT_PUBLIC_APP_URL || "https://arcapush.com";
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 
   const ogImageUrl = `${base}/api/og/startup?${ogParams.toString()}`;
-  const pageUrl    = `${base}/startup/${params.category}/${params.slug}`;
+  const pageUrl    = `${base}/startup/${category}/${slug}`;
 
   return {
     title:       `${startup.name} — Arcapush`,
@@ -62,7 +62,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function StartupPage({ params }: Props) {
-  const startup = await getStartup(params.category, params.slug);
+  const { category, slug } = await params;
+  const startup = await getStartup(category, slug);
   if (!startup) notFound();
 
   prisma.startup

@@ -1,4 +1,3 @@
-
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { AdminConfig } from "@/lib/adminConfig";
@@ -9,15 +8,16 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 interface Props {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const data = await getStartupsByCategory(params.category);
+  const { category } = await params;
+  const data = await getStartupsByCategory(category);
   if (!data) return { title: "Not found — Arcapush" };
 
   const { realCategory, startups } = data;
-  const pageUrl = `${AdminConfig.SITE_URL}/startup/${params.category}`;
+  const pageUrl = `${AdminConfig.SITE_URL}/startup/${category}`;
   const title   = `${realCategory} Products · Arcapush`;
   const desc    = `${startups.length} vibe-coded ${realCategory} product${startups.length !== 1 ? "s" : ""} indexed on Arcapush — discovered by VCs.`;
 
@@ -38,7 +38,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CategoryPage({ params }: Props) {
-  const data = await getStartupsByCategory(params.category);
+  const { category } = await params;
+  const data = await getStartupsByCategory(category);
   if (!data) notFound();
 
   const { startups, realCategory } = data;
@@ -53,7 +54,7 @@ export default async function CategoryPage({ params }: Props) {
     "@type":       "CollectionPage",
     name:          `${realCategory} Products · Arcapush`,
     description:   `Vibe-coded ${realCategory} products indexed on Arcapush.`,
-    url:           `${AdminConfig.SITE_URL}/startup/${params.category}`,
+    url:           `${AdminConfig.SITE_URL}/startup/${category}`,
     numberOfItems: startups.length,
     publisher: {
       "@type": "Organization",
@@ -111,7 +112,7 @@ export default async function CategoryPage({ params }: Props) {
         </div>
         <CategoryGrid
           startups={enriched}
-          categorySlug={params.category}
+          categorySlug={category}
           realCategory={realCategory}
         />
       </div>
