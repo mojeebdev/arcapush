@@ -21,7 +21,7 @@ export async function GET(req: Request) {
       ],
     });
 
-    // attach categorySlug so frontend never has to derive it
+    
     const enriched = startups.map((s) => ({
       ...s,
       categorySlug: categoryToSlug(s.category),

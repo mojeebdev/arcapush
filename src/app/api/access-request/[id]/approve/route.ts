@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Resend } from 'resend';
-import { RequestStatus } from '@prisma/client'; 
+import { RequestStatus } from '@prisma/client';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+function categoryToSlug(category: string): string {
+  return category.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+}
 
 export async function POST(
   request: NextRequest,
@@ -21,11 +25,11 @@ export async function POST(
 
     const updatedRequest = await prisma.accessRequest.update({
       where: { id },
-      data: { 
-        status: status as RequestStatus, 
-        reviewedAt: new Date() 
+      data: {
+        status: status as RequestStatus,
+        reviewedAt: new Date(),
       },
-      include: { startup: true } 
+      include: { startup: true },
     });
 
     if (status === 'APPROVED') {
@@ -33,8 +37,11 @@ export async function POST(
 
       if (startup && updatedRequest.startupId && updatedRequest.startupId !== 'general_access') {
         
-       const pitchLink = startup.pitchDeckUrl || `https://arcapush.com/startup/${startup.slug ?? startup.id}`;
-        
+        const categorySlug = categoryToSlug(startup.category);
+        const pathSlug = startup.slug ?? startup.id;
+        const startupUrl = `https://arcapush.com/startup/${categorySlug}/${pathSlug}`;
+        const pitchLink = startup.pitchDeckUrl || startupUrl;
+
         await resend.emails.send({
           from: 'Guardian <system@arcapush.com>',
           to: updatedRequest.requesterEmail,
@@ -45,11 +52,14 @@ export async function POST(
               <p style="font-style: italic;">Hello ${updatedRequest.requesterName},</p>
               <p>The Guardian has verified your credentials for <strong>${updatedRequest.requesterFirm}</strong>.</p>
               <p>Access to the <strong>${startup.name}</strong> digital twin is now authorized.</p>
-              
+
               <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
                 <tr>
                   <td>
-                    <a href="${pitchLink}" target="_blank" style="background-color: #4E24CF; color: #ffffff; padding: 18px 35px; border-radius: 12px; text-decoration: none; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; display: inline-block;">
+                    <a href="${pitchLink}" target="_blank"
+                       style="background-color: #4E24CF; color: #ffffff; padding: 18px 35px; border-radius: 12px;
+                              text-decoration: none; font-weight: 900; text-transform: uppercase;
+                              letter-spacing: 0.1em; display: inline-block;">
                       View Pitch Deck
                     </a>
                   </td>
@@ -57,14 +67,15 @@ export async function POST(
               </table>
 
               <p style="font-size: 11px; color: #666; margin-top: 20px;">
-                Link not clickable? Copy this: <br/>
+                Link not clickable? Copy this:<br/>
                 <span style="color: #4E24CF;">${pitchLink}</span>
               </p>
               <hr style="border: 0; border-top: 1px solid #222; margin: 30px 0;" />
               <p style="font-size: 10px; color: #444; letter-spacing: 0.3em;">Arcapush | VENTURE CAPITAL</p>
             </div>
-          `
+          `,
         });
+
       } else {
         
         await resend.emails.send({
@@ -76,32 +87,38 @@ export async function POST(
               <h1 style="text-transform: uppercase; letter-spacing: 0.2em; color: #4E24CF; margin-bottom: 20px;">Terminal Authorized</h1>
               <p style="font-style: italic;">Hello ${updatedRequest.requesterName},</p>
               <p>Your institutional signal for <strong>${updatedRequest.requesterFirm}</strong> is now live.</p>
-              
+
               <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin: 30px 0;">
                 <tr>
                   <td>
-                    <a href="https://arcapush.com" target="_blank" style="background-color: #ffffff; color: #000000; padding: 18px 35px; border-radius: 12px; text-decoration: none; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; display: inline-block;">
+                    <a href="https://arcapush.com" target="_blank"
+                       style="background-color: #ffffff; color: #000000; padding: 18px 35px; border-radius: 12px;
+                              text-decoration: none; font-weight: 900; text-transform: uppercase;
+                              letter-spacing: 0.1em; display: inline-block;">
                       Enter Terminal
                     </a>
                   </td>
                 </tr>
               </table>
 
-              <p style="font-size: 10px; color: #666; letter-spacing: 0.3em; text-align: center;">Arcapush.com </p>
+              <p style="font-size: 10px; color: #666; letter-spacing: 0.3em; text-align: center;">Arcapush.com</p>
             </div>
-          `
+          `,
         });
       }
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      message: `Transmission status: ${status.toLowerCase()}`,
-      data: updatedRequest 
+    return NextResponse.json({
+      success: true,
+      message: `Access request ${status.toLowerCase()} successfully.`,
+      data: updatedRequest,
     });
 
   } catch (error: any) {
-    console.error('Moderation Error:', error);
-    return NextResponse.json({ error: 'Failed to broadcast signal', details: error.message }, { status: 500 });
+    console.error('Access request approval error:', error);
+    return NextResponse.json(
+      { error: 'Failed to process access request', details: error.message },
+      { status: 500 }
+    );
   }
 }
