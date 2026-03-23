@@ -29,11 +29,9 @@ export async function POST(
       where: { id },
       data: {
         approved,
-        ...(approved ? { approvedAt: new Date() } : {}),
       },
     });
 
-    
     if (approved) {
       const categorySlug = categoryToSlug(startup.category);
       const pathSlug = startup.slug ?? startup.id;
