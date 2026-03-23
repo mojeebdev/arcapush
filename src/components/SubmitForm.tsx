@@ -160,6 +160,7 @@ export default function SubmitStartup() {
     setLoading(true);
 
     try {
+      // Step 1: Submit the startup
       const res = await fetch("/api/startups", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -169,36 +170,60 @@ export default function SubmitStartup() {
         }),
       });
 
-      if (res.ok) {
-        const result = await res.json();
-
-        await fetch("/api/notify-submission", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            founderEmail: formData.founderEmail,
-            founderName: formData.founderName,
-            startupName: formData.name,
-            startupId: result.id,
-          }),
-        });
-
-        track("Product Submitted");
-
-        confetti({
-          particleCount: 150,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ["#e8ff47", "#f0ede8", "#888580"],
-        });
-
-        toast.success("Product received. We'll index it shortly.");
-        setTimeout(() => router.push("/success"), 3000);
-      } else {
+      if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Submission failed.");
       }
+
+      const result = await res.json();
+
+      // DEBUG: Log the full result to verify result.id exists
+      console.log("[SubmitForm] Startup submission result:", result);
+
+      if (!result.id) {
+        console.warn("[SubmitForm] WARNING: result.id is missing. Notify email may fail.");
+      }
+
+      // Step 2: Send notification emails
+      const notifyPayload = {
+        founderEmail: formData.founderEmail,
+        founderName: formData.founderName,
+        startupName: formData.name,
+        startupId: result.id ?? null,
+      };
+
+      console.log("[SubmitForm] Sending notify-submission with payload:", notifyPayload);
+
+      const notifyRes = await fetch("/api/notify-submission", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(notifyPayload),
+      });
+
+      
+      const notifyData = await notifyRes.json();
+      console.log("[SubmitForm] Notify response — status:", notifyRes.status, "body:", notifyData);
+
+      if (!notifyRes.ok) {
+        
+        console.error("[SubmitForm] Notify email failed:", notifyData);
+      }
+
+     
+      track("Product Submitted");
+
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#e8ff47", "#f0ede8", "#888580"],
+      });
+
+      toast.success("Product received. We'll index it shortly.");
+      setTimeout(() => router.push("/success"), 3000);
+
     } catch (error: any) {
+      console.error("[SubmitForm] Submit error:", error);
       toast.error(error.message);
     } finally {
       setLoading(false);

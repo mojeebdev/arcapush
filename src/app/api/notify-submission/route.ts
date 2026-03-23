@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   try {
     const { founderEmail, founderName, startupName, startupId } = await req.json();
 
-    // Admin notification
+    
     await resend.emails.send({
       from: 'Arcapush <system@arcapush.com>',
       to: ['blindspotlabs1@gmail.com'],
