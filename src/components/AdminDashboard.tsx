@@ -67,15 +67,25 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
   const handleApproveStartup = async (id: string) => {
     try {
       const res = await fetch(`/api/admin/startups/${id}/approve`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", "x-guardian-pin": guardianPin },
-        body: JSON.stringify({ approved: true }),
+        method: "POST", // ✅ fixed: was PATCH
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: "APPROVED",        // ✅ fixed: route expects `status`, not `approved`
+          adminSecret: guardianPin,  // ✅ fixed: route expects `adminSecret` in body
+        }),
       });
+
+      const data = await res.json();
+      console.log("[AdminDashboard] Approve startup response:", res.status, data);
+
       if (res.ok) {
         toast.success("Listing approved and founder notified.");
         fetchData();
+      } else {
+        toast.error(data.error || "Approval failed.");
       }
-    } catch {
+    } catch (err) {
+      console.error("[AdminDashboard] Approve startup error:", err);
       toast.error("Approval failed.");
     }
   };
@@ -87,11 +97,18 @@ export default function AdminDashboardView({ guardianPin }: AdminDashboardProps)
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: action, adminSecret: guardianPin }),
       });
+
+      const data = await res.json();
+      console.log("[AdminDashboard] Approve investor response:", res.status, data);
+
       if (res.ok) {
         toast.success(action === "APPROVED" ? "Investor access granted." : "Request rejected.");
         fetchData();
+      } else {
+        toast.error(data.error || "Action failed.");
       }
-    } catch {
+    } catch (err) {
+      console.error("[AdminDashboard] Approve investor error:", err);
       toast.error("Action failed.");
     }
   };
