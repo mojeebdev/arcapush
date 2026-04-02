@@ -34,7 +34,7 @@ interface LogoTickerProps {
   logoSize?: number;
 }
 
-export function LogoTicker({ variant, speed = 30, logoSize = 24 }: LogoTickerProps) {
+export function LogoTicker({ variant, speed = 50, logoSize = 30 }: LogoTickerProps) {
   const items = LOGOS[variant];
   const double = [...items, ...items, ...items];
   const label = LABELS[variant];
