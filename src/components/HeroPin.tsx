@@ -170,7 +170,7 @@ export function HeroPin({ startups }: HeroPinProps) {
 
                 <div className="flex flex-wrap items-center gap-4">
                   <Link
-                    href={`/startup/${currentItem.slug ?? currentItem.id}`}
+                    href={`/startup/${(currentItem.categorySlug ?? currentItem.category?.toLowerCase().replace(/[^a-z0-9]+/g, "-"))}/${currentItem.slug ?? currentItem.id}`}
                     className="ap-btn-primary flex items-center gap-2"
                   >
                     View Product

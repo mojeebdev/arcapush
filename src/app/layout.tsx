@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Syne, DM_Mono } from "next/font/google";
 import { AdminConfig } from "@/lib/adminConfig";
+import { MobileNav } from "@/components/MobileNav";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/react";
@@ -111,12 +112,9 @@ const jsonLd = [
     description: "Discovery and visibility platform for vibe-coded products. List once, get indexed, get found by VCs.",
     offers: [
       { "@type": "Offer", price: "0",   priceCurrency: "USD", name: "Free — Permanent indexed listing" },
-      { "@type": "Offer", price: "5",   priceCurrency: "USD", name: "30 Minutes — Instant push at the top" },
-      { "@type": "Offer", price: "25",  priceCurrency: "USD", name: "1 Day — 24-hour featured placement + VC visibility" },
-      { "@type": "Offer", price: "60",  priceCurrency: "USD", name: "3 Days — Weekend domination, 3 days pinned" },
-      { "@type": "Offer", price: "100", priceCurrency: "USD", name: "1 Week — Full week push, maximum signal" },
-      { "@type": "Offer", price: "175", priceCurrency: "USD", name: "2 Weeks — Sustained exposure, 14 days" },
-      { "@type": "Offer", price: "299", priceCurrency: "USD", name: "1 Month — 30-day total domination, VC magnet" },
+      { "@type": "Offer", price: "29",  priceCurrency: "USD", name: "Launch — 3 weeks pinned in Signals grid + blog post" },
+      { "@type": "Offer", price: "50",  priceCurrency: "USD", name: "Pro — Hero pin 1 month + content amplification" },
+      { "@type": "Offer", price: "299", priceCurrency: "USD", name: "Pro Max — Full BlindspotLab studio support (yearly)" },
     ],
   },
   {
@@ -177,23 +175,31 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         style={{ background: "var(--bg)", color: "var(--text-primary)" }}
       >
         <Providers>
-          {/* Background glow blobs */}
+          {/* Background layer — Dark Signal */}
           <div
             className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden"
-            style={{ background: "var(--bg)" }}
-          >
-            <div
-              className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full"
-              style={{ background: "rgba(91,43,255,0.04)", filter: "blur(140px)" }}
-            />
-            <div
-              className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full"
-              style={{ background: "rgba(91,43,255,0.025)", filter: "blur(120px)" }}
-            />
+             style={{ background: "var(--bg)" }}
+            >
+          {/* Hero glow — tight, contained behind headline only */}
+          <div
+           className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full"
+            style={{ background: "rgba(123,84,255,0.09)", filter: "blur(100px)" }}
+          />
+          {/* Bottom-right subtle warmth */}
+          <div
+           className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full"
+           style={{ background: "rgba(123,84,255,0.05)", filter: "blur(120px)" }}
+          />
+          {/* Gold accent — bottom left, very subtle */}
+          <div
+           className="absolute bottom-[15%] left-[-5%] w-[300px] h-[300px] rounded-full"
+           style={{ background: "rgba(212,175,55,0.04)", filter: "blur(80px)" }}
+          />
           </div>
 
           <div className="relative flex flex-col min-h-screen">
             <Navbar />
+            <MobileNav />
             <main className="flex-grow pt-20">{children}</main>
             <Footer />
           </div>

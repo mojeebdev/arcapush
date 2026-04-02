@@ -3,36 +3,35 @@
 @tailwind utilities;
 
 :root {
-  /* ── Backgrounds (off-white / cream palette) ── */
-  --bg:        #F7F6F2;
-  --bg-2:      #EFEDE6;
-  --bg-3:      #E8E5DC;
-  --bg-4:      #DDD9CE;
+  /* ── Dark Signal palette ── */
+  --bg:        #0C0C10;
+  --bg-2:      #111116;
+  --bg-3:      #17171E;
+  --bg-4:      #1E1E27;
 
-  /* ── Accent (purple — works on light) ── */
-  --accent:        #5B2BFF;
-  --accent-dim:    rgba(91, 43, 255, 0.08);
-  --accent-border: rgba(91, 43, 255, 0.2);
+  /* ── Accent (purple — vivid on dark) ── */
+  --accent:        #7B54FF;
+  --accent-dim:    rgba(123, 84, 255, 0.12);
+  --accent-border: rgba(123, 84, 255, 0.25);
 
   /* ── Text ── */
-  --text-primary:   #0A0A0F;
-  --text-secondary: #4A4845;
-  --text-tertiary:  #8A8580;
+  --text-primary:   #F0EEF8;
+  --text-secondary: #9B98A8;
+  --text-tertiary:  #55535F;
 
   /* ── Borders / Rules ── */
-  --border:      rgba(10, 10, 15, 0.1);
-  --border-2:    rgba(10, 10, 15, 0.18);
-  --rule:        #D6D2C8;
+  --border:      rgba(255, 255, 255, 0.07);
+  --border-2:    rgba(255, 255, 255, 0.12);
+  --rule:        rgba(255, 255, 255, 0.06);
 
-  /* ── Legacy named colors (kept for components that reference them) ── */
-  --purple: #5B2BFF;
+  /* ── Legacy named colors ── */
+  --purple: #7B54FF;
   --gold:   #D4AF37;
 
-  /* ── Ink aliases (match HTML design) ── */
-  --ink:    #0A0A0F;
-  --rule:   #D6D2C8;
-  --muted:  #8A8580;
-  --cream:  #EFEDE6;
+  /* ── Ink aliases ── */
+  --ink:    #F0EEF8;
+  --muted:  #55535F;
+  --cream:  #17171E;
 }
 
 *, *::before, *::after {
@@ -56,20 +55,20 @@ body {
   position: relative;
 }
 
-/* Subtle noise texture overlay */
+/* Grain texture — premium paper feel on dark */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.018;
+  opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-size: 200px;
 }
 
 ::selection {
-  background: rgba(91, 43, 255, 0.12);
+  background: rgba(123, 84, 255, 0.2);
   color: var(--accent);
 }
 
@@ -129,8 +128,8 @@ body::after {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.9rem 2.5rem;
-  background: var(--ink, #0A0A0F);
-  color: var(--bg);
+  background: var(--accent);
+  color: #fff;
   border-radius: 0.75rem;
   font-family: var(--font-syne), sans-serif;
   font-size: 0.7rem;
@@ -143,10 +142,9 @@ body::after {
   text-decoration: none;
 }
 .ap-btn-primary:hover {
-  background: var(--accent);
-  color: #fff;
+  background: #9B7AFF;
   transform: translateY(-1px);
-  box-shadow: 0 8px 32px rgba(91, 43, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(123, 84, 255, 0.35);
 }
 .ap-btn-primary:active { transform: scale(0.98); }
 
@@ -164,15 +162,15 @@ body::after {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-2);
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
 }
 .ap-btn-ghost:hover {
   color: var(--text-primary);
-  border-color: var(--border-2);
-  background: rgba(10, 10, 15, 0.04);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 /* ── Card ── */
@@ -190,7 +188,7 @@ body::after {
 /* ── Inputs ── */
 .ap-input {
   width: 100%;
-  background: #fff;
+  background: var(--bg-3);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   padding: 1rem 1.25rem;
@@ -205,7 +203,7 @@ body::after {
 
 .vibe-input {
   width: 100%;
-  background: #fff;
+  background: var(--bg-3);
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   padding: 1rem 1.25rem;
@@ -220,8 +218,8 @@ body::after {
 
 .royal-button {
   width: 100%;
-  background: var(--ink, #0A0A0F);
-  color: var(--bg);
+  background: var(--accent);
+  color: #fff;
   padding: 1.2rem 2rem;
   border-radius: 0.75rem;
   font-family: var(--font-syne), sans-serif;
@@ -234,18 +232,15 @@ body::after {
   transition: all 0.2s ease;
 }
 .royal-button:hover {
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 8px 32px rgba(91, 43, 255, 0.2);
+  background: #9B7AFF;
+  box-shadow: 0 8px 32px rgba(123, 84, 255, 0.35);
 }
-
 
 .ap-divider {
   height: 1px;
   background: var(--border);
   width: 100%;
 }
-
 
 @keyframes ticker {
   0%   { transform: translateX(0); }
@@ -263,8 +258,8 @@ body::after {
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(91, 43, 255, 0); }
-  50%       { box-shadow: 0 0 20px 4px rgba(91, 43, 255, 0.1); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(123, 84, 255, 0); }
+  50%       { box-shadow: 0 0 24px 6px rgba(123, 84, 255, 0.15); }
 }
 
 @keyframes pulse-slow {
@@ -277,23 +272,20 @@ body::after {
   100% { transform: translate(30px, -20px) scale(1.05); }
 }
 
-
+/* Dark overrides for any Tailwind utility classes */
 .bg-black    { background-color: var(--bg-2) !important; }
 .bg-zinc-950 { background-color: var(--bg-2) !important; }
 .bg-zinc-900 { background-color: var(--bg-3) !important; }
 
-
-.payment-modal-overlay { background: rgba(10, 10, 15, 0.9) !important; }
+.payment-modal-overlay { background: rgba(0, 0, 0, 0.95) !important; }
 
 .font-playfair {
   font-family: 'Georgia', 'Times New Roman', serif;
 }
 
-
 .navbar-bg {
-  background: rgba(247, 246, 242, 0.88) !important;
+  background: rgba(12, 12, 16, 0.88) !important;
 }
-
 
 .hover-accent:hover         { color: var(--accent) !important; }
 .hover-text-primary:hover   { color: var(--text-primary) !important; }

@@ -18,10 +18,11 @@ import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import GlobalSearch from "./GlobalSearch";
 
 const NAV_LINKS = [
-  { href: "/registry", label: "Registry" },
-  { href: "/blog",     label: "Blog"     },
-  { href: "/pricing",  label: "Boost"    },
-  { href: "/about",    label: "About"    },
+  { href: "/registry",  label: "Registry"  },
+  { href: "/blog",      label: "Blog"      },
+  { href: "/pricing",   label: "Boost"     },
+  ...(status === "authenticated" ? [{ href: "/dashboard", label: "Dashboard" }] : []),
+  { href: "/about",     label: "About"     },
 ];
 
 export function Navbar() {
@@ -71,10 +72,10 @@ export function Navbar() {
     <nav
       className="fixed top-0 left-0 right-0 z-50 transition-shadow duration-300"
       style={{
-        background: "rgba(247,246,242,0.88)",
+        background: "rgba(12, 12, 16, 0.88)",
         backdropFilter: "blur(12px)",
         borderBottom: "1px solid var(--border)",
-        boxShadow: scrolled ? "0 2px 24px rgba(10,10,15,0.06)" : "none",
+        boxShadow: scrolled ? "0 2px 24px rgba(0,0,0,0.4)" : "none",
       }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">

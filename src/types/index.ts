@@ -1,5 +1,5 @@
 
-export type StartupTier = "FREE" | "PINNED";
+export type StartupTier = "FREE" | "LAUNCH" | "PRO" | "PRO_MAX";
 
 
 export interface Startup {

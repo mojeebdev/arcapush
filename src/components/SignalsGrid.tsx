@@ -1,5 +1,7 @@
 "use client";
 
+import { TierBadge } from "@/components/TierBadge";
+import type { StartupTier } from "@/types";
 import { incrementStartupView } from "@/app/actions/startup";
 import { buildStartupUrl } from "@/types";
 
@@ -14,6 +16,8 @@ type SignalStartup = {
   category:      string;
   viewCount:     number | null;
   scrapedAt?:    string | Date | null;
+  tier?:         StartupTier;
+  reviewCount?:  number;
 };
 
 const CAT_CONFIG: Record<string, {
@@ -135,20 +139,13 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                   {startup.category}
                 </span>
 
-                {/* Indexed dot */}
-                {isIndexed && (
-                  <div
-                    style={{
-                      position:     "absolute",
-                      top:          "13px",
-                      right:        "12px",
-                      width:        "5px",
-                      height:       "5px",
-                      borderRadius: "50%",
-                      background:   "#22c55e",
-                    }}
-                  />
-                )}
+                {/* Tier badge or indexed dot */}
+                <div style={{ position: "absolute", top: "10px", right: "10px", display: "flex", alignItems: "center", gap: "5px" }}>
+                  {startup.tier && startup.tier !== "FREE" && <TierBadge tier={startup.tier} size="sm" />}
+                  {isIndexed && !startup.tier && (
+                    <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: "#22c55e" }} />
+                  )}
+                </div>
               </div>
 
               {/* Content */}
@@ -243,16 +240,16 @@ export function SignalsGrid({ startups }: { startups: SignalStartup[] }) {
                     marginTop:      "4px",
                   }}
                 >
-                  <span
-                    style={{
-                      fontFamily:    "var(--font-mono)",
-                      fontSize:      "8px",
-                      color:         "#c0bdb5",
-                      letterSpacing: "0.08em",
-                    }}
-                  >
-                    {startup.viewCount ?? 0} VIEWS
-                  </span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <span style={{ fontFamily: "var(--font-mono)", fontSize: "8px", color: "#c0bdb5", letterSpacing: "0.08em" }}>
+                      {startup.viewCount ?? 0} views
+                    </span>
+                    {(startup.reviewCount ?? 0) > 0 && (
+                      <span style={{ fontFamily: "var(--font-mono)", fontSize: "8px", color: "#c0bdb5", letterSpacing: "0.08em" }}>
+                        · {startup.reviewCount} reviews
+                      </span>
+                    )}
+                  </div>
                   <span
                     className="view-arrow"
                     style={{

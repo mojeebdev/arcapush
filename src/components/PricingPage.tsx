@@ -6,24 +6,29 @@ import toast, { Toaster } from "react-hot-toast";
 import { useAccount } from "wagmi";
 import { AdminConfig } from "@/lib/adminConfig";
 import { useBoost } from "@/hooks/useBoost";
+import { TierBadge } from "@/components/TierBadge";
+import type { StartupTier } from "@/types";
 import {
   Connection, PublicKey, Transaction,
   SystemProgram, LAMPORTS_PER_SOL, ComputeBudgetProgram,
 } from "@solana/web3.js";
 
-const BOOST_PERKS: Record<string, string[]> = {
-  "30m": ["Permanent indexed listing", "Search engine indexed", "90 rotations"],
-  "1d":  ["Everything in 30m", "2,880 rotations", "X storytelling post", "Pinned to the Hero", "Featured badge"],
-  "3d":  ["Everything in 1d", "8,640 rotations", "Priority support", "3-day featured badge"],
-  "1w":  ["Everything in 3d", "20,160 rotations", "1-on-1 strategy call", "Verified badge"],
-  "2w":  ["Everything in 1w", "40,320 rotations", "2× X posts", "Partner network intro"],
-  "1m":  ["Everything in 2w", "86,400 rotations", "VC access channel", "Founder strategy retainer"],
-};
-
 export default function PricingPage() {
   const [selectedStartupId, setSelectedStartupId] = useState("");
+  const [email, setEmail]                         = useState("");
   const [approvedStartups, setApprovedStartups]   = useState<any[]>([]);
   const [gridVisible, setGridVisible]             = useState(false);
+  const [payingFor, setPayingFor]                 = useState<string | null>(null);
+  const [payMethod, setPayMethod]                 = useState<"crypto" | "card">("crypto");
+
+  // Check for success/failed redirect from Paystack callback
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("status");
+    const tier   = params.get("tier");
+    if (status === "success") toast.success(`${tier} plan activated! Welcome aboard.`);
+    if (status === "failed")  toast.error("Payment failed. Please try again.");
+  }, []);
 
   const { isConnected } = useAccount();
   const { purchaseBoost, isProcessing } = useBoost();
@@ -36,19 +41,19 @@ export default function PricingPage() {
     return () => clearTimeout(t);
   }, []);
 
-  // ── Base: two-step approve → boost via contract ────────────────────────────
+  
   const handleBasePayment = async (plan: typeof AdminConfig.PIN_PACKAGES[number]) => {
-    await purchaseBoost({
-      startupId:    selectedStartupId,
-      packageValue: plan.value,
-      price:        plan.price,
-    });
+    if (!selectedStartupId) return toast.error("Select your product first.");
+    setPayingFor(plan.value);
+    await purchaseBoost({ startupId: selectedStartupId, packageValue: plan.value, price: plan.price });
+    setPayingFor(null);
   };
 
-  // ── Solana: direct SOL transfer (unchanged) ────────────────────────────────
+  
   const handleSolanaPayment = async (plan: typeof AdminConfig.PIN_PACKAGES[number]) => {
     if (!selectedStartupId || !(window as any).solana)
-      return toast.error("Check selection / wallet.");
+      return toast.error("Check selection / Phantom wallet.");
+    setPayingFor(plan.value);
     const toastId = toast.loading("Processing SOL...");
     try {
       const priceRes  = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd");
@@ -56,233 +61,211 @@ export default function PricingPage() {
       const lamports  = Math.floor((plan.price / priceData.solana.usd) * LAMPORTS_PER_SOL);
       const resp      = await (window as any).solana.connect();
       const connection = new Connection(
-        process.env.NEXT_PUBLIC_ALCHEMY_RPC_SOLANA || "https://api.mainnet-beta.solana.com",
-        "confirmed"
+        process.env.NEXT_PUBLIC_ALCHEMY_RPC_SOLANA || "https://api.mainnet-beta.solana.com", "confirmed"
       );
       const { blockhash } = await connection.getLatestBlockhash();
-      const transaction = new Transaction({
-        recentBlockhash: blockhash,
-        feePayer: resp.publicKey,
-      }).add(
+      const transaction = new Transaction({ recentBlockhash: blockhash, feePayer: resp.publicKey }).add(
         ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 25000 }),
-        SystemProgram.transfer({
-          fromPubkey: resp.publicKey,
-          toPubkey:   new PublicKey(AdminConfig.PAYMENT_WALLET_SOLANA),
-          lamports,
-        })
+        SystemProgram.transfer({ fromPubkey: resp.publicKey, toPubkey: new PublicKey(AdminConfig.PAYMENT_WALLET_SOLANA), lamports })
       );
       const { signature } = await (window as any).solana.signAndSendTransaction(transaction);
       await fetch("/api/pin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ startupId: selectedStartupId, chain: "solana", txHash: signature, packageValue: plan.value }),
       });
-      toast.success("🔥 SOL boost active!", { id: toastId });
+      toast.success(`${plan.label} activated!`, { id: toastId });
     } catch {
       toast.error("Payment failed.", { id: toastId });
     }
+    setPayingFor(null);
+  };
+
+  
+  const handleCardPayment = async (plan: typeof AdminConfig.PIN_PACKAGES[number]) => {
+    if (!selectedStartupId) return toast.error("Select your product first.");
+    if (!email)             return toast.error("Enter your email for the receipt.");
+    setPayingFor(plan.value);
+    const toastId = toast.loading("Redirecting to payment...");
+    try {
+      const res = await fetch("/api/paystack/initialize", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ email, startupId: selectedStartupId, packageValue: plan.value }),
+      });
+      const data = await res.json();
+      if (!data.authorizationUrl) throw new Error(data.error || "Failed to initialize");
+      toast.dismiss(toastId);
+      window.location.href = data.authorizationUrl;
+    } catch (err: any) {
+      toast.error(err.message || "Card payment failed.", { id: toastId });
+    }
+    setPayingFor(null);
+  };
+
+  const TIER_BORDER: Record<string, string> = {
+    FREE:    "var(--border)",
+    LAUNCH:  "rgba(91,43,255,0.3)",
+    PRO:     "rgba(16,185,129,0.3)",
+    PRO_MAX: "rgba(217,119,6,0.3)",
   };
 
   return (
-    <main
-      className="relative min-h-screen pt-32 pb-24 px-6 overflow-hidden"
-      style={{ background: "var(--bg)", color: "var(--text-primary)" }}
-    >
-      <div
-        className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000"
-        style={{
-          opacity: gridVisible ? 0.5 : 0,
-          backgroundImage:
-            "linear-gradient(var(--rule, #D6D2C8) 1px, transparent 1px), linear-gradient(90deg, var(--rule, #D6D2C8) 1px, transparent 1px)",
-          backgroundSize: "64px 64px",
-        }}
-      />
-      <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full pointer-events-none z-0"
-        style={{ background: "rgba(91,43,255,0.06)", filter: "blur(100px)", animation: "drift 12s ease-in-out infinite alternate" }}
-      />
-      <div className="absolute bottom-0 left-[20%] w-[400px] h-[400px] rounded-full pointer-events-none z-0"
-        style={{ background: "rgba(91,43,255,0.04)", filter: "blur(80px)", animation: "drift 12s ease-in-out infinite alternate", animationDelay: "-4s" }}
-      />
-      <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-0"
-        style={{ background: "linear-gradient(to bottom, var(--bg), transparent)" }} />
-      <div className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none z-0"
-        style={{ background: "linear-gradient(to top, var(--bg), transparent)" }} />
+    <main className="relative min-h-screen pt-32 pb-32 px-6 overflow-hidden"
+      style={{ background: "var(--bg)", color: "var(--text-primary)" }}>
 
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          style: {
-            background:  "var(--bg)",
-            color:       "var(--text-primary)",
-            border:      "1px solid var(--border)",
-            fontFamily:  "var(--font-mono)",
-            fontSize:    "0.72rem",
-            boxShadow:   "0 4px 24px rgba(10,10,15,0.08)",
-          },
-        }}
-      />
+      <div className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-1000"
+        style={{ opacity: gridVisible ? 0.4 : 0, backgroundImage: "linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px)", backgroundSize: "64px 64px" }} />
+      <div className="absolute top-0 left-0 right-0 h-40 pointer-events-none z-0" style={{ background: "linear-gradient(to bottom, var(--bg), transparent)" }} />
+      <div className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none z-0" style={{ background: "linear-gradient(to top, var(--bg), transparent)" }} />
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
+      <Toaster position="bottom-right" toastOptions={{ style: { background: "var(--bg)", color: "var(--text-primary)", border: "1px solid var(--border)", fontFamily: "var(--font-mono)", fontSize: "0.72rem" } }} />
+
+      <div className="max-w-5xl mx-auto relative z-10">
+
+        {/* Header */}
+        <div className="text-center mb-16">
+          <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="mb-3 flex items-center justify-center gap-3"
-            style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}
-          >
+            style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--accent)" }}>
             <span className="inline-block w-6 h-px" style={{ background: "var(--accent)" }} />
-            Boost Packages
+            Pricing
             <span className="inline-block w-6 h-px" style={{ background: "var(--accent)" }} />
           </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="ap-display mb-4"
-            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
-          >
-            Pin to the Top.<br />
-            <span style={{ color: "var(--accent)" }}>Pay On-Chain.</span>
+          <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="ap-display mb-4" style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)" }}>
+            Get Listed.<br />
+            <span style={{ color: "var(--accent)" }}>Get Found. Get Backed.</span>
           </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className="text-lg max-w-xl mx-auto"
-            style={{ color: "var(--text-secondary)", fontFamily: "var(--font-syne)" }}
-          >
-            Boost your product to the hero slot for a limited time — verified on-chain instantly. Pay with USDC on Base or SOL on Solana.
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+            style={{ color: "var(--text-secondary)", fontFamily: "var(--font-syne)", maxWidth: "480px", margin: "0 auto", lineHeight: 1.6 }}>
+            Every plan starts with a permanent indexed listing. Pay once to amplify. Pro Max gives you the full BlindspotLab studio behind you.
           </motion.p>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.9 }}
-          className="mb-14 max-w-sm mx-auto"
-        >
-          <label className="ap-label mb-2 block">Select Your Product</label>
-          <select
-            value={selectedStartupId}
-            onChange={(e) => setSelectedStartupId(e.target.value)}
-            className="w-full rounded-xl px-4 py-3 text-xs font-black uppercase tracking-widest outline-none transition-all"
-            style={{
-              background: "#fff",
-              border:     "1px solid var(--border)",
-              color:      "var(--text-primary)",
-              fontFamily: "var(--font-mono)",
-            }}
+        {/* Payment method toggle */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+          style={{ display: "flex", justifyContent: "center", gap: "8px", marginBottom: "32px" }}>
+          {(["crypto", "card"] as const).map((method) => (
+            <button key={method} onClick={() => setPayMethod(method)}
+              style={{
+                padding: "8px 20px", borderRadius: "20px", cursor: "pointer",
+                fontFamily: "var(--font-mono)", fontSize: "0.6rem", fontWeight: 600,
+                letterSpacing: "0.1em", textTransform: "uppercase", transition: "all 0.15s",
+                background: payMethod === method ? "var(--accent)" : "var(--bg-2)",
+                color:      payMethod === method ? "#fff" : "var(--text-tertiary)",
+                border:     payMethod === method ? "1px solid var(--accent)" : "1px solid var(--border)",
+              }}>
+              {method === "crypto" ? "Pay with Crypto" : "Pay with Card"}
+            </button>
+          ))}
+        </motion.div>
+
+        {/* Product selector */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+          style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "400px", margin: "0 auto 40px" }}>
+          <select value={selectedStartupId} onChange={(e) => setSelectedStartupId(e.target.value)}
+            style={{ width: "100%", borderRadius: "12px", padding: "12px 16px", background: "var(--bg-2)", border: "1px solid var(--border)", color: "var(--text-primary)", fontFamily: "var(--font-mono)", fontSize: "0.7rem", outline: "none" }}
             onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent-border)")}
-            onBlur={(e)  => (e.currentTarget.style.borderColor = "var(--border)")}
-          >
-            <option value="">Choose a product...</option>
-            {approvedStartups.map((s) => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
+            onBlur={(e)  => (e.currentTarget.style.borderColor = "var(--border)")}>
+            <option value="">Select your product...</option>
+            {approvedStartups.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
-          {!selectedStartupId && (
-            <p className="ap-label mt-2">Product must be approved before boosting.</p>
+
+          {payMethod === "card" && (
+            <input type="email" placeholder="Your email (for receipt)" value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{ width: "100%", borderRadius: "12px", padding: "12px 16px", background: "var(--bg-2)", border: "1px solid var(--border)", color: "var(--text-primary)", fontFamily: "var(--font-mono)", fontSize: "0.7rem", outline: "none" }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent-border)")}
+              onBlur={(e)  => (e.currentTarget.style.borderColor = "var(--border)")} />
           )}
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {AdminConfig.PIN_PACKAGES.map((plan, i) => (
-            <motion.div
-              key={plan.value}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              whileHover={{ y: -6 }}
-              className="relative p-8 rounded-2xl flex flex-col"
-              style={{
-                background: "var(--bg-2)",
-                border:     `1px solid ${plan.featured ? "var(--accent)" : "var(--border)"}`,
-                boxShadow:  plan.featured ? "0 0 40px rgba(91,43,255,0.08)" : "none",
-              }}
-            >
-              {plan.featured && (
-                <span
-                  className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full whitespace-nowrap"
-                  style={{ background: "var(--accent)", color: "#fff", fontFamily: "var(--font-mono)", fontSize: "0.55rem", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700 }}
-                >
-                  Most Popular
-                </span>
-              )}
-              <h3 className="ap-display mb-1" style={{ fontSize: "1.25rem", color: "var(--text-primary)" }}>
-                {plan.label}
-              </h3>
-              <p className="ap-label mb-5">{plan.description}</p>
-              <div className="flex items-baseline gap-2 mb-1">
-                <span
-                  className="ap-display"
-                  style={{ fontSize: "2.75rem", color: plan.featured ? "var(--accent)" : "var(--text-primary)", lineHeight: 1 }}
-                >
-                  ${plan.price}
-                </span>
-                <span className="ap-label">USD</span>
-              </div>
-              <p className="ap-label mb-6">
-                {plan.minutes < 60
-                  ? `${plan.minutes} min`
-                  : plan.minutes < 1440
-                  ? `${plan.minutes / 60}h`
-                  : plan.minutes < 10080
-                  ? `${plan.minutes / 1440}d`
-                  : plan.minutes < 43200
-                  ? `${Math.round(plan.minutes / 10080)}w`
-                  : "30 days"
-                } pinned
-              </p>
-              <ul className="space-y-2.5 mb-8 flex-grow">
-                {(BOOST_PERKS[plan.value] || []).map((perk, j) => (
-                  <li key={j} className="flex items-start gap-2.5 text-xs"
-                    style={{ color: "var(--text-secondary)", fontFamily: "var(--font-syne)" }}
-                  >
-                    <span style={{ color: "var(--accent)", fontFamily: "var(--font-mono)", fontSize: "0.7rem", flexShrink: 0, marginTop: "1px" }}>→</span>
-                    {perk}
-                  </li>
-                ))}
-              </ul>
-              <div className="space-y-2 mt-auto">
-                <button
-                  onClick={() => handleBasePayment(plan)}
-                  disabled={isProcessing || !selectedStartupId}
-                  className="w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    background: "rgba(37,99,235,0.08)",
-                    border:     "1px solid rgba(37,99,235,0.2)",
-                    color:      "#2563eb",
-                  }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#2563eb"; (e.currentTarget as HTMLElement).style.color = "#fff"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(37,99,235,0.08)"; (e.currentTarget as HTMLElement).style.color = "#2563eb"; }}
-                >
-                  Pay with Base USDC
-                </button>
-                <button
-                  onClick={() => handleSolanaPayment(plan)}
-                  disabled={isProcessing || !selectedStartupId}
-                  className="w-full py-3.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    background: "var(--ink, #0A0A0F)",
-                    color:      "#F7F6F2",
-                    border:     "1px solid var(--ink, #0A0A0F)",
-                  }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; (e.currentTarget as HTMLElement).style.borderColor = "var(--accent)"; (e.currentTarget as HTMLElement).style.color = "#fff"; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--ink, #0A0A0F)"; (e.currentTarget as HTMLElement).style.borderColor = "var(--ink, #0A0A0F)"; (e.currentTarget as HTMLElement).style.color = "#F7F6F2"; }}
-                >
-                  Pay with Solana SOL
-                </button>
-              </div>
-            </motion.div>
-          ))}
+        {/* Pricing grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px", alignItems: "start" }}>
+          {AdminConfig.PIN_PACKAGES.map((plan, i) => {
+            const isPaying  = payingFor === plan.value && isProcessing;
+            const tierBorder = TIER_BORDER[plan.value] || "var(--border)";
+
+            return (
+              <motion.div key={plan.value}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.08 }}
+                style={{ background: "var(--bg-2)", border: `1px solid ${plan.featured ? tierBorder : "var(--border)"}`, borderRadius: "20px", padding: "28px 24px", display: "flex", flexDirection: "column", position: "relative", boxShadow: plan.featured ? `0 0 40px -12px ${tierBorder}` : "none" }}>
+
+                {plan.featured && (
+                  <span style={{ position: "absolute", top: "-13px", left: "50%", transform: "translateX(-50%)", background: "var(--accent)", color: "#fff", fontFamily: "var(--font-mono)", fontSize: "0.55rem", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: 700, padding: "4px 14px", borderRadius: "20px", whiteSpace: "nowrap" }}>
+                    Most Popular
+                  </span>
+                )}
+
+                {plan.value !== "FREE" && (
+                  <div style={{ marginBottom: "12px" }}>
+                    <TierBadge tier={plan.value as StartupTier} size="md" />
+                  </div>
+                )}
+
+                <h3 className="ap-display" style={{ fontSize: "1.4rem", marginBottom: "4px" }}>{plan.label}</h3>
+                <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--text-tertiary)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "16px" }}>
+                  {plan.description}
+                </p>
+
+                <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "4px" }}>
+                  <span className="ap-display" style={{ fontSize: "2.5rem", color: plan.value === "FREE" ? "var(--text-primary)" : "var(--accent)", lineHeight: 1 }}>
+                    ${plan.price}
+                  </span>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--text-tertiary)", textTransform: "uppercase" }}>
+                    {plan.billingType === "yearly" ? "/ yr" : plan.price === 0 ? "forever" : "one-time"}
+                  </span>
+                </div>
+
+                <div style={{ height: "1px", background: "var(--border)", margin: "16px 0" }} />
+
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: "8px", flex: 1 }}>
+                  {plan.perks.map((perk, j) => (
+                    <li key={j} style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                      <span style={{ color: "var(--accent)", fontFamily: "var(--font-mono)", fontSize: "0.65rem", flexShrink: 0, marginTop: "1px" }}>→</span>
+                      <span style={{ fontFamily: "var(--font-syne)", fontSize: "0.75rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>{perk}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTAs */}
+                {plan.value === "FREE" ? (
+                  <a href="/submit" style={{ display: "block", textAlign: "center", padding: "12px", borderRadius: "10px", background: "var(--bg-3)", border: "1px solid var(--border)", fontFamily: "var(--font-mono)", fontSize: "0.65rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-secondary)", textDecoration: "none" }}>
+                    List for free →
+                  </a>
+                ) : payMethod === "crypto" ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    <button onClick={() => handleBasePayment(plan)} disabled={isPaying || !selectedStartupId}
+                      style={{ width: "100%", padding: "12px", borderRadius: "10px", background: "rgba(37,99,235,0.06)", border: "1px solid rgba(37,99,235,0.2)", color: "#2563eb", fontFamily: "var(--font-mono)", fontSize: "0.6rem", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", cursor: !selectedStartupId ? "not-allowed" : "pointer", opacity: !selectedStartupId ? 0.4 : 1, transition: "all 0.15s" }}
+                      onMouseEnter={(e) => { if (selectedStartupId) { (e.currentTarget as HTMLElement).style.background = "#2563eb"; (e.currentTarget as HTMLElement).style.color = "#fff"; }}}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(37,99,235,0.06)"; (e.currentTarget as HTMLElement).style.color = "#2563eb"; }}>
+                      {isPaying ? "Processing..." : "Pay with USDC (Base)"}
+                    </button>
+                    <button onClick={() => handleSolanaPayment(plan)} disabled={isPaying || !selectedStartupId}
+                      style={{ width: "100%", padding: "12px", borderRadius: "10px", background: "var(--text-primary)", color: "var(--bg)", border: "1px solid var(--text-primary)", fontFamily: "var(--font-mono)", fontSize: "0.6rem", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", cursor: !selectedStartupId ? "not-allowed" : "pointer", opacity: !selectedStartupId ? 0.4 : 1, transition: "all 0.15s" }}
+                      onMouseEnter={(e) => { if (selectedStartupId) { (e.currentTarget as HTMLElement).style.background = "var(--accent)"; (e.currentTarget as HTMLElement).style.borderColor = "var(--accent)"; }}}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--text-primary)"; (e.currentTarget as HTMLElement).style.borderColor = "var(--text-primary)"; }}>
+                      Pay with SOL (Solana)
+                    </button>
+                  </div>
+                ) : (
+                  <button onClick={() => handleCardPayment(plan)} disabled={isPaying || !selectedStartupId || !email}
+                    style={{ width: "100%", padding: "12px", borderRadius: "10px", background: "var(--accent)", color: "#fff", border: "1px solid var(--accent)", fontFamily: "var(--font-mono)", fontSize: "0.6rem", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", cursor: (!selectedStartupId || !email) ? "not-allowed" : "pointer", opacity: (!selectedStartupId || !email) ? 0.4 : 1, transition: "all 0.15s" }}>
+                    {isPaying ? "Redirecting..." : `Pay $${plan.price} with Card`}
+                  </button>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
 
-        <p className="ap-label text-center mt-12">
-          On-chain verified · Free permanent listing · Boost duration varies by package
+        <p className="ap-label text-center mt-14" style={{ lineHeight: 2 }}>
+          Card payments via Paystack · Crypto via Base USDC or Solana · Apple Pay supported
+          <br />
+          <a href="https://blindspotlab.xyz" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", textDecoration: "none" }}>
+            blindspotlab.xyz →
+          </a>
         </p>
       </div>
     </main>

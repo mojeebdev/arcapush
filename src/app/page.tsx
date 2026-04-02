@@ -8,11 +8,13 @@ import { FinalCTA }            from "@/components/home/FinalCTA";
 import { HeroPin }             from "@/components/HeroPin";
 import { CuratedToolsSection } from "@/components/CuratedToolsSection";
 import { SignalsGrid }         from "@/components/SignalsGrid";
+import { MostViewed }          from "@/components/MostViewed";
+import { LogoTicker }          from "@/components/LogoTicker";
+import { SuggestionBox }       from "@/components/SuggestionBox";
 import { categoryToSlug }      from "@/types";
 import type { StartupCardData, SiteStats } from "@/types";
 
 export const revalidate = 0;
-
 
 const CARD_SELECT = {
   id:               true,
@@ -20,45 +22,78 @@ const CARD_SELECT = {
   name:             true,
   tagline:          true,
   problemStatement: true,
-  bannerUrl:        true,
-  logoUrl:          true,
-  ogImage:          true,
+  bannerUrl:         true,
+  logoUrl:           true,
+  ogImage:           true,
   faviconUrl:       true,
-  scrapedAt:        true,
+  scrapedAt:         true,
   category:         true,
   website:          true,
   twitter:          true,
   tier:             true,
-  viewCount:        true,
-  createdAt:        true,
-  pinnedAt:         true,
+  viewCount:         true,
+  createdAt:         true,
+  pinnedAt:          true,
   pinnedUntil:      true,
 } as const;
 
 async function getPinnedStartups(): Promise<StartupCardData[]> {
   const now      = new Date();
   const startups = await prisma.startup.findMany({
-    where:   { approved: true, tier: "PINNED", pinnedUntil: { gt: now } },
-    orderBy: { pinnedAt: "desc" },
+    where:   { approved: true, tier: { in: ["PRO", "PRO_MAX"] as any }, pinnedUntil: { gt: now } },
+    orderBy: [{ tier: "desc" }, { pinnedAt: "desc" }],
     select:  CARD_SELECT,
   });
   return startups.map((s) => ({ ...s, categorySlug: categoryToSlug(s.category) }));
 }
 
 async function getFreeStartups(): Promise<StartupCardData[]> {
+  const now = new Date();
   const startups = await prisma.startup.findMany({
     where: {
       approved: true,
       OR: [
-        { tier: "FREE" },
-        { tier: "PINNED", pinnedUntil: { lte: new Date() } },
+        { tier: "FREE" as any },
+        { tier: "LAUNCH" as any },
+        { tier: { in: ["PRO", "PRO_MAX"] as any }, pinnedUntil: { lte: now } },
       ],
     },
-    orderBy: { createdAt: "desc" },
-    take:    50,
+    orderBy: [{ tier: "desc" }, { createdAt: "desc" }],
+    take:    20,
     select:  CARD_SELECT,
   });
   return startups.map((s) => ({ ...s, categorySlug: categoryToSlug(s.category) }));
+}
+
+async function getMostViewed() {
+  const now   = new Date();
+  const week  = new Date(now.getTime() - 7  * 24 * 60 * 60 * 1000);
+  const month = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+  const select = {
+    id: true, slug: true, category: true, name: true,
+    tagline: true, logoUrl: true, faviconUrl: true, viewCount: true, tier: true,
+  } as const;
+
+  const [weekly, monthly] = await Promise.all([
+    prisma.startup.findMany({
+      where:   { approved: true, updatedAt: { gte: week } },
+      orderBy: { viewCount: "desc" },
+      take:    5,
+      select,
+    }),
+    prisma.startup.findMany({
+      where:   { approved: true, updatedAt: { gte: month } },
+      orderBy: { viewCount: "desc" },
+      take:    5,
+      select,
+    }),
+  ]);
+
+  return {
+    weekly:  weekly.map((s) => ({ ...s, categorySlug: categoryToSlug(s.category) })),
+    monthly: monthly.map((s) => ({ ...s, categorySlug: categoryToSlug(s.category) })),
+  };
 }
 
 async function getStats(): Promise<SiteStats> {
@@ -79,38 +114,15 @@ async function getStats(): Promise<SiteStats> {
 }
 
 export default async function HomePage() {
-  const [pinnedStartups, freeStartups, stats] = await Promise.all([
+  const [pinnedStartups, freeStartups, stats, mostViewed] = await Promise.all([
     getPinnedStartups(),
     getFreeStartups(),
     getStats(),
+    getMostViewed(),
   ]);
 
   return (
-    <main className="min-h-screen relative" style={{ background: "var(--bg)" }}>
-
-      {/* Page grid background */}
-      <div
-        className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          backgroundImage: `
-            linear-gradient(var(--border) 1px, transparent 1px),
-            linear-gradient(90deg, var(--border) 1px, transparent 1px)
-          `,
-          backgroundSize: "60px 60px",
-          opacity: 0.4,
-        }}
-      />
-      <div
-        className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          background: `linear-gradient(to bottom,
-            var(--bg) 0%,
-            transparent 8%,
-            transparent 92%,
-            var(--bg) 100%
-          )`,
-        }}
-      />
+    <main className="min-h-screen relative" style={{ background: "transparent" }}>
 
       <div className="relative z-10">
 
@@ -120,17 +132,22 @@ export default async function HomePage() {
         {/* 2 — Ticker */}
         <TickerSection />
 
+        {/* 2b — Primary Strip: Indexed Status (Separated after Hero) */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8 border-b border-stone-900/30">
+          <LogoTicker variant="indexed-on" speed={40} logoSize={24} />
+        </div>
+
         {/* 3 — Pinned products */}
         {pinnedStartups.length > 0 && (
           <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
             <div
               className="mb-4 flex items-center gap-3"
               style={{
-                fontFamily:    "var(--font-mono)",
-                fontSize:      "0.6rem",
+                fontFamily:     "var(--font-mono)",
+                fontSize:       "0.6rem",
                 letterSpacing: "0.16em",
                 textTransform: "uppercase",
-                color:         "var(--accent)",
+                color:          "var(--accent)",
               }}
             >
               <span className="inline-block w-6 h-px" style={{ background: "var(--accent)" }} />
@@ -179,9 +196,11 @@ export default async function HomePage() {
               className="ap-display"
               style={{ fontSize: "1.25rem", color: "var(--text-primary)" }}
             >
-              Recent <span style={{ color: "var(--accent)" }}>Signals</span>
+              Latest <span style={{ color: "var(--accent)" }}>Signals</span>
             </h2>
-            <span className="ap-mono">{freeStartups.length} Index Records</span>
+            <a href="/registry" className="ap-mono" style={{ color: "var(--accent)", textDecoration: "none" }}>
+              View all in Registry →
+            </a>
           </div>
           <SignalsGrid startups={freeStartups} />
         </div>
@@ -190,14 +209,52 @@ export default async function HomePage() {
           <div style={{ borderTop: "1px solid var(--border)" }} />
         </div>
 
-        {/* 8 — Curated tools */}
-        <CuratedToolsSection />
+        {/* 8 — Most viewed */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+          <div
+            className="mb-8 pb-6 flex items-center justify-between gap-4"
+            style={{ borderBottom: "1px solid var(--border)" }}
+          >
+            <h2 className="ap-display" style={{ fontSize: "1.25rem", color: "var(--text-primary)" }}>
+              Top <span style={{ color: "var(--accent)" }}>Signals</span>
+            </h2>
+          </div>
+          <MostViewed weekly={mostViewed.weekly} monthly={mostViewed.monthly} />
+        </div>
 
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div style={{ borderTop: "1px solid var(--border)" }} />
         </div>
 
-        {/* 9 — Final CTA */}
+        {/* 9 — Suggestion box */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+          <div
+            className="mb-8 pb-6"
+            style={{ borderBottom: "1px solid var(--border)" }}
+          >
+            <h2 className="ap-display" style={{ fontSize: "1.25rem", color: "var(--text-primary)" }}>
+              Shape <span style={{ color: "var(--accent)" }}>Arcapush</span>
+            </h2>
+          </div>
+          <SuggestionBox />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div style={{ borderTop: "1px solid var(--border)" }} />
+        </div>
+
+        {/* 10 — Curated tools */}
+        <CuratedToolsSection />
+
+        {/* 10b — Secondary Strips: Tech Stack (Separated before Footer) */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12 border-t border-stone-900/50">
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            <LogoTicker variant="built-on" speed={50} logoSize={20} />
+            <LogoTicker variant="ai-powered" speed={30} logoSize={20} />
+          </div>
+        </div>
+
+        {/* 11 — Final CTA */}
         <FinalCTA />
 
       </div>

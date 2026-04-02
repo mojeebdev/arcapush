@@ -151,7 +151,9 @@ model Session {
 
 enum StartupTier {
   FREE
-  PINNED
+  LAUNCH
+  PRO
+  PRO_MAX
 }
 
 enum RequestStatus {
