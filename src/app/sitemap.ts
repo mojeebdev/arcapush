@@ -12,23 +12,14 @@ function categoryToSlug(category: string): string {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
- 
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: base,                                        lastModified: new Date(), changeFrequency: "daily",   priority: 1.0 },
-    { url: `${base}/registry`,                          lastModified: new Date(), changeFrequency: "hourly",  priority: 0.9 },
-    { url: `${base}/about`,                             lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
-    { url: `${base}/pricing`,                           lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/docs`,                              lastModified: new Date(), changeFrequency: "weekly",  priority: 0.9 },
-    { url: `${base}/submit`,                            lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/blog/how-arcapush-works`,           lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+    { url: base,               lastModified: new Date(), changeFrequency: "daily",   priority: 1.0 },
+    { url: `${base}/registry`, lastModified: new Date(), changeFrequency: "hourly",  priority: 0.9 },
+    { url: `${base}/about`,    lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${base}/pricing`,  lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/docs`,     lastModified: new Date(), changeFrequency: "weekly",  priority: 0.9 },
+    { url: `${base}/submit`,   lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
   ];
-
- 
-  const externalProducts: MetadataRoute.Sitemap = [
-    { url: "https://promptrank.arcapush.com", lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
-    { url: "https://arcaprompt.arcapush.com", lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
-  ];
-
 
   let startupRoutes:  MetadataRoute.Sitemap = [];
   let categoryRoutes: MetadataRoute.Sitemap = [];
@@ -39,30 +30,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       select: { id: true, slug: true, category: true, updatedAt: true },
     });
 
-
     startupRoutes = startups.map((s) => ({
       url:             `${base}/startup/${categoryToSlug(s.category)}/${s.slug ?? s.id}`,
       lastModified:    s.updatedAt ?? new Date(),
-      changeFrequency: "daily",
+      changeFrequency: "daily" as const,
       priority:        0.8,
     }));
 
-   
-    const uniqueCategories = Array.from(
-      new Set(startups.map((s) => s.category))
-    );
+    const uniqueCategories = Array.from(new Set(startups.map((s) => s.category)));
 
     categoryRoutes = uniqueCategories.map((cat) => ({
       url:             `${base}/startup/${categoryToSlug(cat)}`,
       lastModified:    new Date(),
-      changeFrequency: "daily",
+      changeFrequency: "daily" as const,
       priority:        0.75,
     }));
 
   } catch (error) {
     console.error("Sitemap startup fetch failed:", error);
   }
-
 
   const blogDirectory = path.join(process.cwd(), "content/blog");
   let blogRoutes: MetadataRoute.Sitemap = [];
@@ -78,8 +64,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           return {
             url:             `${base}/blog/${slug}`,
             lastModified:    stats.mtime,
-            changeFrequency: "hourly" as const,
-            priority:        0.9,
+            changeFrequency: "weekly" as const,
+            priority:        0.8,
           };
         });
     } catch (error) {
@@ -89,9 +75,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticRoutes,
-    ...externalProducts,
-    ...categoryRoutes,   
-    ...startupRoutes,    
+    ...categoryRoutes,
+    ...startupRoutes,
     ...blogRoutes,
   ];
 }

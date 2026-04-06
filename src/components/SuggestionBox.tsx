@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Tab = "suggest" | "shipped";
 
@@ -8,40 +8,96 @@ interface Suggestion {
   id:        string;
   text:      string;
   votes:     number;
-  status:    "open" | "shipped";
-  shippedIn?: string;
+  status:    string;
+  shippedIn?: string | null;
+  createdAt: string;
 }
 
-// These would come from DB in production — stubbed for now
-const MOCK_SUGGESTIONS: Suggestion[] = [
-  { id: "1", text: "Show founder Twitter handle on startup card",           votes: 14, status: "open"    },
-  { id: "2", text: "Dark mode support",                                     votes: 31, status: "shipped", shippedIn: "v2.0" },
-  { id: "3", text: "Filter registry by category",                           votes: 22, status: "shipped", shippedIn: "v1.4" },
-  { id: "4", text: "Weekly digest email for new listings",                  votes: 9,  status: "open"    },
-  { id: "5", text: "Add review count visible on cards",                     votes: 17, status: "shipped", shippedIn: "v2.0" },
-  { id: "6", text: "Mobile bottom navigation bar",                          votes: 28, status: "shipped", shippedIn: "v2.0" },
-  { id: "7", text: "Most viewed of the week / month leaderboard",           votes: 11, status: "shipped", shippedIn: "v2.0" },
-  { id: "8", text: "Suggestion box with shipped tab",                       votes: 6,  status: "shipped", shippedIn: "v2.0" },
-];
-
 export function SuggestionBox() {
-  const [tab, setTab]         = useState<Tab>("suggest");
-  const [voted, setVoted]     = useState<Set<string>>(new Set());
-  const [newText, setNewText] = useState("");
+  const [tab, setTab]             = useState<Tab>("suggest");
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [voted, setVoted]         = useState<Set<string>>(new Set());
+  const [newText, setNewText]     = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState("");
 
-  const open    = MOCK_SUGGESTIONS.filter((s) => s.status === "open").sort((a, b) => b.votes - a.votes);
-  const shipped = MOCK_SUGGESTIONS.filter((s) => s.status === "shipped").sort((a, b) => b.votes - a.votes);
+  // ── Fetch suggestions on mount ─────────────────────────────────────────────
+  useEffect(() => {
+    fetch("/api/suggestions")
+      .then((r) => r.json())
+      .then((d) => {
+        setSuggestions(d.suggestions || []);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("Could not load suggestions.");
+        setLoading(false);
+      });
+  }, []);
 
-  const handleVote = (id: string) => {
-    setVoted((prev) => new Set([...prev, id]));
+  const open    = suggestions.filter((s) => s.status === "open").sort((a, b) => b.votes - a.votes);
+  const shipped = suggestions.filter((s) => s.status === "shipped").sort((a, b) => b.votes - a.votes);
+
+  // ── Submit new suggestion ──────────────────────────────────────────────────
+  const handleSubmit = async () => {
+    const text = newText.trim();
+    if (!text || text.length < 5) return;
+
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const res  = await fetch("/api/suggestions", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ text }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Submission failed.");
+        return;
+      }
+
+      setSuggestions((prev) => [data.suggestion, ...prev]);
+      setNewText("");
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 3000);
+    } catch {
+      setError("Something went wrong. Try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleSubmit = () => {
-    if (!newText.trim()) return;
-    setSubmitted(true);
-    setNewText("");
-    setTimeout(() => setSubmitted(false), 3000);
+  // ── Vote on a suggestion ───────────────────────────────────────────────────
+  const handleVote = async (id: string) => {
+    if (voted.has(id)) return;
+
+    // Optimistic update
+    setVoted((prev) => new Set([...prev, id]));
+    setSuggestions((prev) =>
+      prev.map((s) => s.id === id ? { ...s, votes: s.votes + 1 } : s)
+    );
+
+    try {
+      const res = await fetch(`/api/suggestions/${id}/vote`, { method: "PATCH" });
+      if (!res.ok) {
+        // Revert on failure
+        setVoted((prev) => { const next = new Set(prev); next.delete(id); return next; });
+        setSuggestions((prev) =>
+          prev.map((s) => s.id === id ? { ...s, votes: s.votes - 1 } : s)
+        );
+      }
+    } catch {
+      // Revert on network error
+      setVoted((prev) => { const next = new Set(prev); next.delete(id); return next; });
+      setSuggestions((prev) =>
+        prev.map((s) => s.id === id ? { ...s, votes: s.votes - 1 } : s)
+      );
+    }
   };
 
   const tabStyle = (active: boolean): React.CSSProperties => ({
@@ -88,6 +144,13 @@ export function SuggestionBox() {
         </div>
       </div>
 
+      {/* Error */}
+      {error && (
+        <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "#f87171", marginBottom: "12px", letterSpacing: "0.05em" }}>
+          {error}
+        </p>
+      )}
+
       {tab === "suggest" && (
         <>
           {/* Input */}
@@ -96,8 +159,9 @@ export function SuggestionBox() {
               type="text"
               value={newText}
               onChange={(e) => setNewText(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+              onKeyDown={(e) => e.key === "Enter" && !submitting && handleSubmit()}
               placeholder="Suggest a feature or improvement..."
+              maxLength={300}
               style={{
                 flex:         1,
                 background:   "var(--bg)",
@@ -112,104 +176,134 @@ export function SuggestionBox() {
             />
             <button
               onClick={handleSubmit}
+              disabled={submitting || !newText.trim() || newText.trim().length < 5}
               style={{
-                background:   "var(--accent)",
-                color:        "#fff",
-                border:       "none",
-                borderRadius: "8px",
-                padding:      "10px 16px",
-                fontFamily:   "var(--font-mono)",
-                fontSize:     "0.6rem",
-                fontWeight:   600,
-                letterSpacing:"0.08em",
-                textTransform:"uppercase",
-                cursor:       "pointer",
-                whiteSpace:   "nowrap",
+                background:    submitted ? "rgba(16,185,129,0.8)" : "var(--accent)",
+                color:         "#fff",
+                border:        "none",
+                borderRadius:  "8px",
+                padding:       "10px 16px",
+                fontFamily:    "var(--font-mono)",
+                fontSize:      "0.6rem",
+                fontWeight:    600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                cursor:        submitting || !newText.trim() ? "not-allowed" : "pointer",
+                whiteSpace:    "nowrap",
+                opacity:       submitting || !newText.trim() ? 0.5 : 1,
+                transition:    "all 0.15s",
               }}
             >
-              {submitted ? "Sent ✓" : "Submit"}
+              {submitting ? "Saving..." : submitted ? "Sent ✓" : "Submit"}
             </button>
           </div>
 
           {/* Open suggestions */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            {open.map((s) => (
-              <div
-                key={s.id}
-                style={{
-                  display:      "flex",
-                  alignItems:   "center",
-                  gap:          "12px",
-                  background:   "var(--bg)",
-                  border:       "1px solid var(--border)",
-                  borderRadius: "10px",
-                  padding:      "10px 14px",
-                }}
-              >
-                <button
-                  onClick={() => !voted.has(s.id) && handleVote(s.id)}
-                  disabled={voted.has(s.id)}
+          {loading ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              {[1, 2, 3].map((i) => (
+                <div key={i} style={{ height: "48px", borderRadius: "10px", background: "var(--bg)", border: "1px solid var(--border)", opacity: 0.4 }} />
+              ))}
+            </div>
+          ) : open.length === 0 ? (
+            <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--text-tertiary)", textAlign: "center", padding: "24px 0", letterSpacing: "0.08em" }}>
+              No suggestions yet. Be the first.
+            </p>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              {open.map((s) => (
+                <div
+                  key={s.id}
                   style={{
-                    display:        "flex",
-                    flexDirection:  "column",
-                    alignItems:     "center",
-                    gap:            "1px",
-                    background:     voted.has(s.id) ? "var(--accent-dim)" : "var(--bg-2)",
-                    border:         `1px solid ${voted.has(s.id) ? "var(--accent-border)" : "var(--border)"}`,
-                    borderRadius:   "6px",
-                    padding:        "4px 8px",
-                    cursor:         voted.has(s.id) ? "default" : "pointer",
-                    color:          voted.has(s.id) ? "var(--accent)" : "var(--text-tertiary)",
-                    minWidth:       "36px",
-                    flexShrink:     0,
+                    display:      "flex",
+                    alignItems:   "center",
+                    gap:          "12px",
+                    background:   "var(--bg)",
+                    border:       "1px solid var(--border)",
+                    borderRadius: "10px",
+                    padding:      "10px 14px",
                   }}
                 >
-                  <span style={{ fontSize: "8px" }}>▲</span>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "9px", fontWeight: 700 }}>
-                    {voted.has(s.id) ? s.votes + 1 : s.votes}
+                  <button
+                    onClick={() => handleVote(s.id)}
+                    disabled={voted.has(s.id)}
+                    style={{
+                      display:       "flex",
+                      flexDirection: "column",
+                      alignItems:    "center",
+                      gap:           "1px",
+                      background:    voted.has(s.id) ? "var(--accent-dim)" : "var(--bg-2)",
+                      border:        `1px solid ${voted.has(s.id) ? "var(--accent-border)" : "var(--border)"}`,
+                      borderRadius:  "6px",
+                      padding:       "4px 8px",
+                      cursor:        voted.has(s.id) ? "default" : "pointer",
+                      color:         voted.has(s.id) ? "var(--accent)" : "var(--text-tertiary)",
+                      minWidth:      "36px",
+                      flexShrink:    0,
+                      transition:    "all 0.15s",
+                    }}
+                  >
+                    <span style={{ fontSize: "8px" }}>▲</span>
+                    <span style={{ fontFamily: "var(--font-mono)", fontSize: "9px", fontWeight: 700 }}>
+                      {s.votes}
+                    </span>
+                  </button>
+                  <span style={{ fontFamily: "var(--font-syne)", fontSize: "0.75rem", fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.4 }}>
+                    {s.text}
                   </span>
-                </button>
-                <span style={{ fontFamily: "var(--font-syne)", fontSize: "0.75rem", fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.4 }}>
-                  {s.text}
-                </span>
-              </div>
-            ))}
-          </div>
+                </div>
+              ))}
+            </div>
+          )}
         </>
       )}
 
       {tab === "shipped" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          {shipped.map((s) => (
-            <div
-              key={s.id}
-              style={{
-                display:      "flex",
-                alignItems:   "center",
-                gap:          "12px",
-                background:   "rgba(16,185,129,0.04)",
-                border:       "1px solid rgba(16,185,129,0.15)",
-                borderRadius: "10px",
-                padding:      "10px 14px",
-              }}
-            >
-              <span style={{ fontSize: "14px", flexShrink: 0 }}>✓</span>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontFamily: "var(--font-syne)", fontSize: "0.75rem", fontWeight: 600, color: "var(--text-primary)", margin: 0, lineHeight: 1.4 }}>
-                  {s.text}
-                </p>
-                {s.shippedIn && (
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "#059669", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                    Shipped in {s.shippedIn}
-                  </span>
-                )}
-              </div>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "var(--text-tertiary)", flexShrink: 0 }}>
-                {s.votes} votes
-              </span>
+        <>
+          {loading ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              {[1, 2].map((i) => (
+                <div key={i} style={{ height: "56px", borderRadius: "10px", background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.15)", opacity: 0.4 }} />
+              ))}
             </div>
-          ))}
-        </div>
+          ) : shipped.length === 0 ? (
+            <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", color: "var(--text-tertiary)", textAlign: "center", padding: "24px 0", letterSpacing: "0.08em" }}>
+              Nothing shipped yet. Soon.
+            </p>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              {shipped.map((s) => (
+                <div
+                  key={s.id}
+                  style={{
+                    display:      "flex",
+                    alignItems:   "center",
+                    gap:          "12px",
+                    background:   "rgba(16,185,129,0.04)",
+                    border:       "1px solid rgba(16,185,129,0.15)",
+                    borderRadius: "10px",
+                    padding:      "10px 14px",
+                  }}
+                >
+                  <span style={{ fontSize: "14px", flexShrink: 0 }}>✓</span>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontFamily: "var(--font-syne)", fontSize: "0.75rem", fontWeight: 600, color: "var(--text-primary)", margin: 0, lineHeight: 1.4 }}>
+                      {s.text}
+                    </p>
+                    {s.shippedIn && (
+                      <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "#059669", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                        Shipped in {s.shippedIn}
+                      </span>
+                    )}
+                  </div>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.55rem", color: "var(--text-tertiary)", flexShrink: 0 }}>
+                    {s.votes} votes
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

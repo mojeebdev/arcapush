@@ -8,16 +8,22 @@ authorImage: "/authors/mojeeb.jpg"
 category: "Insights"
 readTime: "5 min read"
 featured: false
-image: "/blog/how-arcapush-works.jpg"
+image: "/blog/how-arcapush-works.png"
+---
+
+# How Arcapush Works: The Encyclopedia for Vibe Coders
+
+*By Mojeeb Adewale — Founder, Arcapush.com | [@mojeebeth](https://x.com/mojeebeth)*
+
 ---
 
 ## The Problem Arcapush Solves
 
-Building a vibe coding product is easier than ever. Marketing it is still hard.
+Building a vibe-coded product is easier than ever. Marketing it is still hard.
 
 A solo founder using Lovable or Cursor can ship a production-ready SaaS in a weekend. But getting that product in front of investors, early adopters, and the press — that still requires the same effort it always has.
 
-Most vibe coders are good at building. Most are not good at marketing. And they should not have to be. Building the product is the hard part. The distribution should be handled.
+Most vibe coders are exceptional builders. Most are not marketers. And they should not have to be. Building the product is the hard part. The distribution should be handled.
 
 That is what Arcapush is for.
 
@@ -25,9 +31,9 @@ That is what Arcapush is for.
 
 ## What Arcapush Is
 
-Arcapush is the **definitive registry for vibe-coded products** — a permanently indexed, curated database of AI-native startups and solo founder projects.
+Arcapush is the **definitive registry for vibe-coded products** — a permanently indexed, curated database of AI-native startups and solo founder projects built with tools like Cursor, Lovable, Bolt, Replit, and Claude.
 
-Think of it as the public record of the vibe coding era. Every startup that gets funded, every product that gets traction, every founder who ships — documented and discoverable.
+Think of it as the public record of the vibe coding era. Every startup that gets funded, every product that gets traction, every founder who ships — documented, structured, and discoverable.
 
 The tagline is accurate: *Where vibe-coded products get discovered.*
 
@@ -37,39 +43,43 @@ The tagline is accurate: *Where vibe-coded products get discovered.*
 
 **Step 1: Submit**
 
-Founders submit their startup at [arcapush.com/submit](/submit). The form collects basic information: product name, tagline, problem statement, category, website, and founder details.
+Founders submit their startup at [arcapush.com/submit](/submit). The form collects: product name, tagline, problem statement, category (35 verticals available), website URL, and founder details. The URL scraper built into the form auto-populates metadata — logo, banner, and OG data — directly from your product's website.
 
-**Step 2: Guardian Review**
+**Step 2: Review**
 
-Every submission goes through Guardian verification — a review process that checks the product is real, the information is accurate, and the startup fits the Arcapush criteria.
+Every submission is manually reviewed by the Arcapush team. We verify the product is real, the information is accurate, and the problem statement is substantive. Most startups are approved within 6 hours.
 
-**Step 3: Publication**
+**Step 3: Permanent Listing**
 
-Approved startups receive a permanent listing with a clean SEO slug (`arcapush.com/startup/[your-startup-name]`), indexed by Google, Bing, and AI platforms including Perplexity, ChatGPT, and Claude.
-
-The entry does not expire. It is a permanent record.
+Approved startups receive a permanent listing with a clean SEO-optimized URL (`arcapush.com/startup/[category]/[your-startup-slug]`), indexed by Google with structured JSON-LD schema, Open Graph metadata, and a dynamic OG image generated via `@vercel/og`. The listing does not expire. It is a permanent record.
 
 ---
 
-## What the Entry Includes
+## What the Listing Includes
 
 An Arcapush listing includes:
 
 - **Startup profile** — Name, tagline, problem statement, category, logo, and banner image
-- **Founder information** — Founder name, Twitter, and contact details
-- **Links** — Website, Twitter, pitch deck
-- **Canonical SEO URL** — A permanent, indexed URL for your startup
+- **Founder information** — Founder name, Twitter/X, and contact details
+- **Links** — Product website, Twitter/X, pitch deck
+- **Canonical SEO URL** — A permanent, indexed URL specific to your startup
+- **Structured data** — JSON-LD schema for search engines and AI platforms
 - **Investor signal panel** — Where verified investors can request access to your pitch
 
 ---
 
 ## Signal Boost: Pinned Visibility
 
-Beyond the free permanent listing, Arcapush offers Signal Boosts — on-chain verified promotional placements that pin your startup to the top of the Discovery Feed.
+Beyond the free permanent listing, Arcapush offers **Signal Boosts** — on-chain verified placements that pin your startup to the top of the Signals grid, the most-visited section of the registry.
 
-Signal Boosts are purchased in USDC on Base or SOL on Solana and are verified on-chain before activation. Packages range from 30 minutes to one month.
+Boosts are purchased in USDC on Base Mainnet or SOL on Solana and verified on-chain before activation via the ArcapushBoost smart contract. Card payments are accepted via Paystack, with Apple Pay supported at checkout.
 
-This is not advertising. It is **verified signal** — investors and visitors to Arcapush see pinned startups first, and the on-chain verification adds a layer of credibility that traditional ads cannot provide.
+Plans:
+- **Launch** — 3 weeks pinned in the Signals grid
+- **Pro** — 1 month hero pin + content amplification across BlindspotLab channels
+- **Pro Max** — 12 months of full BlindspotLab studio support
+
+This is not advertising. It is **verified signal** — investors and visitors see pinned startups first, and on-chain verification adds a layer of credibility that traditional ads cannot provide.
 
 ---
 
@@ -77,38 +87,52 @@ This is not advertising. It is **verified signal** — investors and visitors to
 
 When a journalist writes about vibe coding, they look for examples. When a VC researches the space, they look for companies. When an early adopter searches for tools, they look for products.
 
-An Arcapush listing ensures your startup appears in those moments.
+An Arcapush listing ensures your startup appears in those moments. Specifically:
 
-More specifically:
+**Search engines** — Every Arcapush entry is indexed with proper canonical URLs, JSON-LD schema markup, and SEO metadata. Your startup's listing page ranks for branded and category searches.
 
-**Search engines** — Every Arcapush entry is indexed with proper canonical URLs, schema markup, and SEO metadata. Your startup's listing page ranks for branded searches.
+**AI platforms** — Arcapush maintains an `llms.txt` file and structured data specifically designed to help AI platforms like Perplexity, ChatGPT, and Claude accurately cite and surface listed startups.
 
-**AI platforms** — Arcapush maintains an `llms.txt` file and structured data specifically designed to help AI platforms like Perplexity, ChatGPT, and Claude accurately cite and recommend listed startups.
-
-**Direct discovery** — The Arcapush registry is actively browsed by investors, journalists, and founders looking for companies in the vibe coding ecosystem.
+**Direct discovery** — The Arcapush registry is actively browsed by investors, journalists, and founders looking for products in the vibe coding ecosystem.
 
 ---
 
 ## Who Arcapush Is For
 
-**Vibe coding founders & Solo Founders** who want their product permanently documented and discoverable without spending months on SEO and PR.
+**Vibe coders and solo founders** who want their product permanently documented and discoverable without spending months on SEO and PR.
 
-**VC investors** who want a curated, verified source of vibe-coded startups to evaluate and track.
+**VC investors and angel investors** who want a curated, verified source of AI-native startups to evaluate, track, and source deals from.
 
-**Journalists and researchers** who need an authoritative reference for the vibe coding ecosystem.
+**Journalists and researchers** who need an authoritative, structured reference for the vibe coding ecosystem.
 
-**The broader startup community** following the emergence of AI-native software development.
+**The broader builder community** following the emergence of AI-native software development and the solo founder movement.
+
+---
+
+## The Stack Behind Arcapush
+
+Arcapush is itself a vibe-coded product — built solo by Mojeeb under BlindspotLab using:
+
+**Next.js 15 App Router · TypeScript · Tailwind CSS · Prisma 7 · Supabase · NextAuth v5 · wagmi · viem · Solidity (Base Mainnet) · Alchemy RPC · Vercel · @vercel/og**
+
+The ArcapushBoost smart contract is deployed and verified on Base Mainnet. The entire codebase was built and shipped solo.
 
 ---
 
 ## Get Listed
 
-Arcapush is free to submit. The review process is fast — most startups are approved within 5 minutes - 6 hours max.
+Arcapush is free to submit. Listings are reviewed within 6 hours.
 
 [Submit your startup →](/submit)
 
-If you have already submitted and your startup has been approved, consider a [Signal Boost](/pricing) to get additional visibility during your launch window.
+If your startup is already approved, consider a [Signal Boost](/pricing) for additional visibility during your launch window or fundraising period.
 
-Follow [@arcapush](https://twitter.com/arcapush) on X and [@mojeebeth](https://twitter.com/mojeebeth) for updates.
+Follow [@arcapush](https://twitter.com/arcapush) and [@mojeebeth](https://twitter.com/mojeebeth) for registry updates.
 
-**Tags:** `Arcapush` `Vibe Coding` `Registry` `Discovery` `Solo Founders`
+---
+
+*Mojeeb Adewale is the founder of [Arcapush.com](https://arcapush.com) and [BlindspotLab](https://blindspotlab.xyz). He ships products from Lagos, Nigeria. Follow him at [@mojeebeth](https://x.com/mojeebeth).*
+
+---
+
+**Tags:** `Arcapush` `Vibe Coding` `Registry` `Discovery` `Solo Founders` `BlindspotLab`

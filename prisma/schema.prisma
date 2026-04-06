@@ -33,9 +33,9 @@ model Startup {
   problemStatement String
   bannerUrl        String
   logoUrl          String?
-  ogImage          String?         // scraped OG image (may differ from bannerUrl)
-  faviconUrl       String?         // scraped favicon for logo fallback
-  scrapedAt        DateTime?       // when metadata was last scraped
+  ogImage          String?
+  faviconUrl       String?
+  scrapedAt        DateTime?
   category         String          @default("Other")
   website          String?
   twitter          String?
@@ -119,6 +119,20 @@ model Review {
 
   @@unique([email, startupId])
   @@index([startupId])
+}
+
+model Suggestion {
+  id        String   @id @default(cuid())
+  text      String
+  votes     Int      @default(0)
+  status    String   @default("open")
+  shippedIn String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([votes])
+  @@index([createdAt])
 }
 
 model Account {

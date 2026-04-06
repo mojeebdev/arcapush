@@ -10,9 +10,10 @@ readTime: "7 min read"
 featured: true
 image: "/blog/why-i-built-arcapush.png"
 ---
+
 # Why I Built Arcapush: The Gap Nobody Was Filling in the Vibe Coding Era
 
-*By Mojeeb Adewale — Founder, Arcapush.com | Follow me: [@mojeebeth](https://x.com/mojeebeth) | [mojeeb.xyz](https://mojeeb.xyz)*
+*By Mojeeb Adewale — Founder, Arcapush.com | [@mojeebeth](https://x.com/mojeebeth) | [mojeeb.xyz](https://mojeeb.xyz)*
 
 ---
 
@@ -20,15 +21,15 @@ There's a debate that has floated across every Web3 Twitter space, every startup
 
 **What's harder — building a product, or marketing it?**
 
-The honest answer? Both are brutally hard. And that's exactly why I built Arcapush.
+The honest answer? Both are brutally hard. And that tension is exactly why Arcapush exists.
 
 ---
 
 ## From Fiditi to the Internet: How a Kid From Iware Became a Builder
 
-I grew up in Iware, a small community in Nigeria. My first encounter with a computer was around 2004–2006 — a school excursion to the neighbouring town of Fiditi, where we went just to take pictures and get a feel for what a PC actually was. I touched a keyboard. I was hooked.
+I grew up in Iware, a small community in Nigeria. My first encounter with a computer was around 2004 — a school excursion to the neighbouring town of Fiditi, where we went just to take pictures and get a feel for what a PC actually was. I touched a keyboard. I was hooked.
 
-By 2008–2009, I had transferred schools to Godly Heritage in Fiditi, and for the first time I had real, regular access to computers. I taught myself PowerPoint. I was that kid — the one everyone called a *hacker* in secondary school, not because I was breaking into anything, but because the gap between what I knew and what my peers knew was just that wide.
+By 2008, I had transferred to Godly Heritage school in Fiditi and for the first time had real, regular access to computers. I taught myself PowerPoint. I was that kid — the one everyone called a *hacker* in secondary school, not because I was breaking into anything, but because the gap between what I knew and what my peers knew was just that wide.
 
 I was one of the first teenagers in my community to open a Facebook account, back when Facebook was still a foreign concept to most people around me.
 
@@ -36,19 +37,20 @@ That self-taught mentality never left. Forums, blogs, communities, Udemy — I a
 
 ---
 
-## Over a Decade in the Making
+## 16 Years in the Making
 
-I'm 28 years old, turning 29 this August. I graduated from the University of Ilorin — one of Nigeria's most prestigious universities — with a B.A. in History (Education). Not Computer Science. Not Engineering. History.
+I'm 28 years old, turning 29 this August. I graduated from the University of Ilorin — one of Nigeria's most prestigious universities — with a B.A. in History (Education). Not Computer Science. Not Engineering. **History.**
 
 But I've spent 12+ years in Web2 marketing and 4+ years deep in Web3 strategy — 16 years of combined experience helping products find their audience.
 
-I've been a skit creator (500+ videos before I quit in 2021 to focus on Web3). I spearheaded marketing campaigns like the **TAIKU NFT** launch, which gained over 9,000 followers in three days. I've founded communities — from Anblabs to Echelon HQ to what is now **BlindspotLab** ([blindspotlab.xyz](https://blindspotlab.xyz)), an AI-powered auditing, marketing, and strategy intelligence platform.
+I've been a skit creator (500+ videos before I pivoted to Web3 in 2021). I spearheaded marketing campaigns like the **TAIKU NFT** launch, which gained over 9,000 followers in three days. I've built communities from Anblabs to Echelon HQ to what is now **BlindspotLab** ([blindspotlab.xyz](https://blindspotlab.xyz)) — an AI-powered auditing, marketing, and strategy intelligence studio based in Lagos, Nigeria.
 
-Arcapush is not my first product. Before it, I shipped:
+Arcapush is not my first product. Before it, I shipped 14+ products solo under BlindspotLab, including:
 
-- **trench.mojeeb.xyz** — the first gamified crypto slang platform, because people are lazy to learn but nobody's too lazy to play
-- **whate.online** — Zero Decision Meal Intelligence, pulling from 10,000+ global meal datasets to end the daily "what should I eat?" fatigue
-- **dearly.icu** — personalized, emotional greetings that go far beyond generic messages; you give it a persona, hobbies, your relationship, your tone — it does the rest
+- **[whate.online](https://whate.online)** — Zero Decision Meal Intelligence, pulling from 10,000+ global meal datasets to end the daily "what should I eat?" fatigue
+- **[dearly.icu](https://dearly.icu)** — personalized, emotional greetings that go far beyond generic messages; give it a persona, hobbies, your relationship, your tone — it does the rest
+- **[angelvow.xyz](https://angelvow.xyz)** — a decentralized wishlist and charity platform on Base Mainnet, built with USDC and smart contracts
+- **[firsttx.xyz](https://firsttx.xyz)** — a celebratory platform where users connect wallets to discover their first on-chain transaction across 11 EVM chains
 
 Each product was born from a real frustration. Arcapush is no different.
 
@@ -62,7 +64,7 @@ AI-assisted development tools meant that more people than ever before — with o
 
 But something strange was happening. All these products were being built. And then… quietly disappearing into the void.
 
-There was no central, curated place documenting what was being built. No encyclopedia of the stacks being used, the tools being picked, the patterns emerging across VC-backed startups born from vibe coding. Directories existed. Launch platforms existed. But none of them were treating vibe-coded products with the depth, credibility, and discoverability they deserved.
+There was no central, curated place documenting what was being built. No encyclopedia of the stacks being used, the tools being picked, the patterns emerging across startups born from the AI-native development era. Directories existed. Launch platforms existed. But none of them were treating vibe-coded products with the depth, credibility, and discoverability they deserved.
 
 No one was documenting the *culture*.
 
@@ -74,14 +76,15 @@ That gap is where Arcapush was born.
 
 Let me be direct: **Arcapush is not a Product Hunt clone. It is not a BetaList clone.**
 
-Arcapush is an **encyclopedia** — a living, structured reference for vibe-coded products. 
-It's built for three audiences:
+Arcapush is an **encyclopedia** — a living, structured reference for vibe-coded products built by solo founders. It's built for three audiences:
 
-1. **Vibe coders and founders** who want their product discovered without having to become full-time marketers
+1. **Vibe coders and solo founders** who want their product discovered without having to become full-time marketers
 2. **VCs and angel investors** actively looking for the next unicorn born from the AI-native development era
-3. **Developers and researchers** who want to study the stacks, patterns, and tools powering the best startups right now
+3. **Developers and researchers** who want to study the stacks, patterns, and tools powering the best products being built right now
 
-The positioning is deliberate: **you see a vibe-coded product, you see Arcapush.**
+The positioning is deliberate: **you see a vibe-coded product, you think Arcapush.**
+
+Every listing requires a problem statement — not just marketing copy. This is the signal VCs actually use when evaluating early-stage products. It's what separates a registry from a leaderboard.
 
 We want to be the platform where the next wave of unicorns get their first serious audience — before the press picks them up, before the mainstream catches on.
 
@@ -103,18 +106,22 @@ We're not just listing products. We're archiving a movement.
 
 I'll be transparent, because I think the founder story matters: Arcapush was brainstormed with Gemini, prompted into existence with Claude, and finished through a combination of both — because credits run out and builders keep going anyway.
 
-The stack is real: **Next.js App Router, Prisma 7, Supabase, TypeScript, Tailwind, wagmi/viem on Base for USDC payments, and Solana wallet adapter.**
+The stack is real: **Next.js 15 App Router, Prisma 7, Supabase, TypeScript, Tailwind CSS, wagmi/viem on Base Mainnet for USDC payments, and Solana wallet adapter for SOL payments.**
+
+Smart contracts are deployed and verified on Base Mainnet. The URL scraper auto-populates metadata from your product's Open Graph tags. OG images are generated dynamically via `@vercel/og`. The whole thing is hosted on Vercel and built solo — because that's what vibe coders do.
 
 The framework came from my head. The vision came from 16 years of watching products fail not because they were bad — but because nobody could find them.
 
 ---
 
-## What's Next
+## What's Next for Arcapush
 
-Arcapush launched today on Product Hunt.
+Arcapush launched in March 2026 and has been growing steadily since — indexed pages climbing, founders submitting, the registry filling up with products that deserve to be found.
 
-If you're a vibe coder with a product — [list it](https://arcapush.com/submit).  
-If you're a VC or investor looking at the next wave — [explore the encyclopedia](https://arcapush.com/registry).  
+The roadmap is clear: more indexed products, more VC integrations, more signal for the founders who are building the next decade of software right now.
+
+If you're a vibe coder with a product — [list it for free](https://arcapush.com/submit).  
+If you're a VC or investor looking at the next wave — [explore the registry](https://arcapush.com/registry).  
 If you're a founder who's tired of building great things in obscurity — [we built this for you](https://arcapush.com).
 
 The vibe coding era is just beginning. The products being built right now will define the next decade of software.
@@ -123,8 +130,8 @@ We're here to make sure they're found.
 
 ---
 
-*Mojeeb Adewale is the founder of [Arcapush.com](https://arcapush.com) and [BlindspotLab](https://blindspotlab.xyz). He has 16 years of combined Web2 and Web3 marketing experience and ships products from Lagos, Nigeria. Follow him at [@mojeebeth](https://x.com/mojeebeth) and explore his work at [mojeeb.xyz](https://mojeeb.xyz).*
+*Mojeeb Adewale is the founder of [Arcapush.com](https://arcapush.com) and [BlindspotLab](https://blindspotlab.xyz). He has 16 years of combined Web2 and Web3 experience and ships products from Lagos, Nigeria. Follow him at [@mojeebeth](https://x.com/mojeebeth) and explore his work at [mojeeb.xyz](https://mojeeb.xyz).*
 
 ---
 
-**Tags:** `Arcapush` `Founder Story` `Mojeeb` `Building in Public` `Vibe Coding`
+**Tags:** `Arcapush` `Founder Story` `Mojeeb` `Building in Public` `Vibe Coding` `BlindspotLab`
