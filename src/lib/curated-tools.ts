@@ -29,6 +29,12 @@ export const CURATED_TOOLS: CuratedTool[] = [
     builtByArcapush: true,
   },
   {
+    url: "https://roasturl.xyz",
+    name: "RoastURL",
+    category: "Feedback Engine",
+    builtByArcapush: true,
+  },
+  {
     url: "https://xunfollow.xyz",
     name: "Xunfollow",
     category: "Social Media",
