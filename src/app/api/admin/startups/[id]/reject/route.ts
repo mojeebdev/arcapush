@@ -7,22 +7,23 @@ const ADMIN_SECRET = process.env.GUARDIAN_PIN!;
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { reason, adminSecret } = await req.json();
     if (adminSecret !== ADMIN_SECRET) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     if (!reason?.trim()) return NextResponse.json({ error: "Rejection reason is required" }, { status: 400 });
 
     const startup = await prisma.startup.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: { id: true, name: true, founderName: true, founderEmail: true, approved: true },
     });
 
     if (!startup) return NextResponse.json({ error: "Not found" }, { status: 404 });
     if (startup.approved) return NextResponse.json({ error: "Cannot reject an approved listing" }, { status: 400 });
 
-    await prisma.startup.delete({ where: { id: params.id } });
+    await prisma.startup.delete({ where: { id } });
 
     await resend.emails.send({
       from: "Arcapush <noreply@arcapush.com>",
@@ -49,9 +50,7 @@ export async function POST(
               <p style="margin:0;font-size:14px;color:#ccc;line-height:1.7;">${reason}</p>
             </td></tr>
           </table>
-          <p style="margin:0 0 20px;font-size:14px;color:#888;line-height:1.7;">
-            Address the feedback above and resubmit at any time.
-          </p>
+          <p style="margin:0 0 20px;font-size:14px;color:#888;line-height:1.7;">Address the feedback above and resubmit at any time.</p>
           <table cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
             <tr><td style="border-radius:12px;background:#5b2bff;">
               <a href="https://arcapush.com/submit" style="display:inline-block;padding:14px 28px;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#ffffff;text-decoration:none;">
