@@ -63,7 +63,7 @@ export async function POST(req: Request) {
       subject: 'Access Request Received — Arcapush',
       html: `
         <div style="font-family: serif; background: #0a0a0a; color: #f0ede8; padding: 40px; border-radius: 20px; border: 1px solid rgba(232,255,71,0.15);">
-          <h1 style="text-transform: uppercase; letter-spacing: 0.2em; color: #e8ff47; font-size: 1.2rem;">Request Received</h1>
+          <h1 style="text-transform: uppercase; letter-spacing: 0.2em; color: #5b2bff; font-size: 1.2rem;">Request Received</h1>
           <p style="font-style: italic; color: #888580;">Hello ${requesterName},</p>
           <p style="color: #888580;">
             Your access request for <strong style="color: #f0ede8;">${requesterFirm}</strong> has been received.

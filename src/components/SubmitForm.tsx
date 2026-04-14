@@ -343,7 +343,7 @@ export default function SubmitStartup() {
         particleCount: 150,
         spread:        70,
         origin:        { y: 0.6 },
-        colors:        ["#e8ff47", "#f0ede8", "#888580"],
+        colors:        ["#5b2bff", "#f0ede8", "#888580"],
       });
 
       toast.success("Product received. We'll index it shortly.");
@@ -553,7 +553,7 @@ export default function SubmitStartup() {
                 value={formData.founderEmail} onChange={(e) => setFormData({ ...formData, founderEmail: e.target.value })} />
               <input type="url" placeholder="Founder Twitter/X URL" className="ap-input"
                 value={formData.founderTwitter} onChange={(e) => setFormData({ ...formData, founderTwitter: e.target.value })} />
-              <input type="url" placeholder="Pitch Deck URL (optional)" className="ap-input"
+              <input type="url" placeholder="Founder Twitter/X URL" className="ap-input" required
                 value={formData.pitchDeckUrl} onChange={(e) => setFormData({ ...formData, pitchDeckUrl: e.target.value })} />
             </div>
           </div>

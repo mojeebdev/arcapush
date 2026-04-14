@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
             left: 0,
             right: 0,
             height: "4px",
-            background: "#e8ff47",
+            background: "#5b2bff",
             display: "flex",
           }}
         />
@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
               style={{
                 fontSize: "18px",
                 fontWeight: 700,
-                color: "#e8ff47",
+                color: "#5b2bff",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
               }}

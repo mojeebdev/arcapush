@@ -43,7 +43,7 @@ export async function POST(
         subject: `🚀 Your listing is live: ${startup.name}`,
         html: `
           <div style="font-family: sans-serif; background: #0a0a0a; color: #f0ede8; padding: 40px; border-radius: 20px; border: 1px solid rgba(232,255,71,0.15);">
-            <h1 style="text-transform: uppercase; letter-spacing: -1px; color: #e8ff47;">You're Live.</h1>
+            <h1 style="text-transform: uppercase; letter-spacing: -1px; color: #5b2bff;">You're Live.</h1>
             <p style="color: #888580;">Hello ${startup.founderName},</p>
             <p style="color: #888580;">
               Your listing for <strong style="color: #f0ede8;">${startup.name}</strong> has been approved
@@ -54,7 +54,7 @@ export async function POST(
               <tr>
                 <td>
                   <a href="${startupUrl}" target="_blank"
-                     style="background: #e8ff47; color: #0a0a0a; padding: 14px 28px; border-radius: 10px;
+                     style="background: #5b2bff; color: #0a0a0a; padding: 14px 28px; border-radius: 10px;
                             text-decoration: none; font-weight: 900; font-size: 12px;
                             text-transform: uppercase; letter-spacing: 0.1em; display: inline-block;">
                     View Your Listing
@@ -65,7 +65,7 @@ export async function POST(
 
             <p style="font-size: 11px; color: #666;">
               Link not working? Copy this:<br/>
-              <span style="color: #e8ff47;">${startupUrl}</span>
+              <span style="color: #5b2bff;">${startupUrl}</span>
             </p>
 
             <hr style="border: 0; border-top: 1px solid #222; margin: 30px 0;" />

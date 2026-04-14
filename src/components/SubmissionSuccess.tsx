@@ -11,7 +11,7 @@ export default function SubmissionSuccess() {
       particleCount: 100,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ["#e8ff47", "#f0ede8", "#888580"],
+      colors: ["#5b2bff", "#f0ede8", "#888580"],
     });
   }, []);
 
